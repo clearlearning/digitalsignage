@@ -554,11 +554,15 @@ function renderTracks() {
       <div class="track-swatch" style="background:${t.color}"></div>
       <div class="field" style="margin-bottom:10px;">
         <label>Track ID</label>
-        <input type="text" value="${t.id}" onchange="state.tracks[${i}].id=this.value;renderAll()" placeholder="e.g. governance">
+        <input type="text" value="${t.id}" onblur="state.tracks[${i}].id=this.value;renderAll()" placeholder="e.g. governance">
+      </div>
+      <div class="field" style="margin-bottom:10px;">
+        <label>Background SVG Filename</label>
+        <input type="text" value="${t.background}" onblur="state.tracks[${i}].background=this.value" placeholder="track-name.svg">
       </div>
       <div class="field">
-        <label>Background SVG Filename</label>
-        <input type="text" value="${t.background}" onchange="state.tracks[${i}].background=this.value" placeholder="track-name.svg">
+        <label>Track Color</label>
+        <input type="color" value="${t.color}" onchange="state.tracks[${i}].color=this.value;renderTracks()">
       </div>
     `;
     grid.appendChild(div);
