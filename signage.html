@@ -318,7 +318,10 @@
   }
 
   function applySession(schedule, session, isLive) {
-    const trackData = schedule.tracks[session.track] || Object.values(schedule.tracks)[0];
+    const trackData = schedule.tracks[session.track] 
+      || schedule.tracks[session.track.toUpperCase()] 
+      || schedule.tracks[session.track.toLowerCase()] 
+      || Object.values(schedule.tracks)[0];
 
     document.getElementById('board').style.setProperty('--track-color', trackData.color || '#484848');
     el('bg').src = trackData.background;
