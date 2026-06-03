@@ -269,7 +269,7 @@
     const [ey, em, ed] = eventDateStr.split('-').map(Number);
     const baseDate = new Date(ey, em - 1, ed);
 
-    const sessions = roomData.sessions;
+    const sessions = [...roomData.sessions].sort((a, b) => a.start.localeCompare(b.start));
     let displaySession = null;
     let isLive = false;
     let isUpcoming = false;
@@ -300,7 +300,7 @@
     }
 
     if (!displaySession) {
-      displaySession = { title: 'No further sessions today', track: 'rag', start: '', end: '', presenters: [] };
+      displaySession = { title: 'No further sessions today', track: 'RAG', start: '', end: '', presenters: [] };
     }
 
     const sessionKey = `${displaySession.title}|${isLive}`;
