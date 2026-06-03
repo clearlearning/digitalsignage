@@ -18,428 +18,98 @@
     --text: #2a2a2a;
     --muted: #777;
     --danger: #c0392b;
+    --green: #2d6a2d;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  body {
-    font-family: 'Open Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
+  body { font-family: 'Open Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-  /* ── Header ── */
-  header {
-    background: var(--burgundy);
-    color: #fff;
-    padding: 0 40px;
-    height: 70px;
-    display: flex
-;    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
-  }
+  header { background: var(--burgundy); color: #fff; padding: 0 40px; height: 70px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.2); }
+  .header-left { display: flex; align-items: center; gap: 20px; }
+  .wordmark { font-size: 20px; font-weight: 700; letter-spacing: 0.25em; color: var(--gold); }
+  .header-title { font-size: 15px; font-weight: 300; color: rgba(255,255,255,0.7); border-left: 1px solid rgba(255,255,255,0.2); padding-left: 20px; }
+  .header-actions { display: flex; gap: 12px; }
 
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-
-  .wordmark {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: 0.25em;
-    color: var(--gold);
-  }
-
-  .header-title {
-    font-size: 15px;
-    font-weight: 300;
-    color: rgba(255,255,255,0.7);
-    border-left: 1px solid rgba(255,255,255,0.2);
-    padding-left: 20px;
-  }
-
-  .header-actions {
-    display: flex;
-    gap: 12px;
-  }
-
-  /* ── Buttons ── */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    cursor: pointer;
-    border: none;
-    transition: all 0.15s;
-    text-transform: uppercase;
-  }
-
-  .btn-gold {
-    background: var(--gold);
-    color: #1a1a1a;
-  }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 4px; font-family: inherit; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; cursor: pointer; border: none; transition: all 0.15s; text-transform: uppercase; }
+  .btn-gold { background: var(--gold); color: #1a1a1a; }
   .btn-gold:hover { background: #c99528; }
-
-  .btn-outline {
-    background: transparent;
-    color: rgba(255,255,255,0.85);
-    border: 1px solid rgba(255,255,255,0.3);
-  }
+  .btn-outline { background: transparent; color: rgba(255,255,255,0.85); border: 1px solid rgba(255,255,255,0.3); }
   .btn-outline:hover { background: rgba(255,255,255,0.1); }
-
-  .btn-blue {
-    background: var(--blue);
-    color: #fff;
-  }
+  .btn-blue { background: var(--blue); color: #fff; }
   .btn-blue:hover { background: #063d5f; }
-
-  .btn-danger {
-    background: transparent;
-    color: var(--danger);
-    border: 1px solid var(--danger);
-    padding: 6px 12px;
-    font-size: 12px;
-  }
+  .btn-green { background: var(--green); color: #fff; }
+  .btn-green:hover { background: #1f4d1f; }
+  .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 6px 12px; font-size: 12px; }
   .btn-danger:hover { background: var(--danger); color: #fff; }
-
-  .btn-sm {
-    padding: 6px 14px;
-    font-size: 12px;
-  }
-
-  .btn-add {
-    background: transparent;
-    color: var(--blue);
-    border: 1.5px dashed var(--blue);
-    width: 100%;
-    justify-content: center;
-    padding: 12px;
-    border-radius: 4px;
-    margin-top: 8px;
-  }
+  .btn-sm { padding: 6px 14px; font-size: 12px; }
+  .btn-add { background: transparent; color: var(--blue); border: 1.5px dashed var(--blue); width: 100%; justify-content: center; padding: 12px; border-radius: 4px; margin-top: 8px; }
   .btn-add:hover { background: rgba(8,77,120,0.06); }
 
-  /* ── Layout ── */
-  .main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px 40px 80px;
-  }
+  .main { max-width: 1200px; margin: 0 auto; padding: 40px 40px 80px; }
 
-  /* ── Event settings card ── */
-  .card {
-    background: var(--surface);
-    border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-    margin-bottom: 28px;
-    overflow: hidden;
-  }
+  .card { background: var(--surface); border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); margin-bottom: 28px; overflow: hidden; }
+  .card-header { background: var(--charcoal); color: #fff; padding: 16px 24px; font-size: 13px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; display: flex; align-items: center; justify-content: space-between; }
+  .card-body { padding: 24px; }
 
-  .card-header {
-    background: var(--charcoal);
-    color: #fff;
-    padding: 16px 24px;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .card-body {
-    padding: 24px;
-  }
-
-  /* ── Form fields ── */
-  .field-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 16px;
-    margin-bottom: 16px;
-  }
-
-  .field {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
+  .field-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-bottom: 16px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
   .field.full { grid-column: 1 / -1; }
 
-  label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
+  label { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
 
-  input[type="text"],
-  input[type="date"],
-  input[type="time"],
-  select,
-  textarea {
-    font-family: inherit;
-    font-size: 14px;
-    padding: 10px 14px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    background: #fafafa;
-    color: var(--text);
-    transition: border 0.15s;
+  input[type="text"], input[type="date"], input[type="time"], select, textarea {
+    font-family: inherit; font-size: 14px; padding: 10px 14px;
+    border: 1px solid var(--border); border-radius: 4px;
+    background: #fafafa; color: var(--text); transition: border 0.15s;
   }
-
-  input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: var(--burgundy);
-    background: #fff;
-  }
-
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--burgundy); background: #fff; }
   textarea { resize: vertical; min-height: 60px; }
 
-  /* ── Room tabs ── */
-  .room-tabs {
-    display: flex;
-    gap: 0;
-    border-bottom: 2px solid var(--border);
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-  }
-
-  .room-tab {
-    padding: 12px 24px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    background: transparent;
-    color: var(--muted);
-    border-bottom: 3px solid transparent;
-    margin-bottom: -2px;
-    font-family: inherit;
-    transition: all 0.15s;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
+  .room-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 24px; flex-wrap: wrap; }
+  .room-tab { padding: 12px 24px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--muted); border-bottom: 3px solid transparent; margin-bottom: -2px; font-family: inherit; transition: all 0.15s; display: flex; align-items: center; gap: 8px; }
   .room-tab:hover { color: var(--charcoal); }
   .room-tab.active { color: var(--burgundy); border-bottom-color: var(--burgundy); }
+  .tab-add { padding: 12px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--blue); font-family: inherit; margin-bottom: -2px; }
 
-  .tab-add {
-    padding: 12px 18px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    background: transparent;
-    color: var(--blue);
-    font-family: inherit;
-    margin-bottom: -2px;
-  }
-
-  /* ── Sessions ── */
-  .session-card {
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    margin-bottom: 12px;
-    overflow: hidden;
-    transition: box-shadow 0.15s;
-  }
-
+  .session-card { border: 1px solid var(--border); border-radius: 6px; margin-bottom: 12px; overflow: hidden; transition: box-shadow 0.15s; }
   .session-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-
-  .session-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 18px;
-    cursor: pointer;
-    background: #fafafa;
-    border-bottom: 1px solid transparent;
-    gap: 16px;
-  }
-
+  .session-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; cursor: pointer; background: #fafafa; border-bottom: 1px solid transparent; gap: 16px; }
   .session-header.open { border-bottom-color: var(--border); }
-
-  .session-meta {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    flex: 1;
-    min-width: 0;
-  }
-
-  .session-time-badge {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--muted);
-    white-space: nowrap;
-    min-width: 120px;
-  }
-
-  .session-title-preview {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .track-pill {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 20px;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .track-pill.governance  { background: rgba(100,9,44,0.12);  color: var(--burgundy); }
-  .track-pill.enforcement { background: rgba(8,77,120,0.12);  color: var(--blue); }
-  .track-pill.technology  { background: rgba(72,72,72,0.12);  color: var(--charcoal); }
-  .track-pill.competency  { background: rgba(45,90,27,0.12);  color: #2d5a1b; }
-  .track-pill.break       { background: rgba(221,168,56,0.15); color: #7a5a00; }
-
-  .session-body {
-    padding: 18px;
-    display: none;
-  }
-
+  .session-meta { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; }
+  .session-date-badge { font-size: 11px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+  .session-time-badge { font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; min-width: 110px; }
+  .session-title-preview { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .track-pill { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+  .session-body { padding: 18px; display: none; }
   .session-body.open { display: block; }
-
-  .chevron {
-    font-size: 16px;
-    color: var(--muted);
-    transition: transform 0.2s;
-    flex-shrink: 0;
-  }
+  .chevron { font-size: 16px; color: var(--muted); transition: transform 0.2s; flex-shrink: 0; }
   .chevron.open { transform: rotate(180deg); }
 
-  /* ── Tracks config ── */
-  .tracks-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 16px;
-  }
+  .tracks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+  .track-config-card { border: 1px solid var(--border); border-radius: 6px; padding: 16px; }
+  .track-swatch { width: 100%; height: 12px; border-radius: 3px; margin-bottom: 14px; }
 
-  .track-config-card {
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 16px;
-  }
+  /* Import zone */
+  .import-zone { border: 2px dashed var(--border); border-radius: 8px; padding: 32px; text-align: center; cursor: pointer; transition: all 0.2s; }
+  .import-zone:hover, .import-zone.drag-over { border-color: var(--blue); background: rgba(8,77,120,0.04); }
+  .import-zone p { font-size: 14px; color: var(--muted); margin-bottom: 12px; }
+  #import-file { display: none; }
+  #import-result { margin-top: 16px; padding: 14px; border-radius: 6px; font-size: 13px; display: none; }
+  #import-result.success { background: rgba(45,106,45,0.1); border: 1px solid rgba(45,106,45,0.3); color: var(--green); }
+  #import-result.error   { background: rgba(192,57,43,0.1);  border: 1px solid rgba(192,57,43,0.3);  color: var(--danger); }
 
-  .track-swatch {
-    width: 100%;
-    height: 6px;
-    border-radius: 3px;
-    margin-bottom: 14px;
-  }
+  #json-output { background: #1e1e1e; color: #d4d4d4; font-family: 'Courier New', monospace; font-size: 12px; padding: 20px; border-radius: 6px; max-height: 400px; overflow: auto; white-space: pre; line-height: 1.6; }
 
-  /* ── JSON preview ── */
-  #json-output {
-    background: #1e1e1e;
-    color: #d4d4d4;
-    font-family: 'Courier New', monospace;
-    font-size: 12px;
-    padding: 20px;
-    border-radius: 6px;
-    max-height: 400px;
-    overflow: auto;
-    white-space: pre;
-    line-height: 1.6;
-  }
-
-  /* ── Toast ── */
-  #toast {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background: #1a1a1a;
-    color: #fff;
-    padding: 14px 24px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    transform: translateY(20px);
-    opacity: 0;
-    transition: all 0.3s;
-    z-index: 999;
-    border-left: 4px solid var(--gold);
-  }
+  #toast { position: fixed; bottom: 30px; right: 30px; background: #1a1a1a; color: #fff; padding: 14px 24px; border-radius: 6px; font-size: 14px; font-weight: 500; box-shadow: 0 4px 20px rgba(0,0,0,0.3); transform: translateY(20px); opacity: 0; transition: all 0.3s; z-index: 999; border-left: 4px solid var(--gold); }
   #toast.show { transform: translateY(0); opacity: 1; }
 
-  /* ── Section label ── */
-  .section-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 10px;
-    margin-top: 20px;
-  }
+  .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; margin-top: 20px; }
   .section-label:first-child { margin-top: 0; }
 
-  /* ── URL helper ── */
-  .url-helper {
-    background: rgba(8,77,120,0.06);
-    border: 1px solid rgba(8,77,120,0.2);
-    border-radius: 6px;
-    padding: 16px 20px;
-    margin-top: 20px;
-  }
-  .url-helper h4 {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--blue);
-    margin-bottom: 12px;
-  }
-  .url-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-  .url-room-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--charcoal);
-    min-width: 120px;
-  }
-  .url-value {
-    font-family: monospace;
-    font-size: 12px;
-    color: var(--blue);
-    background: rgba(8,77,120,0.06);
-    padding: 4px 10px;
-    border-radius: 4px;
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+  .url-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .url-room-label { font-size: 13px; font-weight: 600; color: var(--charcoal); min-width: 160px; }
+  .url-value { font-family: monospace; font-size: 12px; color: var(--blue); background: rgba(8,77,120,0.06); padding: 4px 10px; border-radius: 4px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -450,8 +120,8 @@
     <div class="header-title">Digital Meter Board — Schedule Admin</div>
   </div>
   <div class="header-actions">
-    <button class="btn btn-outline" onclick="previewJSON()" style="display:none">Preview JSON</button>
-    <button class="btn btn-gold" onclick="downloadJSON()" style="display:none">⬇ Download schedule.json</button>
+    <button class="btn btn-outline" onclick="previewJSON()">Preview JSON</button>
+    <button class="btn btn-gold" onclick="downloadJSON()">⬇ Download schedule.json</button>
     <button class="btn btn-blue" onclick="saveToLive()">&#8645; Save to Live</button>
   </div>
 </header>
@@ -465,13 +135,28 @@
       <div class="field-row">
         <div class="field full">
           <label>Event Name</label>
-          <input type="text" id="event-name" value="CLEAR 2026 Annual Educational Conference" placeholder="Event full name">
-        </div>
-        <div class="field">
-          <label>Event Date</label>
-          <input type="date" id="event-date" value="2026-09-14">
+          <input type="text" id="event-name" value="CLEAR 2026 Annual Educational Conference">
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Import -->
+  <div class="card">
+    <div class="card-header">
+      Import Sessions from Excel
+      <a href="#" onclick="downloadTemplate()" class="btn btn-outline btn-sm">⬇ Download Template</a>
+    </div>
+    <div class="card-body">
+      <div class="import-zone" id="import-zone" onclick="document.getElementById('import-file').click()"
+        ondragover="event.preventDefault();this.classList.add('drag-over')"
+        ondragleave="this.classList.remove('drag-over')"
+        ondrop="handleDrop(event)">
+        <p>Click to select your Excel file, or drag and drop it here</p>
+        <button class="btn btn-green" onclick="event.stopPropagation();document.getElementById('import-file').click()">Choose Excel File</button>
+        <input type="file" id="import-file" accept=".xlsx,.xls" onchange="handleFileSelect(event)">
+      </div>
+      <div id="import-result"></div>
     </div>
   </div>
 
@@ -479,17 +164,15 @@
   <div class="card">
     <div class="card-header">Conference Tracks</div>
     <div class="card-body">
-      <p style="font-size:13px;color:var(--muted);margin-bottom:20px;">Define the 4 conference tracks. The background filename should match the SVG file in your GitHub Pages repo.</p>
-      <div class="tracks-grid" id="tracks-grid">
-        <!-- populated by JS -->
-      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px;">Background filename must match the SVG file in your GitHub repo.</p>
+      <div class="tracks-grid" id="tracks-grid"></div>
     </div>
   </div>
 
   <!-- Rooms & Sessions -->
   <div class="card">
     <div class="card-header">
-      Rooms & Sessions
+      Rooms &amp; Sessions
       <button class="btn btn-outline btn-sm" onclick="addRoom()">+ Add Room</button>
     </div>
     <div class="card-body" style="padding-top:8px;">
@@ -500,9 +183,7 @@
 
   <!-- URL Helper -->
   <div class="card-body">
-    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">
-      Once deployed to GitHub Pages, open these URLs on each Fire TV Stick browser. Each TV only needs its own URL bookmarked.
-    </p>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Open these URLs on each Fire TV Stick browser.</p>
     <div id="url-list"></div>
   </div>
 
@@ -510,38 +191,184 @@
   <div class="card" id="json-card" style="display:none;">
     <div class="card-header">
       schedule.json Preview
-      <button class="btn btn-outline btn-sm" onclick="el('json-card').style.display='none'">Close</button>
+      <button class="btn btn-outline btn-sm" onclick="document.getElementById('json-card').style.display='none'">Close</button>
     </div>
-    <div class="card-body">
-      <pre id="json-output"></pre>
-    </div>
+    <div class="card-body"><pre id="json-output"></pre></div>
   </div>
 
 </div>
 
 <div id="toast"></div>
 
+<!-- SheetJS for Excel parsing -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 <script>
+// ─── Default track colors ─────────────────────────────────────────────────
+const DEFAULT_TRACK_COLORS = {
+  'RAG': '#084d78',
+  'CDE': '#b1862d',
+  'ETP': '#64092c',
+  'T+E': '#484848',
+};
+
 // ─── State ────────────────────────────────────────────────────────────────
 const state = {
-  eventName: 'CLEAR 2026 Annual Educational Conference',
-  eventDate: '2026-09-14',
   tracks: [
-    { id: 'RAG', label: 'Regulatory Administration and Governance', background: 'RAG.svg',  color: '#084d78' },
-    { id: 'CDE', label: 'Compliance, Discipline, and Enforcement',  background: 'CDE.svg',  color: '#b1862d' },
+    { id: 'RAG', label: 'Regulatory Administration and Governance',              background: 'RAG.svg', color: '#084d78' },
+    { id: 'CDE', label: 'Compliance, Discipline, and Enforcement',               background: 'CDE.svg', color: '#b1862d' },
     { id: 'ETP', label: 'Entry to Practice Standards and Continuing Competence', background: 'ETP.svg', color: '#64092c' },
-    { id: 'T+E',  label: 'Testing and Examinations',                 background: 'T+E.svg',  color: '#484848' },
+    { id: 'T+E', label: 'Testing and Examinations',                              background: 'T_E.svg', color: '#484848' },
   ],
   rooms: [
     { id: 'Session-Room-a', name: 'Session Room A', sessions: [] },
     { id: 'Session-Room-b', name: 'Session Room B', sessions: [] },
+    { id: 'Session-Room-c', name: 'Session Room C', sessions: [] },
+    { id: 'Session-Room-d', name: 'Session Room D', sessions: [] },
   ],
   activeRoom: 0,
 };
 
-let sessionExpanded = {}; // key: roomIdx-sessionIdx
+let sessionExpanded = {};
 
 function el(id) { return document.getElementById(id); }
+
+// ─── Excel Import ─────────────────────────────────────────────────────────
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('import-zone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) processExcelFile(file);
+}
+
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) processExcelFile(file);
+  e.target.value = '';
+}
+
+function excelDateToString(val) {
+  // Handle Excel serial dates and string dates
+  if (typeof val === 'number') {
+    const date = XLSX.SSF.parse_date_code(val);
+    const y = date.y;
+    const m = String(date.m).padStart(2, '0');
+    const d = String(date.d).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+  if (typeof val === 'string') {
+    // Accept YYYY-MM-DD or M/D/YYYY
+    const iso = val.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (iso) return val;
+    const us = val.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (us) return `${us[3]}-${String(us[1]).padStart(2,'0')}-${String(us[2]).padStart(2,'0')}`;
+  }
+  return String(val || '');
+}
+
+function formatTimeValue(val) {
+  if (val === null || val === undefined || val === '') return '';
+  // Excel time serial (fraction of day)
+  if (typeof val === 'number' && val < 1) {
+    const totalMinutes = Math.round(val * 24 * 60);
+    const h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+  }
+  // String like "10:30" or "10:30 AM"
+  const str = String(val).trim();
+  const ampm = str.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+  if (ampm) {
+    let h = parseInt(ampm[1]);
+    const m = ampm[2];
+    if (ampm[3].toUpperCase() === 'PM' && h !== 12) h += 12;
+    if (ampm[3].toUpperCase() === 'AM' && h === 12) h = 0;
+    return String(h).padStart(2,'0') + ':' + m;
+  }
+  const plain = str.match(/^(\d{1,2}):(\d{2})$/);
+  if (plain) return String(parseInt(plain[1])).padStart(2,'0') + ':' + plain[2];
+  return str;
+}
+
+function processExcelFile(file) {
+  const result = el('import-result');
+  result.style.display = 'none';
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const wb   = XLSX.read(e.target.result, { type: 'array', cellDates: false });
+      const ws   = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+
+      // Find header row (row 1, index 0)
+      // Skip note row (row 2) and start data from row 3 (index 2)
+      let imported = 0;
+      let skipped  = 0;
+      const errors = [];
+
+      for (let i = 2; i < rows.length; i++) {
+        const row = rows[i];
+        if (!row || row.every(c => c === '')) continue;
+
+        const date    = excelDateToString(row[0]);
+        const roomId  = String(row[1] || '').trim();
+        const start   = formatTimeValue(row[2]);
+        const end     = formatTimeValue(row[3]);
+        const track   = String(row[4] || '').trim();
+        const title   = String(row[5] || '').trim();
+        const presenters = [row[6],row[7],row[8],row[9],row[10]]
+          .map(p => String(p||'').trim()).filter(Boolean);
+
+        if (!date || !roomId || !start || !end || !track || !title) {
+          errors.push(`Row ${i+1}: missing required field`);
+          skipped++;
+          continue;
+        }
+
+        // Find room
+        const roomIdx = state.rooms.findIndex(r => r.id === roomId);
+        if (roomIdx === -1) {
+          errors.push(`Row ${i+1}: room ID "${roomId}" not found`);
+          skipped++;
+          continue;
+        }
+
+        state.rooms[roomIdx].sessions.push({ date, start, end, track, title, presenters });
+        imported++;
+      }
+
+      renderAll();
+
+      result.style.display = 'block';
+      if (errors.length) {
+        result.className = 'error';
+        result.innerHTML = `<strong>Imported ${imported} sessions, skipped ${skipped}.</strong><br>${errors.slice(0,5).join('<br>')}${errors.length > 5 ? `<br>...and ${errors.length-5} more` : ''}`;
+      } else {
+        result.className = 'success';
+        result.textContent = `✓ Successfully imported ${imported} sessions across ${state.rooms.filter(r=>r.sessions.length).length} rooms.`;
+      }
+
+    } catch(err) {
+      result.style.display = 'block';
+      result.className = 'error';
+      result.textContent = 'Could not read file: ' + err.message;
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function downloadTemplate() {
+  // Build a minimal template as CSV-style xlsx using SheetJS
+  const wb = XLSX.utils.book_new();
+  const headers = ['Date (YYYY-MM-DD)','Room ID','Start Time (HH:MM)','End Time (HH:MM)','Track','Session Title','Presenter 1','Presenter 2','Presenter 3','Presenter 4','Presenter 5'];
+  const note    = ['← Fill from row 3 down. Room IDs: ' + state.rooms.map(r=>r.id).join(', '),'','','','Track options: RAG, CDE, ETP, T+E','','','','','',''];
+  const sample  = ['2026-09-14','Session-Room-a','10:30','11:30','CDE','Your Session Title Here','Presenter Name','','','',''];
+  const ws = XLSX.utils.aoa_to_sheet([headers, note, sample]);
+  ws['!cols'] = [20,22,20,20,10,60,25,25,25,25,25].map(w => ({ wch: w }));
+  XLSX.utils.book_append_sheet(wb, ws, 'Sessions');
+  XLSX.writeFile(wb, 'session_import_template.xlsx');
+}
 
 // ─── Tracks ───────────────────────────────────────────────────────────────
 function renderTracks() {
@@ -554,15 +381,11 @@ function renderTracks() {
       <div class="track-swatch" style="background:${t.color}"></div>
       <div class="field" style="margin-bottom:10px;">
         <label>Track ID</label>
-        <input type="text" value="${t.id}" onblur="state.tracks[${i}].id=this.value;renderAll()" placeholder="e.g. governance">
-      </div>
-      <div class="field" style="margin-bottom:10px;">
-        <label>Background SVG Filename</label>
-        <input type="text" value="${t.background}" onblur="state.tracks[${i}].background=this.value" placeholder="track-name.svg">
+        <input type="text" value="${t.id}" onblur="state.tracks[${i}].id=this.value;renderAll()">
       </div>
       <div class="field">
-        <label>Track Color</label>
-        <input type="color" value="${t.color}" onchange="state.tracks[${i}].color=this.value;renderTracks()">
+        <label>Background SVG Filename</label>
+        <input type="text" value="${t.background}" onblur="state.tracks[${i}].background=this.value">
       </div>
     `;
     grid.appendChild(div);
@@ -601,26 +424,25 @@ function renderRoomPanel() {
   const panels = el('room-panels');
   panels.innerHTML = '';
 
-  if (state.rooms.length === 0) {
-    panels.innerHTML = '<p style="color:var(--muted);font-size:14px;">No rooms yet. Add a room above.</p>';
+  if (!state.rooms.length) {
+    panels.innerHTML = '<p style="color:var(--muted);font-size:14px;">No rooms yet.</p>';
     return;
   }
 
   const room = state.rooms[state.activeRoom];
-  const ri = state.activeRoom;
+  const ri   = state.activeRoom;
 
-  // Room settings
   const settings = document.createElement('div');
   settings.style.marginBottom = '24px';
   settings.innerHTML = `
     <div class="field-row">
       <div class="field">
         <label>Room Display Name</label>
-        <input type="text" value="${room.name}" onchange="state.rooms[${ri}].name=this.value;renderRoomTabs()">
+        <input type="text" value="${room.name}" onblur="state.rooms[${ri}].name=this.value;renderRoomTabs()">
       </div>
       <div class="field">
         <label>Room ID (used in URL)</label>
-        <input type="text" value="${room.id}" onchange="state.rooms[${ri}].id=this.value;renderURLs()">
+        <input type="text" value="${room.id}" onblur="state.rooms[${ri}].id=this.value;renderURLs()">
       </div>
       <div class="field" style="align-self:end;">
         <button class="btn btn-danger btn-sm" onclick="removeRoom(${ri})">Remove Room</button>
@@ -629,15 +451,19 @@ function renderRoomPanel() {
   `;
   panels.appendChild(settings);
 
-  // Sessions
   const sessLabel = document.createElement('div');
   sessLabel.className = 'section-label';
-  sessLabel.textContent = 'Sessions';
+  sessLabel.textContent = `Sessions (${room.sessions.length})`;
   panels.appendChild(sessLabel);
 
-  room.sessions.forEach((s, si) => {
+  // Sort sessions for display by date then start time
+  const sorted = [...room.sessions].map((s,idx) => ({...s, _idx: idx}))
+    .sort((a,b) => (a.date||'') < (b.date||'') ? -1 : (a.date||'') > (b.date||'') ? 1 : (a.start||'').localeCompare(b.start||''));
+
+  sorted.forEach((s) => {
+    const si  = s._idx;
     const key = `${ri}-${si}`;
-    const isOpen = sessionExpanded[key];
+    const isOpen   = sessionExpanded[key];
     const trackObj = state.tracks.find(t => t.id === s.track) || state.tracks[0];
 
     const card = document.createElement('div');
@@ -647,19 +473,17 @@ function renderRoomPanel() {
     hdr.className = 'session-header' + (isOpen ? ' open' : '');
     hdr.innerHTML = `
       <div class="session-meta">
-        <div class="session-time-badge">${s.start || '--:--'} – ${s.end || '--:--'}</div>
+        <div class="session-date-badge">${s.date || 'No date'}</div>
+        <div class="session-time-badge">${s.start||'--:--'} – ${s.end||'--:--'}</div>
         <div class="session-title-preview">${s.title || 'Untitled Session'}</div>
-        <div class="track-pill ${s.track}">${trackObj.label || s.track}</div>
+        <div class="track-pill" style="background:${trackObj.color}22;color:${trackObj.color}">${trackObj.id}</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center;flex-shrink:0;">
         <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();removeSession(${ri},${si})">Remove</button>
         <span class="chevron${isOpen ? ' open' : ''}">▾</span>
       </div>
     `;
-    hdr.onclick = () => {
-      sessionExpanded[key] = !sessionExpanded[key];
-      renderRoomPanel();
-    };
+    hdr.onclick = () => { sessionExpanded[key] = !sessionExpanded[key]; renderRoomPanel(); };
 
     const trackOptions = state.tracks.map(t =>
       `<option value="${t.id}" ${t.id === s.track ? 'selected' : ''}>${t.label}</option>`
@@ -669,38 +493,36 @@ function renderRoomPanel() {
     body.className = 'session-body' + (isOpen ? ' open' : '');
     body.innerHTML = `
       <div class="field-row">
-        <div class="field full">
-          <label>Session Title</label>
-          <input type="text" value="${s.title || ''}" placeholder="Full session title"
-            onblur="state.rooms[${ri}].sessions[${si}].title=this.value;renderRoomPanel()">
+        <div class="field">
+          <label>Date</label>
+          <input type="date" value="${s.date||''}"
+            onblur="state.rooms[${ri}].sessions[${si}].date=this.value;renderRoomPanel()">
         </div>
         <div class="field">
           <label>Track</label>
-          <select onchange="state.rooms[${ri}].sessions[${si}].track=this.value">
+          <select onchange="state.rooms[${ri}].sessions[${si}].track=this.value;renderRoomPanel()">
             ${trackOptions}
-            <option value="break" ${s.track==='break'?'selected':''}>Break / Transition</option>
           </select>
         </div>
         <div class="field">
           <label>Start Time</label>
-          <input type="time" value="${s.start || ''}"
+          <input type="time" value="${s.start||''}"
             onblur="state.rooms[${ri}].sessions[${si}].start=this.value;renderRoomPanel()">
         </div>
         <div class="field">
           <label>End Time</label>
-          <input type="time" value="${s.end || ''}"
+          <input type="time" value="${s.end||''}"
             onblur="state.rooms[${ri}].sessions[${si}].end=this.value;renderRoomPanel()">
         </div>
         <div class="field full">
-          <label>Presenter(s) — one per line</label>
-          <textarea placeholder="First Last&#10;First Last"
-            onchange="state.rooms[${ri}].sessions[${si}].presenters=this.value.split('\\n').map(p=>p.trim()).filter(Boolean)"
-          >${(s.presenters||[]).join('\n')}</textarea>
+          <label>Session Title</label>
+          <input type="text" value="${(s.title||'').replace(/"/g,'&quot;')}" placeholder="Full session title"
+            onblur="state.rooms[${ri}].sessions[${si}].title=this.value;renderRoomPanel()">
         </div>
         <div class="field full">
-          <label>Sponsor (leave blank if none)</label>
-          <input type="text" value="${s.sponsor || ''}" placeholder="Sponsor name"
-            onchange="state.rooms[${ri}].sessions[${si}].sponsor=this.value">
+          <label>Presenter(s) — one per line</label>
+          <textarea onblur="state.rooms[${ri}].sessions[${si}].presenters=this.value.split('\\n').map(p=>p.trim()).filter(Boolean)"
+          >${(s.presenters||[]).join('\n')}</textarea>
         </div>
       </div>
     `;
@@ -710,23 +532,15 @@ function renderRoomPanel() {
     panels.appendChild(card);
   });
 
-  // Add session button
   const addBtn = document.createElement('button');
   addBtn.className = 'btn btn-add';
-  addBtn.textContent = '+ Add Session';
+  addBtn.textContent = '+ Add Session Manually';
   addBtn.onclick = () => addSession(ri);
   panels.appendChild(addBtn);
 }
 
 function addSession(ri) {
-  state.rooms[ri].sessions.push({
-    title: '',
-    track: state.tracks[0]?.id || 'governance',
-    start: '',
-    end: '',
-    presenters: [],
-    sponsor: ''
-  });
+  state.rooms[ri].sessions.push({ date: '', title: '', track: state.tracks[0].id, start: '', end: '', presenters: [] });
   const si = state.rooms[ri].sessions.length - 1;
   sessionExpanded[`${ri}-${si}`] = true;
   renderRoomTabs();
@@ -751,31 +565,27 @@ function removeRoom(ri) {
 function renderURLs() {
   const base = 'https://clearlearning.github.io/digitalsignage';
   const list = el('url-list');
-  const html = state.rooms.map(r => `
-    <div class="url-row">
-      <div class="url-room-label">${r.name}</div>
-      <div class="url-value">${base}/signage.html?room=${r.id}</div>
-    </div>
-  `).join('');
-  list.innerHTML = `<div style="background:rgba(8,77,120,0.04);border:1px solid rgba(8,77,120,0.15);border-radius:6px;padding:16px;">${html}</div>`;
+  list.innerHTML = `<div style="background:rgba(8,77,120,0.04);border:1px solid rgba(8,77,120,0.15);border-radius:6px;padding:16px;">
+    ${state.rooms.map(r => `
+      <div class="url-row">
+        <div class="url-room-label">${r.name}</div>
+        <div class="url-value">${base}/signage.html?room=${r.id}</div>
+      </div>`).join('')}
+  </div>`;
 }
 
 // ─── JSON Build ───────────────────────────────────────────────────────────
 function buildJSON() {
   const trackMap = {};
   state.tracks.forEach(t => {
-    trackMap[t.id] = { label: t.label, background: t.background, color: t.color };
+    const color = DEFAULT_TRACK_COLORS[t.id] || t.color || '#484848';
+    trackMap[t.id] = { label: t.label, background: t.background, color };
   });
-  trackMap['break'] = { label: '', background: state.tracks[0]?.background || 'RAG.svg', color: state.tracks[0]?.color || '#484848' };
+  trackMap['break'] = { label: '', background: 'RAG.svg', color: '#084d78' };
 
   return {
-    event: el('event-name').value,
-    event_date: el('event-date').value,
-    rooms: state.rooms.map(r => ({
-      id: r.id,
-      name: r.name,
-      sessions: r.sessions
-    })),
+    event:      el('event-name').value,
+    rooms: state.rooms.map(r => ({ id: r.id, name: r.name, sessions: r.sessions })),
     tracks: trackMap
   };
 }
@@ -791,12 +601,11 @@ function downloadJSON() {
   const blob = new Blob([data], { type: 'application/json' });
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
-  a.href     = url;
-  a.download = 'schedule.json';
-  a.click();
+  a.href = url; a.download = 'schedule.json'; a.click();
   URL.revokeObjectURL(url);
-  showToast('schedule.json downloaded — replace the file in your GitHub repo.');
+  showToast('schedule.json downloaded.');
 }
+
 async function saveToLive() {
   let secret = localStorage.getItem('signage_admin_secret');
   if (!secret) {
@@ -804,16 +613,11 @@ async function saveToLive() {
     if (!secret) return;
     localStorage.setItem('signage_admin_secret', secret);
   }
-
-  const data = JSON.stringify(buildJSON(), null, 2);
   try {
     const res = await fetch('https://novi-pheedloop-worker.avance.workers.dev/signage-schedule', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Admin-Secret': secret,
-      },
-      body: data,
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Secret': secret },
+      body: JSON.stringify(buildJSON(), null, 2),
     });
     if (res.ok) {
       showToast('Schedule saved — TVs will update within 60 seconds.');
@@ -823,7 +627,7 @@ async function saveToLive() {
     } else {
       showToast('Error ' + res.status + ' — schedule not saved.');
     }
-  } catch (e) {
+  } catch(e) {
     showToast('Network error — could not reach worker.');
   }
 }
@@ -849,29 +653,26 @@ async function loadScheduleFromWorker() {
     if (!res.ok) { renderAll(); return; }
     const data = await res.json();
 
-    // Populate event settings
-    if (data.event) document.getElementById('event-name').value = data.event;
-    if (data.event_date) document.getElementById('event-date').value = data.event_date;
+    if (data.event) el('event-name').value = data.event;
 
-    // Populate tracks
     if (data.tracks) {
-      const trackEntries = Object.entries(data.tracks).filter(([id]) => id !== 'break');
-      trackEntries.forEach(([id, t], i) => {
+      const entries = Object.entries(data.tracks).filter(([id]) => id !== 'break');
+      entries.forEach(([id, t], i) => {
         if (state.tracks[i]) {
           state.tracks[i].id         = id;
-          state.tracks[i].label      = t.label      || '';
-          state.tracks[i].background = t.background || '';
-          state.tracks[i].color      = t.color      || state.tracks[i].color || '#484848';
+          state.tracks[i].label      = t.label      || state.tracks[i].label;
+          state.tracks[i].background = t.background || state.tracks[i].background;
+          state.tracks[i].color      = t.color || DEFAULT_TRACK_COLORS[id] || state.tracks[i].color;
         }
       });
     }
 
-    // Populate rooms and sessions
     if (data.rooms) {
       state.rooms = data.rooms.map(r => ({
         id:       r.id,
         name:     r.name,
         sessions: (r.sessions || []).map(s => ({
+          date:       s.date       || '',
           title:      s.title      || '',
           track:      s.track      || '',
           start:      s.start      || '',
@@ -883,7 +684,7 @@ async function loadScheduleFromWorker() {
 
     renderAll();
   } catch(e) {
-    console.warn('Could not load schedule from worker:', e);
+    console.warn('Could not load from worker:', e);
     renderAll();
   }
 }
