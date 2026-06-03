@@ -839,7 +839,52 @@ function renderAll() {
   renderURLs();
 }
 
-renderAll();
+async function loadScheduleFromWorker() {
+  try {
+    const res = await fetch('https://novi-pheedloop-worker.avance.workers.dev/signage-schedule');
+    if (!res.ok) { renderAll(); return; }
+    const data = await res.json();
+
+    // Populate event settings
+    if (data.event) document.getElementById('event-name').value = data.event;
+    if (data.event_date) document.getElementById('event-date').value = data.event_date;
+
+    // Populate tracks
+    if (data.tracks) {
+      const trackEntries = Object.entries(data.tracks).filter(([id]) => id !== 'break');
+      trackEntries.forEach(([id, t], i) => {
+        if (state.tracks[i]) {
+          state.tracks[i].id         = id;
+          state.tracks[i].label      = t.label      || '';
+          state.tracks[i].background = t.background || '';
+          state.tracks[i].color      = t.color      || '#484848';
+        }
+      });
+    }
+
+    // Populate rooms and sessions
+    if (data.rooms) {
+      state.rooms = data.rooms.map(r => ({
+        id:       r.id,
+        name:     r.name,
+        sessions: (r.sessions || []).map(s => ({
+          title:      s.title      || '',
+          track:      s.track      || '',
+          start:      s.start      || '',
+          end:        s.end        || '',
+          presenters: s.presenters || [],
+        }))
+      }));
+    }
+
+    renderAll();
+  } catch(e) {
+    console.warn('Could not load schedule from worker:', e);
+    renderAll();
+  }
+}
+
+loadScheduleFromWorker();
 </script>
 </body>
 </html>
