@@ -217,7 +217,7 @@
   scaleBoard();
   window.addEventListener('resize', scaleBoard);
 
-  const SCHEDULE_URL = 'https://novi-pheedloop-worker.avance.workers.dev/signage-schedule';
+  const SCHEDULE_URL     = 'https://novi-pheedloop-worker.avance.workers.dev/signage-schedule';
   const REFRESH_INTERVAL = 60 * 1000;
   const CLOCK_INTERVAL   = 1000;
 
@@ -258,7 +258,6 @@
     const parts = schedule.event_date.split('-').map(Number);
     const baseDate = new Date(parts[0], parts[1] - 1, parts[2]);
 
-    // Sort sessions by start time (works because times are zero-padded HH:MM)
     const sessions = [...roomData.sessions].sort((a, b) => a.start.localeCompare(b.start));
 
     let displaySession = null;
@@ -294,26 +293,18 @@
     if (sessionKey === currentSessionKey) return;
 
     const fade = el('fade');
-    const trackData = schedule.tracks[displaySession.track] || Object.values(schedule.tracks)[0];
-    const img = new Image();
-
-    function doTransition() {
-      fade.classList.add('active');
-      setTimeout(function() {
-        applySession(schedule, displaySession, isLive);
-        currentSessionKey = sessionKey;
-        fade.classList.remove('active');
-      }, 500);
-    }
-
-    img.onload = doTransition;
-    img.onerror = doTransition;
-    img.src = trackData.background;
+    fade.classList.add('active');
+    setTimeout(function() {
+      applySession(schedule, displaySession, isLive);
+      currentSessionKey = sessionKey;
+      fade.classList.remove('active');
+    }, 500);
+  }
 
   function applySession(schedule, session, isLive) {
-    const trackData = schedule.tracks[session.track] 
-      || schedule.tracks[session.track.toUpperCase()] 
-      || schedule.tracks[session.track.toLowerCase()] 
+    const trackData = schedule.tracks[session.track]
+      || schedule.tracks[session.track.toUpperCase()]
+      || schedule.tracks[session.track.toLowerCase()]
       || Object.values(schedule.tracks)[0];
 
     document.getElementById('board').style.setProperty('--track-color', trackData.color || '#484848');
@@ -345,7 +336,7 @@
     try {
       const resp = await fetch(SCHEDULE_URL + '?_=' + Date.now());
       scheduleCache = await resp.json();
-    } catch(e) { console.warn('schedule.json load failed', e); }
+    } catch(e) { console.warn('Schedule load failed', e); }
     if (scheduleCache) render(scheduleCache, getRoomId(), new Date());
   }
 
