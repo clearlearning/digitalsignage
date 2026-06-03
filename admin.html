@@ -667,11 +667,11 @@ function renderRoomPanel() {
         <div class="field full">
           <label>Session Title</label>
           <input type="text" value="${s.title || ''}" placeholder="Full session title"
-            onchange="state.rooms[${ri}].sessions[${si}].title=this.value;renderRoomPanel()">
+            onblur="state.rooms[${ri}].sessions[${si}].title=this.value;renderRoomPanel()">
         </div>
         <div class="field">
           <label>Track</label>
-          <select onchange="state.rooms[${ri}].sessions[${si}].track=this.value;renderRoomPanel()">
+          <select onchange="state.rooms[${ri}].sessions[${si}].track=this.value">
             ${trackOptions}
             <option value="break" ${s.track==='break'?'selected':''}>Break / Transition</option>
           </select>
@@ -679,12 +679,12 @@ function renderRoomPanel() {
         <div class="field">
           <label>Start Time</label>
           <input type="time" value="${s.start || ''}"
-            onchange="state.rooms[${ri}].sessions[${si}].start=this.value;renderRoomPanel()">
+            onblur="state.rooms[${ri}].sessions[${si}].start=this.value;renderRoomPanel()">
         </div>
         <div class="field">
           <label>End Time</label>
           <input type="time" value="${s.end || ''}"
-            onchange="state.rooms[${ri}].sessions[${si}].end=this.value;renderRoomPanel()">
+            onblur="state.rooms[${ri}].sessions[${si}].end=this.value;renderRoomPanel()">
         </div>
         <div class="field full">
           <label>Presenter(s) — one per line</label>
