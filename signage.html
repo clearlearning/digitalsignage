@@ -290,17 +290,18 @@
         }
     
         // Second pass — if nothing live, find the next upcoming session
-        if (!displaySession) {
-          for (let i = 0; i < sessions.length; i++) {
-            const s = sessions[i];
-            const start = parseTime(s.start, baseDate);
-            if (now < start) {
-              displaySession = s;
-              isUpcoming = true;
-              break;
+          if (!displaySession) {
+            for (let i = 0; i < sessions.length; i++) {
+              const s = sessions[i];
+              const start = parseTime(s.start, baseDate);
+              const end   = parseTime(s.end,   baseDate);
+              if (now < end) {
+                displaySession = s;
+                isUpcoming = true;
+                break;
+              }
             }
           }
-        }
     
         if (!displaySession) {
           displaySession = { title: 'No further sessions today', track: 'RAG', start: '', end: '', presenters: [] };
