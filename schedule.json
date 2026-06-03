@@ -1,0 +1,100 @@
+{
+  "event": "CLEAR 2026 Annual Educational Conference",
+  "event_date": "2026-06-15",
+  "rooms": [
+    {
+      "id": "room-a",
+      "name": "Room A",
+      "sessions": [
+        {
+          "title": "Regulating in the Gaps: Protecting the Public in the Absence of Regulatory Tools",
+          "track": "CDE",
+          "start": "10:30",
+          "end": "11:30",
+          "presenters": [
+            "Kelly Dobbin",
+            "Zimra Yetnikoff"
+          ],
+          "sponsor": ""
+        },
+        {
+          "title": "Access to Professional Services: The Role of Additional Licensing Pathways",
+          "track": "ETP",
+          "start": "14:15",
+          "end": "15:45",
+          "presenters": [
+            "Ken Alger",
+            "Leslie Adrian",
+            "Shami Goyal",
+            "Troy Wood",
+            "Danette McKinley"
+          ],
+          "sponsor": ""
+        },
+        {
+          "title": "Equalizing Power Relations and Anti-Racism in Health Regulation: From Foundational Action to Systemic Evaluation",
+          "track": "RAG",
+          "start": "13:00",
+          "end": "14:00",
+          "presenters": [
+            "Dave Bhauruth",
+            "Louise Aerts",
+            "Melissa Browning",
+            "Rhianna Millman",
+            "Yin Paradies"
+          ],
+          "sponsor": ""
+        },
+        {
+          "title": "Leveraging Near Real Time Data Forensics to Protect Your Program Integrity",
+          "track": "T+E",
+          "start": "16:00",
+          "end": "17:00",
+          "presenters": [
+            "Isabelle Gonthier",
+            "Tony Ellis",
+            "Steven Svoboda"
+          ],
+          "sponsor": ""
+        }
+      ]
+    },
+    {
+      "id": "room-b",
+      "name": "Room B",
+      "sessions": []
+    },
+    {
+      "id": "room-c",
+      "name": "Room C",
+      "sessions": []
+    },
+    {
+      "id": "room-d",
+      "name": "Room D",
+      "sessions": []
+    }
+  ],
+  "tracks": {
+    "RAG": {
+      "label": "Regulatory Administration and Governance",
+      "background": "RAG.svg"
+    },
+    "CDE": {
+      "label": "Compliance, Discipline, and Enforcement",
+      "background": "CDE.svg"
+    },
+    "ETP": {
+      "label": "Entry to Practice Standards and Continuing Competence",
+      "background": "ETP.svg"
+    },
+    "T+E": {
+      "label": "Testing and Examinations",
+      "background": "T+E.svg"
+    },
+    "break": {
+      "label": "",
+      "background": "RAG.svg"
+    }
+  }
+}
