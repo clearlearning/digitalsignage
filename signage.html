@@ -173,7 +173,7 @@
   #fade {
     position: absolute;
     inset: 0;
-    background: #fff;
+    background: #f5f0ea;
     z-index: 10;
     opacity: 0;
     pointer-events: none;
@@ -294,12 +294,27 @@
     if (sessionKey === currentSessionKey) return;
 
     const fade = el('fade');
-    fade.classList.add('active');
+    const trackData = schedule.tracks[displaySession.track] || Object.values(schedule.tracks)[0];
+    const img = new Image();
+    img.src = trackData.background;
+    img.onload = function() {
+      fade.classList.add('active');
+      setTimeout(function() {
+        applySession(schedule, displaySession, isLive);
+        currentSessionKey = sessionKey;
+        fade.classList.remove('active');
+      }, 500);
+    };
+    // Fallback if image already cached or fails to fire onload
     setTimeout(function() {
-      applySession(schedule, displaySession, isLive);
-      currentSessionKey = sessionKey;
-      fade.classList.remove('active');
-    }, 500);
+      if (currentSessionKey === sessionKey) return;
+      fade.classList.add('active');
+      setTimeout(function() {
+        applySession(schedule, displaySession, isLive);
+        currentSessionKey = sessionKey;
+        fade.classList.remove('active');
+      }, 500);
+    }, 2000);
   }
 
   function applySession(schedule, session, isLive) {
