@@ -118,17 +118,6 @@
     min-height: 0;
   }
 
-  #track-label {
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gold);
-    opacity: 0.75;
-    margin-bottom: 28px;
-    flex-shrink: 0;
-  }
-
   #session-time {
     font-size: 36px;
     font-weight: 300;
@@ -230,7 +219,6 @@
     </div>
 
     <div id="session-block">
-      <div id="track-label"></div>
       <div id="session-time"></div>
       <div class="divider-thick"></div>
       <div id="session-title"></div>
@@ -381,9 +369,6 @@
       badge.className = 'upcoming';
       statusText.textContent = 'Coming Up Next';
     }
-
-    // Track label
-    el('track-label').textContent = trackData.label || '';
 
     // Time
     if (session.start && session.end) {
