@@ -760,9 +760,9 @@ function renderURLs() {
 function buildJSON() {
   const trackMap = {};
   state.tracks.forEach(t => {
-    trackMap[t.id] = { label: t.label, background: t.background };
+    trackMap[t.id] = { label: t.label, background: t.background, color: t.color };
   });
-  trackMap['break'] = { label: '', background: state.tracks[0]?.background || 'RAG.svg' };
+  trackMap['break'] = { label: '', background: state.tracks[0]?.background || 'RAG.svg', color: state.tracks[0]?.color || '#484848' };
 
   return {
     event: el('event-name').value,
