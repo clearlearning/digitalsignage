@@ -78,23 +78,28 @@
   "tracks": {
     "RAG": {
       "label": "Regulatory Administration and Governance",
-      "background": "RAG.svg"
+      "background": "RAG.svg",
+      "color": "#084d78"
     },
     "CDE": {
       "label": "Compliance, Discipline, and Enforcement",
-      "background": "CDE.svg"
+      "background": "CDE.svg",
+      "color": "#b1862d"
     },
     "ETP": {
       "label": "Entry to Practice Standards and Continuing Competence",
-      "background": "ETP.svg"
+      "background": "ETP.svg",
+      "color": "#64092c"
     },
     "T+E": {
       "label": "Testing and Examinations",
-      "background": "T+E.svg"
+      "background": "T_E.svg",
+      "color": "#484848"
     },
     "break": {
       "label": "",
-      "background": "RAG.svg"
+      "background": "RAG.svg",
+      "color": "#084d78"
     }
   }
 }
