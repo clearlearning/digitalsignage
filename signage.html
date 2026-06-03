@@ -9,37 +9,23 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  :root {
-    --track-color: #484848;
-  }
+  :root { --track-color: #484848; }
 
   html, body {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    font-family: 'Open Sans', sans-serif;
-    background: transparent;
-  }
-
-  /* Scale the 1080x1920 board to fill whatever screen it's on */
-  #scale-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
     width: 100vw;
     height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    overflow: hidden;
     background: #000;
+    font-family: 'Open Sans', sans-serif;
   }
 
   #board {
     width: 1080px;
     height: 1920px;
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
     transform-origin: top left;
-    /* scaling applied by JS */
   }
 
   #bg {
@@ -51,10 +37,6 @@
     z-index: 0;
   }
 
-  /*
-   * Content zone:
-   * x: 59.4px  y: 362.9px  w: 961px  h: 1282px
-   */
   #content {
     position: absolute;
     z-index: 2;
@@ -178,7 +160,6 @@
     padding-top: 32px;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
     flex-shrink: 0;
   }
 
@@ -199,83 +180,70 @@
     transition: opacity 0.5s ease;
   }
   #fade.active { opacity: 1; }
-
   .hidden { display: none !important; }
 </style>
 </head>
 <body>
 
-<div id="scale-wrapper">
-  <div id="board">
-    <img id="bg" src="" alt="">
-    <div id="fade"></div>
-
-    <div id="content">
-      <div id="status-badge" class="live">
-        <div class="dot"></div>
-        <span id="status-text">Now In Session</span>
+<div id="board">
+  <img id="bg" src="" alt="">
+  <div id="fade"></div>
+  <div id="content">
+    <div id="status-badge" class="live">
+      <div class="dot"></div>
+      <span id="status-text">Now In Session</span>
+    </div>
+    <div id="session-block">
+      <div id="session-time"></div>
+      <div class="divider-thick"></div>
+      <div id="session-title"></div>
+      <div id="presenters-block">
+        <div id="presenters-label">Presenter</div>
+        <div id="presenters-list"></div>
       </div>
-
-      <div id="session-block">
-        <div id="session-time"></div>
-        <div class="divider-thick"></div>
-        <div id="session-title"></div>
-
-        <div id="presenters-block">
-          <div id="presenters-label">Presenter</div>
-          <div id="presenters-list"></div>
-        </div>
-      </div>
-
-      <div id="bottom-bar">
-        <div id="clock"></div>
-      </div>
+    </div>
+    <div id="bottom-bar">
+      <div id="clock"></div>
     </div>
   </div>
 </div>
 
 <script>
-  // ── Scale board to fill screen ──────────────────────────────────────────
+  // Scale board to fill screen, anchored top-left
   function scaleBoard() {
-    const board = document.getElementById('board');
-    const scaleX = window.innerWidth  / 1080;
-    const scaleY = window.innerHeight / 1920;
-    const scale  = Math.min(scaleX, scaleY);
-    board.style.transform = `scale(${scale})`;
-    board.style.marginLeft = ((window.innerWidth  - 1080 * scale) / 2) + 'px';
-    board.style.marginTop  = ((window.innerHeight - 1920 * scale) / 2) + 'px';
+    const scale = Math.min(window.innerWidth / 1080, window.innerHeight / 1920);
+    document.getElementById('board').style.transform = 'scale(' + scale + ')';
   }
   scaleBoard();
   window.addEventListener('resize', scaleBoard);
 
-  // ── Config ────────────────────────────────────────────────────────────
-  const SCHEDULE_URL    = 'schedule.json';
+  const SCHEDULE_URL     = 'schedule.json';
   const REFRESH_INTERVAL = 60 * 1000;
-  const CLOCK_INTERVAL  = 1000;
+  const CLOCK_INTERVAL   = 1000;
 
   function getRoomId() {
     return new URLSearchParams(window.location.search).get('room') || '';
   }
 
   function parseTime(str, baseDate) {
-    const [h, m] = str.split(':').map(Number);
+    const parts = str.split(':').map(Number);
     const d = new Date(baseDate);
-    d.setHours(h, m, 0, 0);
+    d.setHours(parts[0], parts[1], 0, 0);
     return d;
   }
 
   function formatTime12(str) {
-    const [h, m] = str.split(':').map(Number);
-    const ampm = h >= 12 ? 'PM' : 'AM';
-    const hour  = h % 12 || 12;
-    return `${hour}:${m.toString().padStart(2,'0')} ${ampm}`;
+    const parts = str.split(':').map(Number);
+    const ampm = parts[0] >= 12 ? 'PM' : 'AM';
+    const hour  = parts[0] % 12 || 12;
+    return hour + ':' + String(parts[1]).padStart(2,'0') + ' ' + ampm;
   }
 
   function formatClock(date) {
     let h = date.getHours(), m = date.getMinutes();
     const ampm = h >= 12 ? 'PM' : 'AM';
     h = h % 12 || 12;
-    return `${h}:${m.toString().padStart(2,'0')} ${ampm}`;
+    return h + ':' + String(m).padStart(2,'0') + ' ' + ampm;
   }
 
   function el(id) { return document.getElementById(id); }
@@ -285,58 +253,49 @@
 
   function render(schedule, roomId, now) {
     const roomData = schedule.rooms.find(r => r.id === roomId);
-    if (!roomData) {
-      el('session-title').textContent = 'Room not found — check URL';
-      return;
-    }
+    if (!roomData) { el('session-title').textContent = 'Room not found'; return; }
 
-    const eventDateStr = schedule.event_date || now.toISOString().split('T')[0];
-    const [ey, em, ed] = eventDateStr.split('-').map(Number);
-    const baseDate = new Date(ey, em - 1, ed);
+    const parts = schedule.event_date.split('-').map(Number);
+    const baseDate = new Date(parts[0], parts[1] - 1, parts[2]);
 
-    // Sort sessions chronologically
-    const sessions = [...roomData.sessions].sort((a, b) =>
-      a.start.localeCompare(b.start)
-    );
+    // Sort sessions by start time (works because times are zero-padded HH:MM)
+    const sessions = [...roomData.sessions].sort((a, b) => a.start.localeCompare(b.start));
 
     let displaySession = null;
     let isLive = false;
-    let isUpcoming = false;
 
-    // First pass — is anything live right now?
-    for (const s of sessions) {
-      const start = parseTime(s.start, baseDate);
-      const end   = parseTime(s.end,   baseDate);
+    // Find live session first
+    for (let i = 0; i < sessions.length; i++) {
+      const start = parseTime(sessions[i].start, baseDate);
+      const end   = parseTime(sessions[i].end,   baseDate);
       if (now >= start && now < end) {
-        displaySession = s;
+        displaySession = sessions[i];
         isLive = true;
         break;
       }
     }
 
-    // Second pass — nothing live, find the next session that hasn't started yet
+    // No live session — find the next one whose start is in the future
     if (!displaySession) {
-      for (const s of sessions) {
-        const start = parseTime(s.start, baseDate);
+      for (let i = 0; i < sessions.length; i++) {
+        const start = parseTime(sessions[i].start, baseDate);
         if (start > now) {
-          displaySession = s;
-          isUpcoming = true;
+          displaySession = sessions[i];
           break;
         }
       }
     }
 
-    // All sessions done for the day
     if (!displaySession) {
       displaySession = { title: 'No further sessions today', track: 'RAG', start: '', end: '', presenters: [] };
     }
 
-    const sessionKey = `${displaySession.title}|${isLive}`;
+    const sessionKey = displaySession.title + '|' + isLive;
     if (sessionKey === currentSessionKey) return;
 
     const fade = el('fade');
     fade.classList.add('active');
-    setTimeout(() => {
+    setTimeout(function() {
       applySession(schedule, displaySession, isLive);
       currentSessionKey = sessionKey;
       fade.classList.remove('active');
@@ -347,14 +306,13 @@
     const trackData = schedule.tracks[session.track] || Object.values(schedule.tracks)[0];
 
     document.getElementById('board').style.setProperty('--track-color', trackData.color || '#484848');
-
     el('bg').src = trackData.background;
 
     el('status-badge').className = isLive ? 'live' : 'upcoming';
     el('status-text').textContent = isLive ? 'Now In Session' : 'Coming Up Next';
 
     el('session-time').textContent = (session.start && session.end)
-      ? `${formatTime12(session.start)} – ${formatTime12(session.end)}`
+      ? formatTime12(session.start) + ' \u2013 ' + formatTime12(session.end)
       : '';
 
     el('session-title').textContent = session.title || '';
@@ -368,9 +326,7 @@
     }
   }
 
-  function tickClock() {
-    el('clock').textContent = formatClock(new Date());
-  }
+  function tickClock() { el('clock').textContent = formatClock(new Date()); }
 
   let scheduleCache = null;
 
@@ -378,17 +334,15 @@
     try {
       const resp = await fetch(SCHEDULE_URL + '?_=' + Date.now());
       scheduleCache = await resp.json();
-    } catch (e) {
-      console.warn('Could not load schedule.json', e);
-    }
+    } catch(e) { console.warn('schedule.json load failed', e); }
     if (scheduleCache) render(scheduleCache, getRoomId(), new Date());
   }
 
   loadAndRender();
   tickClock();
-  setInterval(loadAndRender,  REFRESH_INTERVAL);
-  setInterval(tickClock,      CLOCK_INTERVAL);
-  setInterval(() => {
+  setInterval(loadAndRender, REFRESH_INTERVAL);
+  setInterval(tickClock, CLOCK_INTERVAL);
+  setInterval(function() {
     if (scheduleCache) render(scheduleCache, getRoomId(), new Date());
   }, CLOCK_INTERVAL);
 </script>
