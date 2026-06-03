@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=1080, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CLEAR Digital Meter Board</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Playfair+Display:wght@400;700&display=swap');
@@ -10,23 +10,38 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --track-color: #484848; /* updated dynamically per session */
+    --track-color: #484848;
   }
 
   html, body {
-    width: 1080px;
-    height: 1920px;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
     font-family: 'Open Sans', sans-serif;
+    background: transparent;
+  }
+
+  /* Scale the 1080x1920 board to fill whatever screen it's on */
+  #scale-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
   }
 
   #board {
     width: 1080px;
     height: 1920px;
     position: relative;
+    transform-origin: top left;
+    /* scaling applied by JS */
   }
 
-  /* Background */
   #bg {
     position: absolute;
     inset: 0;
@@ -37,7 +52,7 @@
   }
 
   /*
-   * Content zone — locked to background design spec:
+   * Content zone:
    * x: 59.4px  y: 362.9px  w: 961px  h: 1282px
    */
   #content {
@@ -53,7 +68,6 @@
     overflow: hidden;
   }
 
-  /* Status badge */
   #status-badge {
     display: inline-flex;
     align-items: center;
@@ -98,7 +112,6 @@
     50% { opacity: 0.4; transform: scale(0.7); }
   }
 
-  /* Main session block */
   #session-block {
     flex: 1;
     display: flex;
@@ -116,7 +129,6 @@
     flex-shrink: 0;
   }
 
-  /* Divider accent — track color */
   .divider-thick {
     width: 100px;
     height: 3px;
@@ -151,6 +163,7 @@
     background-color: var(--track-color);
     border-radius: 4px;
     margin-bottom: 12px;
+    display: inline-block;
   }
 
   #presenters-list {
@@ -160,7 +173,6 @@
     line-height: 1.4;
   }
 
-  /* Clock — pinned to bottom of content zone */
   #bottom-bar {
     margin-top: auto;
     padding-top: 32px;
@@ -177,7 +189,6 @@
     letter-spacing: 0.1em;
   }
 
-  /* Transition overlay */
   #fade {
     position: absolute;
     inset: 0;
@@ -194,37 +205,51 @@
 </head>
 <body>
 
-<div id="board">
-  <img id="bg" src="" alt="">
-  <div id="fade"></div>
+<div id="scale-wrapper">
+  <div id="board">
+    <img id="bg" src="" alt="">
+    <div id="fade"></div>
 
-  <div id="content">
+    <div id="content">
+      <div id="status-badge" class="live">
+        <div class="dot"></div>
+        <span id="status-text">Now In Session</span>
+      </div>
 
-    <div id="status-badge" class="live">
-      <div class="dot"></div>
-      <span id="status-text">Now In Session</span>
-    </div>
+      <div id="session-block">
+        <div id="session-time"></div>
+        <div class="divider-thick"></div>
+        <div id="session-title"></div>
 
-    <div id="session-block">
-      <div id="session-time"></div>
-      <div class="divider-thick"></div>
-      <div id="session-title"></div>
+        <div id="presenters-block">
+          <div id="presenters-label">Presenter</div>
+          <div id="presenters-list"></div>
+        </div>
+      </div>
 
-      <div id="presenters-block">
-        <div id="presenters-label">Presenter</div>
-        <div id="presenters-list"></div>
+      <div id="bottom-bar">
+        <div id="clock"></div>
       </div>
     </div>
-
-    <div id="bottom-bar">
-      <div id="clock"></div>
-    </div>
-
   </div>
 </div>
 
 <script>
-  const SCHEDULE_URL = 'schedule.json';
+  // ── Scale board to fill screen ──────────────────────────────────────────
+  function scaleBoard() {
+    const board = document.getElementById('board');
+    const scaleX = window.innerWidth  / 1080;
+    const scaleY = window.innerHeight / 1920;
+    const scale  = Math.min(scaleX, scaleY);
+    board.style.transform = `scale(${scale})`;
+    board.style.marginLeft = ((window.innerWidth  - 1080 * scale) / 2) + 'px';
+    board.style.marginTop  = ((window.innerHeight - 1920 * scale) / 2) + 'px';
+  }
+  scaleBoard();
+  window.addEventListener('resize', scaleBoard);
+
+  // ── Config ────────────────────────────────────────────────────────────
+  const SCHEDULE_URL    = 'schedule.json';
   const REFRESH_INTERVAL = 60 * 1000;
   const CLOCK_INTERVAL  = 1000;
 
@@ -242,7 +267,7 @@
   function formatTime12(str) {
     const [h, m] = str.split(':').map(Number);
     const ampm = h >= 12 ? 'PM' : 'AM';
-    const hour = h % 12 || 12;
+    const hour  = h % 12 || 12;
     return `${hour}:${m.toString().padStart(2,'0')} ${ampm}`;
   }
 
@@ -269,16 +294,16 @@
     const [ey, em, ed] = eventDateStr.split('-').map(Number);
     const baseDate = new Date(ey, em - 1, ed);
 
-    const sessions = [...roomData.sessions].sort((a, b) => {
-      const pad = t => t.split(':')[0].padStart(2,'0') + ':' + t.split(':')[1];
-      return pad(a.start).localeCompare(pad(b.start));
-    });
+    // Sort sessions chronologically
+    const sessions = [...roomData.sessions].sort((a, b) =>
+      a.start.localeCompare(b.start)
+    );
 
     let displaySession = null;
     let isLive = false;
     let isUpcoming = false;
 
-    // Check if any session is live right now
+    // First pass — is anything live right now?
     for (const s of sessions) {
       const start = parseTime(s.start, baseDate);
       const end   = parseTime(s.end,   baseDate);
@@ -289,17 +314,19 @@
       }
     }
 
-    // If nothing live, find the next future session
+    // Second pass — nothing live, find the next session that hasn't started yet
     if (!displaySession) {
       for (const s of sessions) {
         const start = parseTime(s.start, baseDate);
         if (start > now) {
           displaySession = s;
+          isUpcoming = true;
           break;
         }
       }
     }
 
+    // All sessions done for the day
     if (!displaySession) {
       displaySession = { title: 'No further sessions today', track: 'RAG', start: '', end: '', presenters: [] };
     }
@@ -309,42 +336,34 @@
 
     const fade = el('fade');
     fade.classList.add('active');
-
     setTimeout(() => {
-      applySession(schedule, displaySession, isLive, isUpcoming);
+      applySession(schedule, displaySession, isLive);
       currentSessionKey = sessionKey;
       fade.classList.remove('active');
     }, 500);
   }
 
-  function applySession(schedule, session, isLive, isUpcoming) {
+  function applySession(schedule, session, isLive) {
     const trackData = schedule.tracks[session.track] || Object.values(schedule.tracks)[0];
 
-    // Set track color as CSS variable on the board
     document.getElementById('board').style.setProperty('--track-color', trackData.color || '#484848');
 
-    // Background
     el('bg').src = trackData.background;
 
-    // Status badge
-    const badge = el('status-badge');
-    badge.className = isLive ? 'live' : 'upcoming';
+    el('status-badge').className = isLive ? 'live' : 'upcoming';
     el('status-text').textContent = isLive ? 'Now In Session' : 'Coming Up Next';
 
-    // Time
     el('session-time').textContent = (session.start && session.end)
       ? `${formatTime12(session.start)} – ${formatTime12(session.end)}`
       : '';
 
-    // Title
     el('session-title').textContent = session.title || '';
 
-    // Presenters
     const hasPresenters = session.presenters && session.presenters.length > 0;
     setVisible('presenters-block', hasPresenters);
     if (hasPresenters) {
       el('presenters-label').textContent = session.presenters.length > 1 ? 'Presenters' : 'Presenter';
-      el('presenters-list').textContent = session.presenters.join('\n');
+      el('presenters-list').textContent  = session.presenters.join('\n');
       el('presenters-list').style.whiteSpace = 'pre-line';
     }
   }
@@ -367,8 +386,8 @@
 
   loadAndRender();
   tickClock();
-  setInterval(loadAndRender, REFRESH_INTERVAL);
-  setInterval(tickClock, CLOCK_INTERVAL);
+  setInterval(loadAndRender,  REFRESH_INTERVAL);
+  setInterval(tickClock,      CLOCK_INTERVAL);
   setInterval(() => {
     if (scheduleCache) render(scheduleCache, getRoomId(), new Date());
   }, CLOCK_INTERVAL);
