@@ -861,7 +861,7 @@ async function loadScheduleFromWorker() {
           state.tracks[i].id         = id;
           state.tracks[i].label      = t.label      || '';
           state.tracks[i].background = t.background || '';
-          state.tracks[i].color      = t.color      || '#484848';
+          state.tracks[i].color      = t.color      || state.tracks[i].color || '#484848';
         }
       });
     }
