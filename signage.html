@@ -296,26 +296,19 @@
     const fade = el('fade');
     const trackData = schedule.tracks[displaySession.track] || Object.values(schedule.tracks)[0];
     const img = new Image();
+
+    function doTransition() {
+      fade.classList.add('active');
+      setTimeout(function() {
+        applySession(schedule, displaySession, isLive);
+        currentSessionKey = sessionKey;
+        fade.classList.remove('active');
+      }, 500);
+    }
+
+    img.onload = doTransition;
+    img.onerror = doTransition;
     img.src = trackData.background;
-    img.onload = function() {
-      fade.classList.add('active');
-      setTimeout(function() {
-        applySession(schedule, displaySession, isLive);
-        currentSessionKey = sessionKey;
-        fade.classList.remove('active');
-      }, 500);
-    };
-    // Fallback if image already cached or fails to fire onload
-    setTimeout(function() {
-      if (currentSessionKey === sessionKey) return;
-      fade.classList.add('active');
-      setTimeout(function() {
-        applySession(schedule, displaySession, isLive);
-        currentSessionKey = sessionKey;
-        fade.classList.remove('active');
-      }, 500);
-    }, 2000);
-  }
 
   function applySession(schedule, session, isLive) {
     const trackData = schedule.tracks[session.track] 
