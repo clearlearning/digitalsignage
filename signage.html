@@ -270,42 +270,38 @@
     const baseDate = new Date(ey, em - 1, ed);
 
     const sessions = [...roomData.sessions].sort((a, b) => {
-          const pad = t => t.split(':')[0].padStart(2,'0') + ':' + t.split(':')[1];
-          return pad(a.start).localeCompare(pad(b.start));
-        });
-        let displaySession = null;
-        let isLive = false;
-        let isUpcoming = false;
-    
-        // First pass — check for a live session
-        for (let i = 0; i < sessions.length; i++) {
-          const s = sessions[i];
-          const start = parseTime(s.start, baseDate);
-          const end   = parseTime(s.end,   baseDate);
-          if (now >= start && now < end) {
-            displaySession = s;
-            isLive = true;
-            break;
-          }
+      const pad = t => t.split(':')[0].padStart(2,'0') + ':' + t.split(':')[1];
+      return pad(a.start).localeCompare(pad(b.start));
+    });
+
+    let displaySession = null;
+    let isLive = false;
+
+    // Check if any session is live right now
+    for (const s of sessions) {
+      const start = parseTime(s.start, baseDate);
+      const end   = parseTime(s.end,   baseDate);
+      if (now >= start && now < end) {
+        displaySession = s;
+        isLive = true;
+        break;
+      }
+    }
+
+    // If nothing live, find the next future session
+    if (!displaySession) {
+      for (const s of sessions) {
+        const start = parseTime(s.start, baseDate);
+        if (start > now) {
+          displaySession = s;
+          break;
         }
-    
-        // Second pass — if nothing live, find the next upcoming session
-          if (!displaySession) {
-            for (let i = 0; i < sessions.length; i++) {
-              const s = sessions[i];
-              const start = parseTime(s.start, baseDate);
-              const end   = parseTime(s.end,   baseDate);
-              if (now < end) {
-                displaySession = s;
-                isUpcoming = true;
-                break;
-              }
-            }
-          }
-    
-        if (!displaySession) {
-          displaySession = { title: 'No further sessions today', track: 'RAG', start: '', end: '', presenters: [] };
-        }
+      }
+    }
+
+    if (!displaySession) {
+      displaySession = { title: 'No further sessions today', track: 'RAG', start: '', end: '', presenters: [] };
+    }
 
     const sessionKey = `${displaySession.title}|${isLive}`;
     if (sessionKey === currentSessionKey) return;
