@@ -269,39 +269,42 @@
     const [ey, em, ed] = eventDateStr.split('-').map(Number);
     const baseDate = new Date(ey, em - 1, ed);
 
-    const sessions = [...roomData.sessions].sort((a, b) => a.start.localeCompare(b.start));
-    let displaySession = null;
-    let isLive = false;
-    let isUpcoming = false;
-
-    for (let i = 0; i < sessions.length; i++) {
-      const s = sessions[i];
-      const start = parseTime(s.start, baseDate);
-      const end   = parseTime(s.end,   baseDate);
-
-      if (now >= start && now < end) {
-        displaySession = s;
-        isLive = true;
-        break;
-      }
-
-      if (now < start) {
-        const anyLive = sessions.some(ss => {
-          const ss_start = parseTime(ss.start, baseDate);
-          const ss_end   = parseTime(ss.end,   baseDate);
-          return now >= ss_start && now < ss_end;
+    const sessions = [...roomData.sessions].sort((a, b) => {
+          const pad = t => t.split(':')[0].padStart(2,'0') + ':' + t.split(':')[1];
+          return pad(a.start).localeCompare(pad(b.start));
         });
-        if (!anyLive) {
-          displaySession = s;
-          isUpcoming = true;
+        let displaySession = null;
+        let isLive = false;
+        let isUpcoming = false;
+    
+        // First pass — check for a live session
+        for (let i = 0; i < sessions.length; i++) {
+          const s = sessions[i];
+          const start = parseTime(s.start, baseDate);
+          const end   = parseTime(s.end,   baseDate);
+          if (now >= start && now < end) {
+            displaySession = s;
+            isLive = true;
+            break;
+          }
         }
-        break;
-      }
-    }
-
-    if (!displaySession) {
-      displaySession = { title: 'No further sessions today', track: 'RAG', start: '', end: '', presenters: [] };
-    }
+    
+        // Second pass — if nothing live, find the next upcoming session
+        if (!displaySession) {
+          for (let i = 0; i < sessions.length; i++) {
+            const s = sessions[i];
+            const start = parseTime(s.start, baseDate);
+            if (now < start) {
+              displaySession = s;
+              isUpcoming = true;
+              break;
+            }
+          }
+        }
+    
+        if (!displaySession) {
+          displaySession = { title: 'No further sessions today', track: 'RAG', start: '', end: '', presenters: [] };
+        }
 
     const sessionKey = `${displaySession.title}|${isLive}`;
     if (sessionKey === currentSessionKey) return;
