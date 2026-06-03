@@ -452,6 +452,7 @@
   <div class="header-actions">
     <button class="btn btn-outline" onclick="previewJSON()">Preview JSON</button>
     <button class="btn btn-gold" onclick="downloadJSON()">⬇ Download schedule.json</button>
+    <button class="btn btn-blue" onclick="saveToLive()">&#8645; Save to Live</button>
   </div>
 </header>
 
@@ -791,6 +792,36 @@ function downloadJSON() {
   a.click();
   URL.revokeObjectURL(url);
   showToast('schedule.json downloaded — replace the file in your GitHub repo.');
+}
+async function saveToLive() {
+  let secret = localStorage.getItem('signage_admin_secret');
+  if (!secret) {
+    secret = prompt('Enter admin secret:');
+    if (!secret) return;
+    localStorage.setItem('signage_admin_secret', secret);
+  }
+
+  const data = JSON.stringify(buildJSON(), null, 2);
+  try {
+    const res = await fetch('https://novi-pheedloop-worker.avance.workers.dev/signage-schedule', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Admin-Secret': secret,
+      },
+      body: data,
+    });
+    if (res.ok) {
+      showToast('Schedule saved — TVs will update within 60 seconds.');
+    } else if (res.status === 401) {
+      localStorage.removeItem('signage_admin_secret');
+      showToast('Wrong admin secret — try again.');
+    } else {
+      showToast('Error ' + res.status + ' — schedule not saved.');
+    }
+  } catch (e) {
+    showToast('Network error — could not reach worker.');
+  }
 }
 
 function showToast(msg) {
