@@ -5,17 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CLEAR Digital Meter Board</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Playfair+Display:wght@400;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@400;700&family=Pacifico&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root { --track-color: #484848; }
 
-  html, body { width: 100vw; height: 100vh; overflow: hidden; background: #000; font-family: 'Open Sans', sans-serif; }
+  html, body { width: 100vw; height: 100vh; overflow: hidden; background: #000; font-family: 'Montserrat', sans-serif; }
 
   #board { width: 1080px; height: 1920px; position: absolute; top: 0; left: 0; transform-origin: top left; }
 
   #bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
 
+  /* ── SESSION CONTENT (your original layout, unchanged) ── */
   #content {
     position: absolute; z-index: 2;
     left: 59.4px; top: 362.9px; width: 961px; height: 1282px;
@@ -44,19 +45,55 @@
 
   #session-title { font-family: 'Playfair Display', serif; font-size: 72px; font-weight: 700; color: #000; line-height: 1.1; letter-spacing: -0.01em; margin-bottom: 52px; flex-shrink: 0; }
 
-  /* Presenters */
   #presenters-block { margin-bottom: 40px; flex-shrink: 0; }
   #presenters-label { font-size: 16px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; padding: 2px 7px; color: white; background-color: var(--track-color); border-radius: 4px; margin-bottom: 12px; display: inline-block; }
   #presenters-list { font-size: 32px; font-weight: 400; color: #000; line-height: 1.4; }
 
-  /* Sponsor */
   #sponsor-block { margin-bottom: 40px; flex-shrink: 0; }
   #sponsor-label { font-size: 16px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; padding: 2px 7px; color: white; background-color: var(--track-color); border-radius: 4px; margin-bottom: 12px; display: inline-block; }
   #sponsor-name { font-size: 36px; font-weight: 400; color: #000; line-height: 1.4; }
+  #sponsor-logo-img { max-height: 100px; max-width: 320px; object-fit: contain; display: block; margin-bottom: 12px; }
 
   #bottom-bar { margin-top: auto; padding-top: 32px; display: flex; align-items: center; flex-shrink: 0; }
   #clock { font-size: 28px; font-weight: 300; color: #000; letter-spacing: 0.1em; }
 
+  /* ── SPECIALTY CONTENT (same position/zone, same colors) ── */
+  #specialty-content {
+    position: absolute; z-index: 2;
+    left: 59.4px; top: 362.9px; width: 961px; height: 1282px;
+    display: flex; flex-direction: column;
+    padding: 60px 60px 48px 60px; overflow: hidden;
+  }
+
+  /* Specialty uses same font/color conventions as your session layout */
+  .spec-eyebrow {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--track-color); margin-bottom: 28px; flex-shrink: 0;
+  }
+  .spec-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 80px; font-weight: 700; color: #000; line-height: 1.05;
+    letter-spacing: -0.01em; margin-bottom: 36px; flex-shrink: 0;
+  }
+  .spec-headline.pacifico {
+    font-family: 'Pacifico', cursive;
+    font-size: 90px; font-weight: 400; letter-spacing: 0; text-transform: none;
+    color: var(--track-color);
+  }
+  .spec-divider { width: 100px; height: 3px; background: var(--track-color); margin-bottom: 40px; flex-shrink: 0; }
+  .spec-time { font-size: 36px; font-weight: 300; color: #000; letter-spacing: 0.06em; margin-bottom: 24px; flex-shrink: 0; }
+  .spec-label { font-size: 16px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; padding: 2px 7px; color: white; background-color: var(--track-color); border-radius: 4px; margin-bottom: 12px; display: inline-block; }
+  .spec-body { font-size: 36px; font-weight: 400; color: #000; line-height: 1.4; margin-bottom: 28px; flex-shrink: 0; }
+  .spec-body-sm { font-size: 28px; font-weight: 300; color: #000; line-height: 1.4; margin-bottom: 20px; flex-shrink: 0; }
+  .spec-accent { font-size: 42px; font-weight: 700; color: var(--track-color); margin-bottom: 20px; flex-shrink: 0; }
+  .spec-logo { max-height: 110px; max-width: 360px; object-fit: contain; display: block; margin-bottom: 20px; flex-shrink: 0; }
+  .spec-redirect-arrow { font-size: 120px; line-height: 1; color: var(--track-color); margin: 16px 0 32px; flex-shrink: 0; }
+  .spec-redirect-room { font-family: 'Playfair Display', serif; font-size: 64px; font-weight: 700; color: #000; line-height: 1.1; }
+  .spec-bottom { margin-top: auto; padding-top: 32px; flex-shrink: 0; }
+  .spec-clock { font-size: 28px; font-weight: 300; color: #000; letter-spacing: 0.1em; }
+
+  /* Fade */
   #fade { position: absolute; inset: 0; background: #f5f0ea; z-index: 10; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
   #fade.active { opacity: 1; }
   .hidden { display: none !important; }
@@ -67,7 +104,9 @@
 <div id="board">
   <img id="bg" src="" alt="">
   <div id="fade"></div>
-  <div id="content">
+
+  <!-- SESSION layout (your original) -->
+  <div id="content" class="hidden">
     <div id="status-badge" class="live">
       <div class="dot"></div>
       <span id="status-text">Now In Session</span>
@@ -82,13 +121,20 @@
       </div>
       <div id="sponsor-block">
         <div id="sponsor-label">Sponsored by</div>
+        <img id="sponsor-logo-img" src="" alt="" class="hidden">
         <div id="sponsor-name"></div>
       </div>
     </div>
     <div id="bottom-bar">
-      <div id="clock" style="display:none;"></div>
+      <div id="clock"></div>
     </div>
   </div>
+
+  <!-- SPECIALTY layout (new, same zone, same colors) -->
+  <div id="specialty-content" class="hidden">
+    <!-- populated dynamically -->
+  </div>
+
 </div>
 
 <script>
@@ -103,6 +149,9 @@
   const REFRESH_INTERVAL = 60 * 1000;
   const CLOCK_INTERVAL   = 1000;
 
+  // These types use your original session layout
+  const SESSION_TYPES = new Set(['RAG','CDE','ETP','T+E','Plenary']);
+
   function getRoomId() { return new URLSearchParams(window.location.search).get('room')||''; }
 
   function todayString() {
@@ -111,28 +160,19 @@
   }
 
   function parseTime(timeStr, dateStr) {
-    const tp = timeStr.split(':').map(Number);
-    const dp = dateStr.split('-').map(Number);
-    const d  = new Date(dp[0], dp[1]-1, dp[2]);
-    d.setHours(tp[0], tp[1], 0, 0);
-    return d;
+    const tp=timeStr.split(':').map(Number), dp=dateStr.split('-').map(Number);
+    const d=new Date(dp[0],dp[1]-1,dp[2]); d.setHours(tp[0],tp[1],0,0); return d;
   }
-
   function formatTime12(str) {
-    const p = str.split(':').map(Number);
-    const ampm = p[0]>=12?'PM':'AM';
-    const h    = p[0]%12||12;
+    const p=str.split(':').map(Number), ampm=p[0]>=12?'PM':'AM', h=p[0]%12||12;
     return h+':'+String(p[1]).padStart(2,'0')+' '+ampm;
   }
-
   function formatClock(date) {
-    let h=date.getHours(), m=date.getMinutes();
-    const ampm=h>=12?'PM':'AM'; h=h%12||12;
+    let h=date.getHours(),m=date.getMinutes(); const ampm=h>=12?'PM':'AM'; h=h%12||12;
     return h+':'+String(m).padStart(2,'0')+' '+ampm;
   }
-
-  function el(id) { return document.getElementById(id); }
-  function setVisible(id, show) { el(id).classList.toggle('hidden', !show); }
+  function el(id){return document.getElementById(id);}
+  function setVisible(id,show){el(id).classList.toggle('hidden',!show);}
 
   let currentSessionKey = null;
 
@@ -142,87 +182,212 @@
 
     const today    = todayString();
     const sessions = [...roomData.sessions]
-      .filter(s => s.date === today)
-      .sort((a,b) => a.start.localeCompare(b.start));
+      .filter(s=>s.date===today)
+      .sort((a,b)=>a.start.localeCompare(b.start));
 
-    let displaySession = null;
-    let isLive = false;
+    let displaySession=null, isLive=false;
 
-    for (let i=0; i<sessions.length; i++) {
-      const start = parseTime(sessions[i].start, today);
-      const end   = parseTime(sessions[i].end,   today);
-      if (now>=start && now<end) { displaySession=sessions[i]; isLive=true; break; }
+    for (let i=0;i<sessions.length;i++) {
+      const start=parseTime(sessions[i].start,today), end=parseTime(sessions[i].end,today);
+      if (now>=start&&now<end) { displaySession=sessions[i]; isLive=true; break; }
     }
     if (!displaySession) {
-      for (let i=0; i<sessions.length; i++) {
-        const start = parseTime(sessions[i].start, today);
-        if (start>now) { displaySession=sessions[i]; break; }
+      for (let i=0;i<sessions.length;i++) {
+        if (parseTime(sessions[i].start,today)>now) { displaySession=sessions[i]; break; }
       }
     }
     if (!displaySession) {
-      displaySession = { title:'No further sessions today', type:'RAG', date:today, start:'', end:'', sponsor:'', presenters:[] };
+      displaySession={title:'No further sessions today',type:'RAG',date:today,start:'',end:'',sponsor:'',sponsorLogo:'',presenters:[]};
     }
 
-    // Look up type data — support both new 'types' key and legacy 'tracks' key
-    const typeMap  = schedule.types || schedule.tracks || {};
+    const typeMap  = schedule.types||schedule.tracks||{};
     const typeData = typeMap[displaySession.type]
       || typeMap[(displaySession.type||'').toUpperCase()]
       || typeMap[(displaySession.type||'').toLowerCase()]
       || Object.values(typeMap)[0]
-      || { color:'#484848', background:'', showPresenters:true, showSponsor:false };
+      || {color:'#484848',background:'',showPresenters:true,showSponsor:false};
 
     const sessionKey = displaySession.title+'|'+isLive+'|'+(typeData.color||'');
     if (sessionKey===currentSessionKey) return;
 
-    const fade = el('fade');
+    const fade=el('fade');
     fade.classList.add('active');
-    setTimeout(function() {
+    setTimeout(function(){
       applySession(displaySession, isLive, typeData);
-      currentSessionKey = sessionKey;
+      currentSessionKey=sessionKey;
       fade.classList.remove('active');
-    }, 500);
+    },500);
   }
 
   function applySession(session, isLive, typeData) {
     document.getElementById('board').style.setProperty('--track-color', typeData.color||'#484848');
-    el('bg').src = typeData.background || '';
+    el('bg').src = typeData.background||'';
 
-    el('status-badge').className = isLive ? 'live' : 'upcoming';
-    el('status-text').textContent = isLive ? 'Now In Session' : 'Coming Up Next';
-
-    el('session-time').textContent = (session.start && session.end)
-      ? formatTime12(session.start)+' \u2013 '+formatTime12(session.end) : '';
-
-    el('session-title').textContent = session.title || '';
-
-    // Presenters — shown for track sessions and Plenary
-    const showPresenters = typeData.showPresenters !== false
-      ? (typeData.showPresenters || false) : false;
-    const hasPresenters  = showPresenters && session.presenters && session.presenters.length > 0;
-    setVisible('presenters-block', hasPresenters);
-    if (hasPresenters) {
-      el('presenters-label').textContent = session.presenters.length>1 ? 'Presenters' : 'Presenter';
-      el('presenters-list').textContent  = session.presenters.join('\n');
-      el('presenters-list').style.whiteSpace = 'pre-line';
-    }
-
-    // Sponsor — shown for Break, Food, P+P only if a sponsor is entered
-    const showSponsor = typeData.showSponsor && !!session.sponsor;
-    setVisible('sponsor-block', showSponsor);
-    if (showSponsor) {
-      el('sponsor-name').textContent = session.sponsor;
+    if (SESSION_TYPES.has(session.type)) {
+      setVisible('content', true);
+      setVisible('specialty-content', false);
+      applySessionLayout(session, isLive, typeData);
+    } else {
+      setVisible('content', false);
+      setVisible('specialty-content', true);
+      applySpecialtyLayout(session, typeData);
     }
   }
 
-  function tickClock() { el('clock').textContent = formatClock(new Date()); }
+  function applySessionLayout(session, isLive, typeData) {
+    el('status-badge').className = isLive?'live':'upcoming';
+    el('status-text').textContent = isLive?'Now In Session':'Coming Up Next';
 
-  let scheduleCache = null;
+    el('session-time').textContent = (session.start&&session.end)
+      ? formatTime12(session.start)+' \u2013 '+formatTime12(session.end) : '';
+    el('session-title').textContent = session.title||'';
+
+    const hasPresenters = typeData.showPresenters && session.presenters && session.presenters.length>0;
+    setVisible('presenters-block', hasPresenters);
+    if (hasPresenters) {
+      el('presenters-label').textContent = session.presenters.length>1?'Presenters':'Presenter';
+      el('presenters-list').textContent  = session.presenters.join('\n');
+      el('presenters-list').style.whiteSpace='pre-line';
+    }
+
+    const hasSponsor = typeData.showSponsor && !!session.sponsor;
+    setVisible('sponsor-block', hasSponsor);
+    if (hasSponsor) {
+      el('sponsor-name').textContent = session.sponsor||'';
+      const hasLogo = !!session.sponsorLogo;
+      setVisible('sponsor-logo-img', hasLogo);
+      if (hasLogo) el('sponsor-logo-img').src = session.sponsorLogo;
+    }
+  }
+
+  function applySpecialtyLayout(session, typeData) {
+    const c = el('specialty-content');
+    c.innerHTML = '';
+    const t = session.type;
+    const timeStr = (session.start&&session.end) ? formatTime12(session.start)+' \u2013 '+formatTime12(session.end) : (session.start ? formatTime12(session.start) : '');
+
+    function tag(cls, text) { return text ? `<div class="${cls}">${text}</div>` : ''; }
+    function label(text) { return `<div class="spec-label">${text}</div>`; }
+    function logo(src) { return src ? `<img class="spec-logo" src="${src}" alt="">` : ''; }
+    function divider() { return '<div class="spec-divider"></div>'; }
+    function clock() { return `<div class="spec-bottom"><div class="spec-clock" id="spec-clock"></div></div>`; }
+
+    if (t==='PlenaryRedirect') {
+      c.innerHTML = `
+        ${tag('spec-eyebrow','Plenary Session')}
+        ${tag('spec-headline','All Sessions<br>Convening Now')}
+        ${divider()}
+        <div class="spec-redirect-arrow">&#8595;</div>
+        ${label('Join us in')}
+        ${tag('spec-redirect-room', session.redirectRoom||'Plenary Room')}
+        ${session.title ? tag('spec-body-sm', session.title) : ''}
+        ${clock()}`;
+    }
+    else if (t==='WelcomeReception') {
+      c.innerHTML = `
+        ${tag('spec-eyebrow','Welcome')}
+        ${tag('spec-headline', session.title||'Welcome Reception')}
+        ${divider()}
+        ${tag('spec-time', timeStr)}
+        ${session.location ? tag('spec-body','<span style="font-weight:600;">Location:</span> '+session.location) : ''}
+        ${session.sponsor||session.sponsorLogo ? `<div style="margin-top:auto;padding-bottom:20px;">${logo(session.sponsorLogo)}${label('Sponsored by')}${tag('spec-body',session.sponsor)}</div>` : ''}
+        ${clock()}`;
+    }
+    else if (t==='CommitteeMeeting') {
+      const chairs = (session.presenters||[]).join('\n');
+      c.innerHTML = `
+        ${tag('spec-eyebrow','Committee Meeting')}
+        ${tag('spec-headline', session.title||'Committee Meeting')}
+        ${divider()}
+        ${tag('spec-time', timeStr)}
+        ${session.location ? tag('spec-body','<span style="font-weight:600;">Location:</span> '+session.location) : ''}
+        ${chairs ? `${label((session.presenters||[]).length>1?'Chairs':'Chair')}<div class="spec-body" style="white-space:pre-line;">${chairs}</div>` : ''}
+        ${clock()}`;
+    }
+    else if (t==='EndOfDay') {
+      c.innerHTML = `
+        ${tag('spec-eyebrow','End of Day')}
+        <div class="spec-headline" style="font-size:68px;">Thank you for<br>joining us today.</div>
+        ${divider()}
+        ${session.socialEvent ? `
+          ${label('Tonight')}
+          ${tag('spec-body', session.socialEvent)}
+          ${session.location ? tag('spec-body-sm','<span style="font-weight:600;">Meet at:</span> '+session.location) : ''}
+          ${session.ticketNote ? tag('spec-body-sm','<span style="color:var(--track-color);font-weight:600;">'+session.ticketNote+'</span>') : ''}
+        ` : ''}
+        ${session.seeYouTime ? `<div style="margin-top:auto;padding-bottom:20px;">${label('Tomorrow')}${tag('spec-accent','See you at '+session.seeYouTime)}</div>` : ''}
+        ${clock()}`;
+    }
+    else if (t==='TravelSafe') {
+      c.innerHTML = `
+        <div class="spec-headline pacifico">Travel Safe!</div>
+        ${divider()}
+        ${tag('spec-body','Thank you for an incredible conference.')}
+        ${session.nextEventName ? `${label('Next Event')}${tag('spec-body',session.nextEventName)}` : ''}
+        ${session.nextEventLocation ? tag('spec-body-sm','<span style="font-weight:600;">Location:</span> '+session.nextEventLocation) : ''}
+        ${session.nextEventDates ? tag('spec-body-sm','<span style="font-weight:600;">Dates:</span> '+session.nextEventDates) : ''}
+        ${session.sponsorLogo ? `<div style="margin-top:auto;padding-bottom:20px;">${logo(session.sponsorLogo)}</div>` : ''}
+        ${clock()}`;
+    }
+    else if (t==='P+P') {
+      c.innerHTML = `
+        ${tag('spec-eyebrow','Community Break')}
+        <div class="spec-headline pacifico">Puppies<br>&amp; Posters</div>
+        ${divider()}
+        ${tag('spec-time', timeStr)}
+        ${session.location ? tag('spec-body','<span style="font-weight:600;">Find us in:</span> '+session.location) : ''}
+        ${session.sponsor||session.sponsorLogo ? `<div style="margin-top:auto;padding-bottom:20px;">${logo(session.sponsorLogo)}${label('Sponsored by')}${tag('spec-body',session.sponsor)}</div>` : ''}
+        ${clock()}`;
+    }
+    else if (t==='Food') {
+      c.innerHTML = `
+        ${tag('spec-eyebrow', session.mealType||'Meal Break')}
+        ${tag('spec-headline', session.title||'Join us for lunch')}
+        ${divider()}
+        ${tag('spec-time', timeStr)}
+        ${session.location ? tag('spec-body','Join us in <span style="font-weight:600;">'+session.location+'</span>') : ''}
+        ${session.sponsor||session.sponsorLogo ? `<div style="margin-top:auto;padding-bottom:20px;">${logo(session.sponsorLogo)}${label('Sponsored by')}${tag('spec-body',session.sponsor)}</div>` : ''}
+        ${clock()}`;
+    }
+    else if (t==='Break') {
+      c.innerHTML = `
+        ${tag('spec-eyebrow','Break')}
+        <div class="spec-headline" style="font-size:96px;">Break</div>
+        ${divider()}
+        ${tag('spec-time', timeStr)}
+        ${session.location ? tag('spec-body', session.location) : ''}
+        ${clock()}`;
+    }
+    else {
+      // Generic fallback
+      c.innerHTML = `
+        ${tag('spec-eyebrow', session.type||'')}
+        ${tag('spec-headline', session.title||'')}
+        ${divider()}
+        ${tag('spec-time', timeStr)}
+        ${clock()}`;
+    }
+
+    // Set clock immediately
+    const clk = document.getElementById('spec-clock');
+    if (clk) clk.textContent = formatClock(new Date());
+  }
+
+  function tickClock() {
+    const now = new Date();
+    const sessClk = el('clock');
+    if (sessClk) sessClk.textContent = formatClock(now);
+    const specClk = document.getElementById('spec-clock');
+    if (specClk) specClk.textContent = formatClock(now);
+  }
+
+  let scheduleCache=null;
 
   async function loadAndRender() {
     try {
       const resp = await fetch(SCHEDULE_URL+'?_='+Date.now());
       scheduleCache = await resp.json();
-    } catch(e) { console.warn('Schedule load failed', e); }
+    } catch(e) { console.warn('Schedule load failed',e); }
     if (scheduleCache) render(scheduleCache, getRoomId(), new Date());
   }
 
@@ -230,8 +395,8 @@
   tickClock();
   setInterval(loadAndRender, REFRESH_INTERVAL);
   setInterval(tickClock, CLOCK_INTERVAL);
-  setInterval(function() {
-    if (scheduleCache) render(scheduleCache, getRoomId(), new Date());
+  setInterval(function(){
+    if(scheduleCache) render(scheduleCache, getRoomId(), new Date());
   }, CLOCK_INTERVAL);
 </script>
 </body>
