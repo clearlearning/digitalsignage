@@ -318,7 +318,7 @@
     const logoHtml=(src)=>src?`<img class="spec-logo" src="${src}" alt="">`:'';
     const div=()=>'<div class="spec-divider"></div>';
     const clk=()=>`<div class="spec-bottom"><div class="spec-clock" id="spec-clock"></div></div>`;
-    const sponsorBlock=(sp,logo)=>(sp||logo)?`<div style="margin-top:auto;padding-bottom:20px;">${lbl('Sponsored by')}${sp?`<div class="spec-body">${sp}</div>`:''}${logoHtml(logo)}</div>`:'';
+    const sponsorBlock=(sp,logo)=>(sp||logo)?`<div style="margin-top:24px;padding-bottom:0;">${lbl('Sponsored by')}${sp?`<div class="spec-body">${sp}</div>`:''}${logoHtml(logo)}</div>`:'';
 
     if (t==='PlenaryRedirect') {
       c.innerHTML=`
@@ -359,12 +359,9 @@
           <div style="font-family:'Montserrat',sans-serif;font-size:72px;font-weight:700;color:#000;line-height:1.1;letter-spacing:-0.01em;margin-bottom:24px;">${s.title||'Puppies &amp; Posters'}</div>
           ${div()}
           ${tag('spec-time',timeStr)}
-          ${s.description?`<div class="spec-desc" style="max-height:240px;overflow:hidden;">${s.description}</div>`:''}
-        </div>
-        <div style="margin-top:auto;padding-bottom:20px;">
-          ${s.sponsor||s.sponsorLogo?lbl('Sponsored by'):''}
-          ${s.sponsor?`<div class="spec-body">${s.sponsor}</div>`:''}
-          ${s.sponsorLogo?logoHtml(s.sponsorLogo):''}
+          ${s.location?tag('spec-desc',s.location):''}
+          ${s.description?tag('spec-desc',s.description):''}
+          ${s.sponsor||s.sponsorLogo?sponsorBlock(s.sponsor,s.sponsorLogo):''}
         </div>
         ${clk()}`;
     }
