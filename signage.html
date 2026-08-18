@@ -239,12 +239,11 @@
     const key=displaySession.title+'|'+isLive+'|'+(typeData.color||'')+'|'+displaySession.type+'|'+(displaySession.description||'');
     if (key===currentKey) return;
 
-    // Transition: fade to dark, swap everything, fade back
+    // Transition: fade to dark, swap content and bg together, fade back in only after bg loads
     const fade=el('fade');
     fade.classList.add('active');
+
     setTimeout(()=>{
-      // Update background first while hidden
-      el('bg').src=typeData.background||'';
       document.getElementById('board').style.setProperty('--track-color',typeData.color||'#484848');
       show('travel-safe-watermark',false);
 
@@ -257,8 +256,18 @@
       }
       currentKey=key;
 
-      // Wait for bg to paint then fade back in
-      requestAnimationFrame(()=>requestAnimationFrame(()=>fade.classList.remove('active')));
+      const newSrc=typeData.background||'';
+      const bgEl=el('bg');
+      if (!newSrc || bgEl.src.endsWith(newSrc)) {
+        // Same background or no background — fade back immediately
+        requestAnimationFrame(()=>requestAnimationFrame(()=>fade.classList.remove('active')));
+      } else {
+        // New background — wait for it to load before revealing
+        const tmp=new Image();
+        tmp.onload=()=>{ bgEl.src=newSrc; requestAnimationFrame(()=>requestAnimationFrame(()=>fade.classList.remove('active'))); };
+        tmp.onerror=()=>{ bgEl.src=newSrc; fade.classList.remove('active'); };
+        tmp.src=newSrc;
+      }
     },400);
   }
 
@@ -274,8 +283,8 @@
     el('session-time').textContent=(s.start&&s.end)?fmt12(s.start)+' \u2013 '+fmt12(s.end):'';
     el('session-title').textContent=s.title||'';
 
-    // Description (Plenary only shows this; others if populated)
-    const hasDesc=!!s.description;
+    // Description — show for any session type if populated
+    const hasDesc=!!(s.description&&s.description.trim());
     show('session-description',hasDesc);
     if(hasDesc) el('session-description').textContent=s.description;
 
@@ -344,18 +353,19 @@
         ${clk()}`;
     }
     else if (t==='P+P') {
-      // No badge. Sponsor pinned so no content goes below 60% of 1920px (1152px from top of board).
-      // Content zone starts at 362.9px, so max content bottom = 1152 - 362.9 = 789.1px from content top.
-      // Padding is 60px, so usable = 729.1px from content top inside padding.
+      // No badge. All content must stay within top 60% of board (above 1152px from top).
+      // Content zone top = 362.9px. 60% of 1920 = 1152px. So max content height from zone top = 1152 - 362.9 = 789px.
+      // With 60px top padding, usable = 729px. Sponsor pinned below that.
       c.innerHTML=`
-        <div style="max-height:729px;overflow:hidden;display:flex;flex-direction:column;">
-          ${tag('spec-headline',s.title||'Puppies &amp; Posters')}
+        <div style="flex:0 0 auto;">
+          <div style="font-family:'Montserrat',sans-serif;font-size:72px;font-weight:700;color:#000;line-height:1.1;letter-spacing:-0.01em;margin-bottom:24px;">${s.title||'Puppies &amp; Posters'}</div>
           ${div()}
           ${tag('spec-time',timeStr)}
-          ${s.description?tag('spec-desc',s.description):''}
+          ${s.description?`<div class="spec-desc" style="max-height:240px;overflow:hidden;">${s.description}</div>`:''}
         </div>
         <div style="margin-top:auto;padding-bottom:20px;">
-          ${sponsorBlock(s.sponsor,s.sponsorLogo)}
+          ${s.sponsorLogo?logoHtml(s.sponsorLogo):''}
+          ${s.sponsor?`${lbl('Sponsored by')}<div class="spec-body">${s.sponsor}</div>`:''}
         </div>
         ${clk()}`;
     }
@@ -387,6 +397,7 @@
         ${s.nextEventName?tag('spec-body-bold',s.nextEventName):''}
         ${s.nextEventLocation?tag('spec-body-sm','<strong>Location:</strong> '+s.nextEventLocation):''}
         ${s.nextEventDates?tag('spec-body-sm','<strong>Dates:</strong> '+s.nextEventDates):''}
+        <div class="spec-accent" style="margin-top:32px;font-family:'Pacifico',cursive;font-weight:400;">Safe Travels!</div>
         ${s.sponsorLogo?`<div style="margin-top:auto;padding-bottom:20px;">${logoHtml(s.sponsorLogo)}</div>`:''}
         ${clk()}`;
     }
@@ -408,7 +419,6 @@
         ${tag('spec-headline',s.title||'Committee Meeting')}
         ${div()}
         ${tag('spec-time',timeStr)}
-        ${s.location?tag('spec-body','<strong>Location:</strong> '+s.location):''}
         ${s.description?tag('spec-desc',s.description):''}
         ${chairs?`${lbl((s.presenters||[]).length>1?'Chairs':'Chair')}<div class="spec-body" style="white-space:pre-line;">${chairs}</div>`:''}
         ${clk()}`;
