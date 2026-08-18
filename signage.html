@@ -5,10 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CLEAR Digital Meter Board</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&family=Playfair+Display:wght@400;700&family=Pacifico&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&family=Pacifico&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  :root { --track-color: #484848; }
+
+  /* Updated accent colors */
+  :root {
+    --track-color: #484848;
+    --blue:      #032338;
+    --burgundy:  #650b26;
+    --gold:      #d4aa3d;
+  }
 
   html, body { width: 100vw; height: 100vh; overflow: hidden; background: #000; font-family: 'Montserrat', sans-serif; }
 
@@ -29,23 +36,24 @@
     padding: 12px 24px; border-radius: 4px; font-size: 20px;
     font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
     margin-bottom: 48px; align-self: flex-start;
-    transition: all 0.5s ease; flex-shrink: 0;
+    flex-shrink: 0;
   }
-  #status-badge.live     { background: var(--track-color); color: #ffffff; }
+  #status-badge.live     { background: var(--track-color); color: #fff; }
   #status-badge.upcoming { background: transparent; color: var(--track-color); border: 2px solid var(--track-color); }
+  #status-badge.social-badge { background: var(--track-color); color: #fff; }
   #status-badge .dot { width: 10px; height: 10px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
   #status-badge.live .dot { animation: pulse 1.6s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.7);} }
 
   #session-block { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; min-height: 0; }
 
-  /* TIME — added font-weight: 600 */
   #session-time { font-size: 36px; font-weight: 600; color: #000; letter-spacing: 0.06em; margin-bottom: 24px; flex-shrink: 0; }
 
   .divider-thick { width: 100px; height: 3px; background: var(--track-color); margin-bottom: 36px; flex-shrink: 0; }
 
-  /* TITLE — switched to Montserrat */
-  #session-title { font-family: 'Montserrat', sans-serif; font-size: 72px; font-weight: 700; color: #000; line-height: 1.1; letter-spacing: -0.01em; margin-bottom: 52px; flex-shrink: 0; }
+  #session-title { font-family: 'Montserrat', sans-serif; font-size: 72px; font-weight: 700; color: #000; line-height: 1.1; letter-spacing: -0.01em; margin-bottom: 24px; flex-shrink: 0; }
+
+  #session-description { font-size: 28px; font-weight: 300; color: #000; line-height: 1.5; margin-bottom: 40px; flex-shrink: 0; }
 
   #presenters-block { margin-bottom: 40px; flex-shrink: 0; }
   #presenters-label { font-size: 16px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; padding: 2px 7px; color: white; background-color: var(--track-color); border-radius: 4px; margin-bottom: 12px; display: inline-block; }
@@ -53,11 +61,10 @@
 
   #sponsor-block { margin-bottom: 40px; flex-shrink: 0; }
   #sponsor-label { font-size: 16px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; padding: 2px 7px; color: white; background-color: var(--track-color); border-radius: 4px; margin-bottom: 12px; display: inline-block; }
+  #sponsor-logo-img { max-height: 100px; max-width: 320px; object-fit: contain; display: block; margin-bottom: 8px; }
   #sponsor-name { font-size: 36px; font-weight: 400; color: #000; line-height: 1.4; }
-  #sponsor-logo-img { max-height: 100px; max-width: 320px; object-fit: contain; display: block; margin-bottom: 12px; }
 
   #bottom-bar { margin-top: auto; padding-top: 32px; display: flex; align-items: center; flex-shrink: 0; }
-  /* CLOCK — added font-weight: 600 */
   #clock { font-size: 28px; font-weight: 600; color: #000; letter-spacing: 0.1em; }
 
   /* ── SPECIALTY CONTENT ── */
@@ -68,6 +75,15 @@
     padding: 60px 60px 48px 60px; overflow: hidden;
   }
 
+  .spec-badge {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 12px 24px; border-radius: 4px; font-size: 20px;
+    font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    margin-bottom: 48px; align-self: flex-start; flex-shrink: 0;
+    background: var(--track-color); color: #fff;
+  }
+  .spec-badge .dot { width: 10px; height: 10px; border-radius: 50%; background: #fff; animation: pulse 1.6s ease-in-out infinite; flex-shrink: 0; }
+
   .spec-eyebrow { font-size: 18px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--track-color); margin-bottom: 28px; flex-shrink: 0; }
   .spec-headline { font-family: 'Montserrat', sans-serif; font-size: 80px; font-weight: 700; color: #000; line-height: 1.05; letter-spacing: -0.01em; margin-bottom: 36px; flex-shrink: 0; }
   .spec-headline.pacifico { font-family: 'Pacifico', cursive; font-size: 90px; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--track-color); }
@@ -75,52 +91,40 @@
   .spec-time { font-size: 36px; font-weight: 600; color: #000; letter-spacing: 0.06em; margin-bottom: 24px; flex-shrink: 0; }
   .spec-label { font-size: 16px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; padding: 2px 7px; color: white; background-color: var(--track-color); border-radius: 4px; margin-bottom: 12px; display: inline-block; }
   .spec-body { font-size: 36px; font-weight: 400; color: #000; line-height: 1.4; margin-bottom: 28px; flex-shrink: 0; }
-  .spec-body-sm { font-size: 28px; font-weight: 300; color: #000; line-height: 1.4; margin-bottom: 20px; flex-shrink: 0; }
+  .spec-body-sm { font-size: 28px; font-weight: 300; color: #000; line-height: 1.4; margin-bottom: 16px; flex-shrink: 0; }
   .spec-body-bold { font-size: 36px; font-weight: 700; color: #000; line-height: 1.4; margin-bottom: 12px; flex-shrink: 0; }
+  .spec-desc { font-size: 28px; font-weight: 300; color: #000; line-height: 1.5; margin-bottom: 28px; flex-shrink: 0; }
   .spec-accent { font-size: 42px; font-weight: 700; color: var(--track-color); margin-bottom: 20px; flex-shrink: 0; }
-  .spec-logo { max-height: 110px; max-width: 360px; object-fit: contain; display: block; margin-bottom: 20px; flex-shrink: 0; }
+  .spec-logo { max-height: 110px; max-width: 360px; object-fit: contain; display: block; margin-bottom: 12px; flex-shrink: 0; }
   .spec-redirect-arrow { font-size: 120px; line-height: 1; color: var(--track-color); margin: 16px 0 32px; flex-shrink: 0; }
-  .spec-redirect-room { font-size: 64px; font-weight: 700; color: #000; line-height: 1.1; }
+  .spec-redirect-room { font-size: 64px; font-weight: 700; color: #000; line-height: 1.1; margin-bottom: 20px; }
   .spec-bottom { margin-top: auto; padding-top: 32px; flex-shrink: 0; }
   .spec-clock { font-size: 28px; font-weight: 600; color: #000; letter-spacing: 0.1em; }
 
-  /* Social event card */
-  .social-event-card { margin-bottom: 36px; flex-shrink: 0; }
-  .social-event-name { font-size: 44px; font-weight: 700; color: #000; line-height: 1.1; margin-bottom: 12px; }
-  .social-event-detail { font-size: 30px; font-weight: 400; color: #000; line-height: 1.4; margin-bottom: 6px; }
-  .social-event-detail span { font-weight: 600; color: var(--track-color); }
+  /* Social event cards */
+  .social-event-card { margin-bottom: 32px; flex-shrink: 0; }
+  .social-event-name { font-size: 52px; font-weight: 700; color: #000; line-height: 1.05; margin-bottom: 10px; }
+  .social-event-detail { font-size: 30px; font-weight: 400; color: #000; line-height: 1.4; margin-bottom: 4px; }
+  .social-event-detail strong { font-weight: 700; color: var(--track-color); }
+  .social-tickets { font-size: 22px; font-weight: 600; color: var(--track-color); letter-spacing: 0.05em; margin-top: 16px; flex-shrink: 0; }
 
-  /* P+P sponsor pinned position */
-  #pp-sponsor-block {
-    position: absolute;
-    left: 59.4px;
-    width: 961px;
-    padding: 0 60px;
-    /* bottom of block = 1055px from top of board */
-    /* content zone starts at 362.9px, so relative to content zone: 1055 - 362.9 = 692.1px from top of zone */
-    top: 692.1px;
-    z-index: 3;
-  }
-
-  /* AEC27 travel safe watermark */
+  /* AEC27 watermark */
   #travel-safe-watermark {
-    position: absolute;
-    z-index: 1;
-    font-family: 'Pacifico', cursive;
-    font-size: 180px;
-    color: var(--track-color);
-    opacity: 0.12;
-    transform: rotate(-37deg);
-    transform-origin: center center;
-    white-space: nowrap;
-    top: 50%;
-    left: 50%;
-    translate: -50% -50%;
-    pointer-events: none;
+    position: absolute; z-index: 1;
+    font-family: 'Pacifico', cursive; font-size: 180px;
+    color: var(--track-color); opacity: 0.12;
+    transform: rotate(-37deg); transform-origin: center center;
+    white-space: nowrap; top: 50%; left: 50%;
+    translate: -50% -50%; pointer-events: none;
   }
 
-  /* Fade */
-  #fade { position: absolute; inset: 0; background: #f5f0ea; z-index: 10; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+  /* Smooth fade — dark overlay so background and content swap together */
+  #fade {
+    position: absolute; inset: 0; z-index: 10;
+    background: rgba(0,0,0,0.6);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
   #fade.active { opacity: 1; }
   .hidden { display: none !important; }
 </style>
@@ -142,6 +146,7 @@
       <div id="session-time"></div>
       <div class="divider-thick"></div>
       <div id="session-title"></div>
+      <div id="session-description"></div>
       <div id="presenters-block">
         <div id="presenters-label">Presenters</div>
         <div id="presenters-list"></div>
@@ -155,12 +160,6 @@
     <div id="bottom-bar">
       <div id="clock"></div>
     </div>
-  </div>
-
-  <!-- P+P sponsor pinned block (rendered outside content flow) -->
-  <div id="pp-sponsor-block" class="hidden">
-    <div class="spec-label">Sponsored by</div>
-    <div id="pp-sponsor-name" style="font-size:32px;font-weight:400;color:#000;line-height:1.4;"></div>
   </div>
 
   <!-- SPECIALTY layout -->
@@ -180,295 +179,271 @@
   const REFRESH_INTERVAL = 60 * 1000;
   const CLOCK_INTERVAL   = 1000;
 
-  // Types that use the standard session layout
-  const SESSION_TYPES = new Set(['RAG','CDE','ETP','T+E','Plenary','P+P']);
+  // Types using the session layout
+  const SESSION_TYPES = new Set(['RAG','CDE','ETP','T+E','Plenary']);
 
   function getRoomId() { return new URLSearchParams(window.location.search).get('room')||''; }
 
   function todayString() {
-    const d = new Date();
+    const d=new Date();
     return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
   }
-  function parseTime(timeStr, dateStr) {
-    const tp=timeStr.split(':').map(Number), dp=dateStr.split('-').map(Number);
+  function parseTime(ts, ds) {
+    const tp=ts.split(':').map(Number), dp=ds.split('-').map(Number);
     const d=new Date(dp[0],dp[1]-1,dp[2]); d.setHours(tp[0],tp[1],0,0); return d;
   }
-  function formatTime12(str) {
+  function fmt12(str) {
     if (!str) return '';
     const p=str.split(':').map(Number), ampm=p[0]>=12?'PM':'AM', h=p[0]%12||12;
     return h+':'+String(p[1]).padStart(2,'0')+' '+ampm;
   }
-  function formatClock(date) {
-    let h=date.getHours(),m=date.getMinutes(); const ampm=h>=12?'PM':'AM'; h=h%12||12;
-    return h+':'+String(m).padStart(2,'0')+' '+ampm;
+  function fmtClock(d) {
+    let h=d.getHours(),m=d.getMinutes(); const a=h>=12?'PM':'AM'; h=h%12||12;
+    return h+':'+String(m).padStart(2,'0')+' '+a;
   }
   function el(id){return document.getElementById(id);}
-  function setVisible(id,show){const e=el(id);if(e)e.classList.toggle('hidden',!show);}
+  function show(id,v){const e=el(id);if(e)e.classList.toggle('hidden',!v);}
 
-  let currentSessionKey = null;
+  let currentKey=null;
 
   function render(schedule, roomId, now) {
-    const roomData = schedule.rooms.find(r=>r.id===roomId);
-    if (!roomData) { return; }
+    const roomData=schedule.rooms.find(r=>r.id===roomId);
+    if (!roomData) return;
 
-    const today    = todayString();
-    const sessions = [...roomData.sessions]
+    const today=todayString();
+    const sessions=[...roomData.sessions]
       .filter(s=>s.date===today)
       .sort((a,b)=>a.start.localeCompare(b.start));
 
     let displaySession=null, isLive=false;
 
-    for (let i=0;i<sessions.length;i++) {
-      const start=parseTime(sessions[i].start,today), end=parseTime(sessions[i].end,today);
-      if (now>=start&&now<end) { displaySession=sessions[i]; isLive=true; break; }
+    for (const s of sessions) {
+      const start=parseTime(s.start,today), end=parseTime(s.end,today);
+      if (now>=start&&now<end){displaySession=s;isLive=true;break;}
     }
     if (!displaySession) {
-      for (let i=0;i<sessions.length;i++) {
-        if (parseTime(sessions[i].start,today)>now) { displaySession=sessions[i]; break; }
+      for (const s of sessions) {
+        if (parseTime(s.start,today)>now){displaySession=s;break;}
       }
     }
-    if (!displaySession) {
-      displaySession={title:'No further sessions today',type:'RAG',date:today,start:'',end:'',sponsor:'',sponsorLogo:'',presenters:[]};
-    }
+    // No more sessions — no default, just keep showing last state
+    if (!displaySession) return;
 
-    const typeMap  = schedule.types||schedule.tracks||{};
-    const typeData = typeMap[displaySession.type]
-      || typeMap[(displaySession.type||'').toUpperCase()]
-      || typeMap[(displaySession.type||'').toLowerCase()]
-      || Object.values(typeMap)[0]
-      || {color:'#484848',background:'',showPresenters:true,showSponsor:false};
+    const typeMap=schedule.types||schedule.tracks||{};
+    const typeData=typeMap[displaySession.type]
+      ||typeMap[(displaySession.type||'').toUpperCase()]
+      ||typeMap[(displaySession.type||'').toLowerCase()]
+      ||Object.values(typeMap)[0]
+      ||{color:'#484848',background:'',showPresenters:true,showSponsor:false};
 
-    const sessionKey = displaySession.title+'|'+isLive+'|'+(typeData.color||'')+'|'+displaySession.type;
-    if (sessionKey===currentSessionKey) return;
+    const key=displaySession.title+'|'+isLive+'|'+(typeData.color||'')+'|'+displaySession.type+'|'+(displaySession.description||'');
+    if (key===currentKey) return;
 
+    // Transition: fade to dark, swap everything, fade back
     const fade=el('fade');
     fade.classList.add('active');
-    setTimeout(function(){
-      applySession(displaySession, isLive, typeData);
-      currentSessionKey=sessionKey;
-      fade.classList.remove('active');
-    },500);
+    setTimeout(()=>{
+      // Update background first while hidden
+      el('bg').src=typeData.background||'';
+      document.getElementById('board').style.setProperty('--track-color',typeData.color||'#484848');
+      show('travel-safe-watermark',false);
+
+      if (SESSION_TYPES.has(displaySession.type)) {
+        show('content',true); show('specialty-content',false);
+        applySession(displaySession,isLive,typeData);
+      } else {
+        show('content',false); show('specialty-content',true);
+        applySpecialty(displaySession,typeData);
+      }
+      currentKey=key;
+
+      // Wait for bg to paint then fade back in
+      requestAnimationFrame(()=>requestAnimationFrame(()=>fade.classList.remove('active')));
+    },400);
   }
 
-  function applySession(session, isLive, typeData) {
-    document.getElementById('board').style.setProperty('--track-color', typeData.color||'#484848');
-    el('bg').src = typeData.background||'';
+  function applySession(s, isLive, typeData) {
+    const t=s.type;
 
-    // Hide watermark by default
-    setVisible('travel-safe-watermark', false);
-    setVisible('pp-sponsor-block', false);
+    // Badge — hide for Break (Break uses session layout without badge)
+    // Plenary Redirect handled in specialty; all session types show badge
+    show('status-badge',true);
+    el('status-badge').className = isLive?'live':'upcoming';
+    el('status-text').textContent = isLive?'Now In Session':'Coming Up Next';
 
-    const t = session.type;
+    el('session-time').textContent=(s.start&&s.end)?fmt12(s.start)+' \u2013 '+fmt12(s.end):'';
+    el('session-title').textContent=s.title||'';
 
-    if (SESSION_TYPES.has(t)) {
-      setVisible('content', true);
-      setVisible('specialty-content', false);
-      applySessionLayout(session, isLive, typeData, t);
-    } else {
-      setVisible('content', false);
-      setVisible('specialty-content', true);
-      applySpecialtyLayout(session, typeData, t);
-    }
-  }
+    // Description (Plenary only shows this; others if populated)
+    const hasDesc=!!s.description;
+    show('session-description',hasDesc);
+    if(hasDesc) el('session-description').textContent=s.description;
 
-  function applySessionLayout(session, isLive, typeData, t) {
-    // Hide badge entirely for Break; show for all others
-    const hideBadge = (t==='Break');
-    setVisible('status-badge', !hideBadge);
-
-    if (!hideBadge) {
-      el('status-badge').className = isLive?'live':'upcoming';
-      el('status-text').textContent = isLive?'Now In Session':'Coming Up Next';
-    }
-
-    const timeStr = (session.start&&session.end)
-      ? formatTime12(session.start)+' \u2013 '+formatTime12(session.end) : '';
-    el('session-time').textContent = timeStr;
-    el('session-title').textContent = session.title||'';
-
-    const hasPresenters = typeData.showPresenters && session.presenters && session.presenters.length>0;
-    setVisible('presenters-block', hasPresenters);
-    if (hasPresenters) {
-      el('presenters-label').textContent = session.presenters.length>1?'Presenters':'Presenter';
-      el('presenters-list').textContent  = session.presenters.join('\n');
+    const hasPres=typeData.showPresenters&&s.presenters&&s.presenters.length>0;
+    show('presenters-block',hasPres);
+    if(hasPres){
+      el('presenters-label').textContent=s.presenters.length>1?'Presenters':'Presenter';
+      el('presenters-list').textContent=s.presenters.join('\n');
       el('presenters-list').style.whiteSpace='pre-line';
     }
 
-    // P+P: use pinned sponsor block instead of standard sponsor block
-    if (t==='P+P') {
-      setVisible('sponsor-block', false);
-      if (session.sponsor) {
-        setVisible('pp-sponsor-block', true);
-        el('pp-sponsor-name').textContent = session.sponsor;
-      }
-    } else {
-      const hasSponsor = typeData.showSponsor && !!session.sponsor;
-      setVisible('sponsor-block', hasSponsor);
-      if (hasSponsor) {
-        el('sponsor-name').textContent = session.sponsor||'';
-        const hasLogo = !!session.sponsorLogo;
-        setVisible('sponsor-logo-img', hasLogo);
-        if (hasLogo) el('sponsor-logo-img').src = session.sponsorLogo;
-      }
+    const hasSponsor=typeData.showSponsor&&(!!s.sponsor||!!s.sponsorLogo);
+    show('sponsor-block',hasSponsor);
+    if(hasSponsor){
+      const hasLogo=!!s.sponsorLogo;
+      show('sponsor-logo-img',hasLogo);
+      if(hasLogo) el('sponsor-logo-img').src=s.sponsorLogo;
+      el('sponsor-name').textContent=s.sponsor||'';
     }
   }
 
-  function applySpecialtyLayout(session, typeData, t) {
-    const c = el('specialty-content');
-    c.innerHTML = '';
-    const timeStr = (session.start&&session.end)
-      ? formatTime12(session.start)+' \u2013 '+formatTime12(session.end)
-      : (session.start ? formatTime12(session.start) : '');
+  function applySpecialty(s, typeData) {
+    const c=el('specialty-content');
+    c.innerHTML='';
+    const t=s.type;
+    const timeStr=(s.start&&s.end)?fmt12(s.start)+' \u2013 '+fmt12(s.end):(s.start?fmt12(s.start):'');
 
-    function tag(cls, text) { return (text!==undefined&&text!==null&&text!=='') ? `<div class="${cls}">${text}</div>` : ''; }
-    function label(text) { return `<div class="spec-label">${text}</div>`; }
-    function logo(src) { return src ? `<img class="spec-logo" src="${src}" alt="">` : ''; }
-    function divider() { return '<div class="spec-divider"></div>'; }
-    function clock() { return `<div class="spec-bottom"><div class="spec-clock" id="spec-clock"></div></div>`; }
+    const tag=(cls,txt)=>(txt!==undefined&&txt!==null&&txt!=='')?`<div class="${cls}">${txt}</div>`:'';
+    const lbl=(txt)=>`<div class="spec-label">${txt}</div>`;
+    const logoHtml=(src)=>src?`<img class="spec-logo" src="${src}" alt="">`:'';
+    const div=()=>'<div class="spec-divider"></div>';
+    const clk=()=>`<div class="spec-bottom"><div class="spec-clock" id="spec-clock"></div></div>`;
+    const sponsorBlock=(sp,logo)=>(sp||logo)?`<div style="margin-top:auto;padding-bottom:20px;">${logoHtml(logo)}${lbl('Sponsored by')}${sp?`<div class="spec-body">${sp}</div>`:''}</div>`:'';
 
-    if (t==='Food') {
-      // "Join us for the [meal name] in the [location] from [start] to [end]"
-      const meal     = session.mealType || session.title || 'meal';
-      const location = session.location || '';
-      const hasSponsor = !!session.sponsor || !!session.sponsorLogo;
-      const sentenceParts = ['Join us for the', `<strong>${meal}</strong>`];
-      if (location) sentenceParts.push('in the', `<strong>${location}</strong>`);
-      if (session.start && session.end) sentenceParts.push('from', `<strong>${formatTime12(session.start)}</strong>`, 'to', `<strong>${formatTime12(session.end)}</strong>`);
-      const sentence = sentenceParts.join(' ') + '.';
-
-      c.innerHTML = `
-        ${tag('spec-eyebrow', session.mealType||'Meal Break')}
-        <div class="spec-divider"></div>
-        <div class="spec-body" style="font-size:42px;line-height:1.5;">${sentence}</div>
-        ${hasSponsor ? `<div style="margin-top:auto;padding-bottom:20px;">${logo(session.sponsorLogo)}${label('Sponsored by')}${tag('spec-body',session.sponsor)}</div>` : ''}
-        ${clock()}`;
+    if (t==='PlenaryRedirect') {
+      c.innerHTML=`
+        <div class="spec-badge"><div class="dot"></div>Now In Session</div>
+        ${tag('spec-headline','Plenary Session')}
+        ${div()}
+        <div class="spec-redirect-arrow">&#8595;</div>
+        ${lbl('Join us in')}
+        ${tag('spec-redirect-room',s.redirectRoom||'Plenary Room')}
+        ${clk()}`;
     }
     else if (t==='Break') {
-      // No badge, just time and title
-      c.innerHTML = `
-        ${tag('spec-time', timeStr)}
-        ${divider()}
-        ${tag('spec-headline', session.title||'Break')}
-        ${clock()}`;
+      c.innerHTML=`
+        ${tag('spec-time',timeStr)}
+        ${div()}
+        ${tag('spec-headline',s.title||'Break')}
+        ${s.description?tag('spec-desc',s.description):''}
+        ${clk()}`;
+    }
+    else if (t==='Food') {
+      const meal=s.mealType||s.title||'meal';
+      const loc=s.location||'';
+      const parts=['Join us for the',`<strong>${meal}</strong>`];
+      if(loc) parts.push('in the',`<strong>${loc}</strong>`);
+      if(s.start&&s.end) parts.push('from',`<strong>${fmt12(s.start)}</strong>`,'to',`<strong>${fmt12(s.end)}</strong>`);
+      const sentence=parts.join(' ')+'.';
+      c.innerHTML=`
+        ${tag('spec-eyebrow',s.mealType||'Meal Break')}
+        ${div()}
+        <div class="spec-body" style="font-size:42px;line-height:1.5;">${sentence}</div>
+        ${s.description?tag('spec-desc',s.description):''}
+        ${sponsorBlock(s.sponsor,s.sponsorLogo)}
+        ${clk()}`;
+    }
+    else if (t==='P+P') {
+      // No badge. Sponsor pinned so no content goes below 60% of 1920px (1152px from top of board).
+      // Content zone starts at 362.9px, so max content bottom = 1152 - 362.9 = 789.1px from content top.
+      // Padding is 60px, so usable = 729.1px from content top inside padding.
+      c.innerHTML=`
+        <div style="max-height:729px;overflow:hidden;display:flex;flex-direction:column;">
+          ${tag('spec-headline',s.title||'Puppies &amp; Posters')}
+          ${div()}
+          ${tag('spec-time',timeStr)}
+          ${s.description?tag('spec-desc',s.description):''}
+        </div>
+        <div style="margin-top:auto;padding-bottom:20px;">
+          ${sponsorBlock(s.sponsor,s.sponsorLogo)}
+        </div>
+        ${clk()}`;
     }
     else if (t==='Social') {
-      const e1name = session.event1Name||'';
-      const e1time = session.event1Time||'';
-      const e1loc  = session.event1Location||'';
-      const e2name = session.event2Name||'';
-      const e2time = session.event2Time||'';
-      const e2loc  = session.event2Location||'';
-      c.innerHTML = `
-        ${tag('spec-eyebrow', "Tonight's Social Events")}
-        ${divider()}
-        ${e1name ? `
-          <div class="social-event-card">
-            ${tag('social-event-name', e1name)}
-            ${e1time ? `<div class="social-event-detail"><span>Meet at:</span> ${e1time}</div>` : ''}
-            ${e1loc  ? `<div class="social-event-detail"><span>Starting at:</span> ${e1loc}</div>` : ''}
-          </div>` : ''}
-        ${e2name ? `
-          <div class="social-event-card">
-            ${tag('social-event-name', e2name)}
-            ${e2time ? `<div class="social-event-detail"><span>Meet at:</span> ${e2time}</div>` : ''}
-            ${e2loc  ? `<div class="social-event-detail"><span>Starting at:</span> ${e2loc}</div>` : ''}
-          </div>` : ''}
-        ${tag('spec-body-sm','<em>Ticketed event — see your registration confirmation for details.</em>')}
-        ${clock()}`;
+      const e1n=s.event1Name||'', e1t=s.event1Time||'', e1l=s.event1Location||'';
+      const e2n=s.event2Name||'', e2t=s.event2Time||'', e2l=s.event2Location||'';
+      c.innerHTML=`
+        <div class="spec-badge"><div class="dot"></div>Social Events</div>
+        ${div()}
+        ${e1n?`<div class="social-event-card">
+          ${tag('social-event-name',e1n)}
+          ${e1t?`<div class="social-event-detail"><strong>Meet at:</strong> ${e1t}</div>`:''}
+          ${e1l?`<div class="social-event-detail"><strong>Starting at:</strong> ${e1l}</div>`:''}
+        </div>`:''}
+        ${e2n?`<div class="social-event-card">
+          ${tag('social-event-name',e2n)}
+          ${e2t?`<div class="social-event-detail"><strong>Meet at:</strong> ${e2t}</div>`:''}
+          ${e2l?`<div class="social-event-detail"><strong>Starting at:</strong> ${e2l}</div>`:''}
+        </div>`:''}
+        <div class="social-tickets">&#9679; Ticketed event — see your registration confirmation for details.</div>
+        ${clk()}`;
     }
     else if (t==='AEC27') {
-      // Show watermark
-      setVisible('travel-safe-watermark', true);
-      const confName = session.nextEventName||'CLEAR 2027 Annual Educational Conference';
-      const confLoc  = session.nextEventLocation||'';
-      const confDates= session.nextEventDates||'';
-      c.innerHTML = `
+      show('travel-safe-watermark',true);
+      c.innerHTML=`
         ${tag('spec-eyebrow','Thank you for joining us')}
         <div class="spec-headline" style="font-size:68px;line-height:1.05;">We hope to<br>see you next year.</div>
-        ${divider()}
-        ${tag('spec-body-bold', confName)}
-        ${confLoc   ? tag('spec-body-sm','<strong>Location:</strong> '+confLoc)   : ''}
-        ${confDates ? tag('spec-body-sm','<strong>Dates:</strong> '+confDates)     : ''}
-        ${session.sponsorLogo ? `<div style="margin-top:auto;padding-bottom:20px;">${logo(session.sponsorLogo)}</div>` : ''}
-        ${clock()}`;
-    }
-    else if (t==='PlenaryRedirect') {
-      c.innerHTML = `
-        ${tag('spec-eyebrow','Plenary Session')}
-        ${tag('spec-headline','All Sessions<br>Convening Now')}
-        ${divider()}
-        <div class="spec-redirect-arrow">&#8595;</div>
-        ${label('Join us in')}
-        ${tag('spec-redirect-room', session.redirectRoom||'Plenary Room')}
-        ${session.title ? tag('spec-body-sm', session.title) : ''}
-        ${clock()}`;
+        ${div()}
+        ${s.nextEventName?tag('spec-body-bold',s.nextEventName):''}
+        ${s.nextEventLocation?tag('spec-body-sm','<strong>Location:</strong> '+s.nextEventLocation):''}
+        ${s.nextEventDates?tag('spec-body-sm','<strong>Dates:</strong> '+s.nextEventDates):''}
+        ${s.sponsorLogo?`<div style="margin-top:auto;padding-bottom:20px;">${logoHtml(s.sponsorLogo)}</div>`:''}
+        ${clk()}`;
     }
     else if (t==='WelcomeReception') {
-      c.innerHTML = `
+      c.innerHTML=`
         ${tag('spec-eyebrow','Welcome')}
-        ${tag('spec-headline', session.title||'Welcome Reception')}
-        ${divider()}
-        ${tag('spec-time', timeStr)}
-        ${session.location ? tag('spec-body','<strong>Location:</strong> '+session.location) : ''}
-        ${session.sponsor||session.sponsorLogo ? `<div style="margin-top:auto;padding-bottom:20px;">${logo(session.sponsorLogo)}${label('Sponsored by')}${tag('spec-body',session.sponsor)}</div>` : ''}
-        ${clock()}`;
+        ${tag('spec-headline',s.title||'Welcome Reception')}
+        ${div()}
+        ${tag('spec-time',timeStr)}
+        ${s.location?tag('spec-body','<strong>Location:</strong> '+s.location):''}
+        ${s.description?tag('spec-desc',s.description):''}
+        ${sponsorBlock(s.sponsor,s.sponsorLogo)}
+        ${clk()}`;
     }
     else if (t==='CommitteeMeeting') {
-      const chairs=(session.presenters||[]).join('\n');
-      c.innerHTML = `
+      const chairs=(s.presenters||[]).join('\n');
+      c.innerHTML=`
         ${tag('spec-eyebrow','Committee Meeting')}
-        ${tag('spec-headline', session.title||'Committee Meeting')}
-        ${divider()}
-        ${tag('spec-time', timeStr)}
-        ${session.location ? tag('spec-body','<strong>Location:</strong> '+session.location) : ''}
-        ${chairs ? `${label((session.presenters||[]).length>1?'Chairs':'Chair')}<div class="spec-body" style="white-space:pre-line;">${chairs}</div>` : ''}
-        ${clock()}`;
-    }
-    else if (t==='EndOfDay') {
-      c.innerHTML = `
-        ${tag('spec-eyebrow','End of Day')}
-        <div class="spec-headline" style="font-size:68px;">Thank you for<br>joining us today.</div>
-        ${divider()}
-        ${session.socialEvent ? `
-          ${label('Tonight')}
-          ${tag('spec-body', session.socialEvent)}
-          ${session.location ? tag('spec-body-sm','<strong>Meet at:</strong> '+session.location) : ''}
-          ${session.ticketNote ? tag('spec-body-sm','<span style="color:var(--track-color);font-weight:600;">'+session.ticketNote+'</span>') : ''}
-        ` : ''}
-        ${session.seeYouTime ? `<div style="margin-top:auto;padding-bottom:20px;">${label('Tomorrow')}${tag('spec-accent','See you at '+session.seeYouTime)}</div>` : ''}
-        ${clock()}`;
+        ${tag('spec-headline',s.title||'Committee Meeting')}
+        ${div()}
+        ${tag('spec-time',timeStr)}
+        ${s.location?tag('spec-body','<strong>Location:</strong> '+s.location):''}
+        ${s.description?tag('spec-desc',s.description):''}
+        ${chairs?`${lbl((s.presenters||[]).length>1?'Chairs':'Chair')}<div class="spec-body" style="white-space:pre-line;">${chairs}</div>`:''}
+        ${clk()}`;
     }
     else {
-      c.innerHTML = `
-        ${tag('spec-eyebrow', t||'')}
-        ${tag('spec-headline', session.title||'')}
-        ${divider()}
-        ${tag('spec-time', timeStr)}
-        ${clock()}`;
+      c.innerHTML=`
+        ${tag('spec-eyebrow',t||'')}
+        ${tag('spec-headline',s.title||'')}
+        ${div()}
+        ${tag('spec-time',timeStr)}
+        ${clk()}`;
     }
 
-    const clk=document.getElementById('spec-clock');
-    if (clk) clk.textContent = formatClock(new Date());
+    const ck=document.getElementById('spec-clock');
+    if(ck) ck.textContent=fmtClock(new Date());
   }
 
   function tickClock() {
     const now=new Date();
-    const sessClk=el('clock'); if(sessClk) sessClk.textContent=formatClock(now);
-    const specClk=document.getElementById('spec-clock'); if(specClk) specClk.textContent=formatClock(now);
+    const sc=el('clock'); if(sc) sc.textContent=fmtClock(now);
+    const sp=document.getElementById('spec-clock'); if(sp) sp.textContent=fmtClock(now);
   }
 
   let scheduleCache=null;
   async function loadAndRender() {
-    try { const resp=await fetch(SCHEDULE_URL+'?_='+Date.now()); scheduleCache=await resp.json(); }
-    catch(e) { console.warn('Schedule load failed',e); }
-    if (scheduleCache) render(scheduleCache, getRoomId(), new Date());
+    try{ const r=await fetch(SCHEDULE_URL+'?_='+Date.now()); scheduleCache=await r.json(); }
+    catch(e){ console.warn('Schedule load failed',e); }
+    if(scheduleCache) render(scheduleCache,getRoomId(),new Date());
   }
 
   loadAndRender();
   tickClock();
-  setInterval(loadAndRender, REFRESH_INTERVAL);
-  setInterval(tickClock, CLOCK_INTERVAL);
-  setInterval(function(){ if(scheduleCache) render(scheduleCache,getRoomId(),new Date()); }, CLOCK_INTERVAL);
+  setInterval(loadAndRender,REFRESH_INTERVAL);
+  setInterval(tickClock,CLOCK_INTERVAL);
+  setInterval(()=>{ if(scheduleCache) render(scheduleCache,getRoomId(),new Date()); },CLOCK_INTERVAL);
 </script>
 </body>
 </html>
