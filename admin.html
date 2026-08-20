@@ -374,7 +374,7 @@ function renderRoomPanel(){
           onblur="state.rooms[${ri}].sessions[${si}].${f.key}=this.value"></div>`;
     }).join('');
 
-    // Standard fields for session types
+    // Standard fields for session types (title + presenters for non-specialty)
     const isSpecialty=typeObj.specialty;
     const standardSessionFields=!isSpecialty?`
       <div class="field full"><label>Session Title</label>
@@ -382,14 +382,20 @@ function renderRoomPanel(){
           onblur="state.rooms[${ri}].sessions[${si}].title=this.value;renderRoomPanel()"></div>
       ${typeObj.showPresenters?`<div class="field full"><label>Presenter(s) — one per line</label>
         <textarea onblur="state.rooms[${ri}].sessions[${si}].presenters=this.value.split('\\n').map(p=>p.trim()).filter(Boolean)">${(s.presenters||[]).join('\n')}</textarea></div>`:''}
-      ${typeObj.showSponsor?`<div class="field full"><label>Sponsor (optional)</label>
-        <input type="text" value="${(s.sponsor||'').replace(/"/g,'&quot;')}" placeholder="Sponsor name"
-          onblur="state.rooms[${ri}].sessions[${si}].sponsor=this.value">
-        </div>
-        <div class="field full"><label>Sponsor Logo URL (optional)</label>
-        <input type="url" value="${(s.sponsorLogo||'').replace(/"/g,'&quot;')}" placeholder="https://..."
-          onblur="state.rooms[${ri}].sessions[${si}].sponsorLogo=this.value"></div>`:''}
     `:'';
+
+    // Universal fields — available on every type
+    const universalFields=`
+      <div class="field full"><label>Description (optional)</label>
+        <input type="text" value="${(s.description||'').replace(/"/g,'&quot;')}" placeholder="Optional notes or subtitle"
+          onblur="state.rooms[${ri}].sessions[${si}].description=this.value"></div>
+      <div class="field full"><label>Sponsor Name (optional)</label>
+        <input type="text" value="${(s.sponsor||'').replace(/"/g,'&quot;')}" placeholder="Sponsor name"
+          onblur="state.rooms[${ri}].sessions[${si}].sponsor=this.value"></div>
+      <div class="field full"><label>Sponsor Logo URL (optional)</label>
+        <input type="url" value="${(s.sponsorLogo||'').replace(/"/g,'&quot;')}" placeholder="https://..."
+          onblur="state.rooms[${ri}].sessions[${si}].sponsorLogo=this.value"></div>
+    `;
 
     body.innerHTML=`<div class="field-row">
       <div class="field"><label>Date</label>
@@ -402,6 +408,7 @@ function renderRoomPanel(){
         <input type="time" value="${s.end||''}" onblur="state.rooms[${ri}].sessions[${si}].end=this.value;renderRoomPanel()"></div>
       ${standardSessionFields}
       ${extraHTML}
+      ${universalFields}
     </div>`;
 
     card.appendChild(hdr);card.appendChild(body);panels.appendChild(card);
