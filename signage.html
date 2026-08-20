@@ -297,7 +297,7 @@
       el('presenters-list').style.whiteSpace='pre-line';
     }
 
-    const hasSponsor=typeData.showSponsor&&(!!s.sponsor||!!s.sponsorLogo);
+    const hasSponsor=!!(s.sponsor||s.sponsorLogo);
     show('sponsor-block',hasSponsor);
     if(hasSponsor){
       const hasLogo=!!s.sponsorLogo;
@@ -318,7 +318,7 @@
     const logoHtml=(src)=>src?`<img class="spec-logo" src="${src}" alt="">`:'';
     const div=()=>'<div class="spec-divider"></div>';
     const clk=()=>`<div class="spec-bottom"><div class="spec-clock" id="spec-clock"></div></div>`;
-    const sponsorBlock=(sp,logo)=>(sp||logo)?`<div style="margin-top:24px;padding-bottom:0;">${lbl('Sponsored by')}${sp?`<div class="spec-body">${sp}</div>`:''}${logoHtml(logo)}</div>`:'';
+    const sponsorBlock=(sp,logo)=>(sp||logo)?`<div style="margin-top:24px;">${lbl('Sponsored by')}${sp?`<div class="spec-body">${sp}</div>`:''}${logoHtml(logo)}</div>`:'';
 
     if (t==='PlenaryRedirect') {
       c.innerHTML=`
@@ -430,6 +430,24 @@
 
     const ck=document.getElementById('spec-clock');
     if(ck) ck.textContent=fmtClock(new Date());
+
+    // Universal: append description and sponsor to any specialty type if populated
+    // (individual blocks may already include these — this catches types that don't)
+    // We use a sentinel class to avoid double-rendering
+    if (!c.querySelector('.universal-appended')) {
+      const extras = document.createElement('div');
+      extras.className = 'universal-appended';
+      if (s.description && s.description.trim() && !c.querySelector('.spec-desc')) {
+        const d = document.createElement('div');
+        d.className = 'spec-desc';
+        d.textContent = s.description;
+        extras.appendChild(d);
+      }
+      if ((s.sponsor||s.sponsorLogo) && !c.querySelector('.spec-label')) {
+        extras.innerHTML += sponsorBlock(s.sponsor, s.sponsorLogo);
+      }
+      if (extras.innerHTML || extras.children.length) c.appendChild(extras);
+    }
   }
 
   function tickClock() {
