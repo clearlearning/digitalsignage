@@ -109,16 +109,6 @@
   .social-event-detail strong { font-weight: 700; color: var(--track-color); }
   .social-tickets { font-size: 22px; font-weight: 600; color: var(--track-color); letter-spacing: 0.05em; margin-top: 16px; flex-shrink: 0; }
 
-  /* AEC27 watermark */
-  #travel-safe-watermark {
-    position: absolute; z-index: 1;
-    font-family: 'Pacifico', cursive; font-size: 180px;
-    color: var(--track-color); opacity: 0.12;
-    transform: rotate(-37deg); transform-origin: center center;
-    white-space: nowrap; top: 50%; left: 50%;
-    translate: -50% -50%; pointer-events: none;
-  }
-
   /* Smooth fade — dark overlay so background and content swap together */
   #fade {
     position: absolute; inset: 0; z-index: 10;
@@ -390,7 +380,7 @@
         <div class="spec-eyebrow" style="font-size:22px;margin-bottom:20px;">Thank you for joining us</div>
         <div class="spec-headline" style="font-size:72px;margin-bottom:36px;">We can't wait to<br>see you next year.</div>
         ${div()}
-        ${s.nextEventLogo||s.sponsorLogo?`<img src="${s.nextEventLogo||s.sponsorLogo}" alt="" style="display:block;max-width:600px;max-height:220px;object-fit:contain;margin:0 auto 32px;">`:''}        ${s.nextEventName?tag('spec-body-bold',s.nextEventName):''}
+        ${s.nextEventLogo||s.sponsorLogo?`<img src="${s.nextEventLogo||s.sponsorLogo}" alt="" style="display:block;max-width:900px;max-height:auto;object-fit:contain;margin:0 auto 32px;">`:''}        ${s.nextEventName?tag('spec-body-bold',s.nextEventName):''}
         ${s.nextEventLocation?tag('spec-body-sm','<strong>Location:</strong> '+s.nextEventLocation):''}
         ${s.nextEventDates?tag('spec-body-sm','<strong>Dates:</strong> '+s.nextEventDates):''}
         ${s.qrCodeUrl?`<div style="margin-top:28px;"><div class="spec-label">Learn More &amp; Register</div><img src="${s.qrCodeUrl}" alt="QR Code" style="width:180px;height:180px;object-fit:contain;display:block;margin-top:12px;border:3px solid var(--track-color);border-radius:8px;"></div>`:''}
