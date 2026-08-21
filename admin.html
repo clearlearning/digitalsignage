@@ -176,26 +176,17 @@ function getType(id){return state.types.find(t=>t.id===id)||state.types[0];}
 // ─── Specialty field definitions ──────────────────────────────────────────
 // Returns array of extra field definitions for specialty types
 function specialtyFields(typeId, session, ri, si) {
-  const base = `state.rooms[${ri}].sessions[${si}]`;
   const fields = [];
 
-  if (typeId==='Plenary') {
-    fields.push({ label:'Description (optional)', key:'description', placeholder:'Session description or subtitle', value: session.description||'' });
-  }
   if (typeId==='PlenaryRedirect') {
     fields.push({ label:'Plenary Room Name', key:'redirectRoom', placeholder:'e.g. Grand Ballroom', value: session.redirectRoom||'' });
   }
   if (typeId==='WelcomeReception') {
-    fields.push({ label:'Event Title', key:'title', placeholder:'Welcome Reception', value: session.title||'' });
     fields.push({ label:'Location', key:'location', placeholder:'e.g. Exhibit Hall A', value: session.location||'' });
-    fields.push({ label:'Sponsor Name (optional)', key:'sponsor', placeholder:'Sponsor name', value: session.sponsor||'' });
-    fields.push({ label:'Sponsor Logo URL (optional)', key:'sponsorLogo', placeholder:'https://...', value: session.sponsorLogo||'', type:'url' });
   }
   if (typeId==='CommitteeMeeting') {
-    fields.push({ label:'Committee Name', key:'title', placeholder:'e.g. Executive Committee', value: session.title||'' });
     fields.push({ label:'Chair(s) — one per line', key:'presenters', placeholder:'Chair Name', value: (session.presenters||[]).join('\n'), textarea:true });
   }
-
   if (typeId==='Social') {
     fields.push({ label:'Event 1 — Tour Name', key:'event1Name', placeholder:'e.g. Portland Food Tour', value: session.event1Name||'' });
     fields.push({ label:'Event 1 — Meet Time', key:'event1Time', placeholder:'e.g. 6:00 PM', value: session.event1Time||'' });
@@ -208,25 +199,15 @@ function specialtyFields(typeId, session, ri, si) {
     fields.push({ label:'Conference Name', key:'nextEventName', placeholder:'e.g. CLEAR 2027 Annual Educational Conference', value: session.nextEventName||'' });
     fields.push({ label:'Location', key:'nextEventLocation', placeholder:'e.g. Nashville, TN', value: session.nextEventLocation||'' });
     fields.push({ label:'Dates', key:'nextEventDates', placeholder:'e.g. September 13–16, 2027', value: session.nextEventDates||'' });
-    fields.push({ label:'Conference Logo URL (optional)', key:'sponsorLogo', placeholder:'https://...', value: session.sponsorLogo||'', type:'url' });
-  }
-  if (typeId==='P+P') {
-    fields.push({ label:'Location / Directions', key:'location', placeholder:'e.g. Exhibit Hall B', value: session.location||'' });
-    fields.push({ label:'Description (optional)', key:'description', placeholder:'e.g. Visit with adoptable puppies and browse poster presentations', value: session.description||'' });
-    fields.push({ label:'Sponsor Name (optional)', key:'sponsor', placeholder:'Sponsor name', value: session.sponsor||'' });
-    fields.push({ label:'Sponsor Logo URL (optional)', key:'sponsorLogo', placeholder:'https://...', value: session.sponsorLogo||'', type:'url' });
+    fields.push({ label:'Conference Logo URL', key:'nextEventLogo', placeholder:'https://...', value: session.nextEventLogo||'', type:'url' });
+    fields.push({ label:'QR Code Image URL (optional)', key:'qrCodeUrl', placeholder:'https://...', value: session.qrCodeUrl||'', type:'url' });
   }
   if (typeId==='Food') {
     fields.push({ label:'Meal Type', key:'mealType', placeholder:'e.g. Lunch, Breakfast, Dinner', value: session.mealType||'' });
-    fields.push({ label:'Meal Name (optional)', key:'title', placeholder:'e.g. Conference Luncheon', value: session.title||'' });
     fields.push({ label:'Location', key:'location', placeholder:'e.g. the Exhibit Hall', value: session.location||'' });
-    fields.push({ label:'Description (optional)', key:'description', placeholder:'e.g. Buffet style — vegetarian options available', value: session.description||'' });
-    fields.push({ label:'Sponsor Name (optional)', key:'sponsor', placeholder:'Sponsor name', value: session.sponsor||'' });
-    fields.push({ label:'Sponsor Logo URL (optional)', key:'sponsorLogo', placeholder:'https://...', value: session.sponsorLogo||'', type:'url' });
   }
-  if (typeId==='Break') {
-    fields.push({ label:'Break Name / Title', key:'title', placeholder:'e.g. Morning Break', value: session.title||'' });
-    fields.push({ label:'Description (optional)', key:'description', placeholder:'e.g. Coffee and refreshments in the foyer', value: session.description||'' });
+  if (typeId==='P+P') {
+    fields.push({ label:'Location / Directions', key:'location', placeholder:'e.g. Exhibit Hall B', value: session.location||'' });
   }
   return fields;
 }
@@ -259,11 +240,40 @@ function processExcelFile(file){
       for(let i=2;i<rows.length;i++){
         const row=rows[i];
         if(!row||row.every(c=>c===''))continue;
-        const date=excelDateToString(row[0]),roomId=String(row[1]||'').trim(),start=formatTimeValue(row[2]),end=formatTimeValue(row[3]),typeId=String(row[4]||'').trim(),title=String(row[5]||'').trim(),sponsor=String(row[6]||'').trim(),presenters=[row[7],row[8],row[9],row[10],row[11]].map(p=>String(p||'').trim()).filter(Boolean);
+        const date        = excelDateToString(row[0]);
+        const roomId      = String(row[1]||'').trim();
+        const start       = formatTimeValue(row[2]);
+        const end         = formatTimeValue(row[3]);
+        const typeId      = String(row[4]||'').trim();
+        const title       = String(row[5]||'').trim();
+        const description = String(row[6]||'').trim();
+        const presenters  = [row[7],row[8],row[9],row[10],row[11]].map(p=>String(p||'').trim()).filter(Boolean);
+        const sponsor     = String(row[12]||'').trim();
+        const sponsorLogo = String(row[13]||'').trim();
+        const location    = String(row[14]||'').trim();
+        const mealType    = String(row[15]||'').trim();
+        const redirectRoom= String(row[16]||'').trim();
+        const event1Name  = String(row[17]||'').trim();
+        const event1Time  = String(row[18]||'').trim();
+        const event1Location = String(row[19]||'').trim();
+        const event2Name  = String(row[20]||'').trim();
+        const event2Time  = String(row[21]||'').trim();
+        const event2Location = String(row[22]||'').trim();
+        const nextEventName     = String(row[23]||'').trim();
+        const nextEventLocation = String(row[24]||'').trim();
+        const nextEventDates    = String(row[25]||'').trim();
+        const nextEventLogo     = String(row[26]||'').trim();
+
         if(!date||!roomId||!start||!end||!typeId){errors.push(`Row ${i+1}: missing required field`);skipped++;continue;}
         const roomIdx=state.rooms.findIndex(r=>r.id===roomId);
         if(roomIdx===-1){errors.push(`Row ${i+1}: room "${roomId}" not found`);skipped++;continue;}
-        state.rooms[roomIdx].sessions.push({date,start,end,type:typeId,title,sponsor,presenters});
+        state.rooms[roomIdx].sessions.push({
+          date,start,end,type:typeId,title,description,presenters,
+          sponsor,sponsorLogo:sponsorLogo||nextEventLogo,location,mealType,
+          redirectRoom,event1Name,event1Time,event1Location,
+          event2Name,event2Time,event2Location,
+          nextEventName,nextEventLocation,nextEventDates,
+        });
         imported++;
       }
       renderAll();
@@ -418,7 +428,7 @@ function renderRoomPanel(){
 }
 
 function addSession(ri){
-  state.rooms[ri].sessions.push({date:'',title:'',type:state.types[0].id,start:'',end:'',sponsor:'',sponsorLogo:'',presenters:[],location:'',redirectRoom:'',description:'',nextEventName:'',nextEventLocation:'',nextEventDates:'',mealType:'',event1Name:'',event1Time:'',event1Location:'',event2Name:'',event2Time:'',event2Location:''});
+  state.rooms[ri].sessions.push({date:'',title:'',type:state.types[0].id,start:'',end:'',sponsor:'',sponsorLogo:'',presenters:[],location:'',redirectRoom:'',description:'',nextEventName:'',nextEventLocation:'',nextEventDates:'',nextEventLogo:'',qrCodeUrl:'',mealType:'',event1Name:'',event1Time:'',event1Location:'',event2Name:'',event2Time:'',event2Location:''});
   const si=state.rooms[ri].sessions.length-1;sessionExpanded[`${ri}-${si}`]=true;renderRoomTabs();renderRoomPanel();
 }
 function removeSession(ri,si){if(!confirm('Remove this session?'))return;state.rooms[ri].sessions.splice(si,1);renderRoomTabs();renderRoomPanel();}
