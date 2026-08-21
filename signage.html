@@ -380,11 +380,11 @@
         <div class="spec-eyebrow" style="font-size:22px;margin-bottom:20px;">Thank you for joining us</div>
         <div class="spec-headline" style="font-size:72px;margin-bottom:36px;">We can't wait to<br>see you next year.</div>
         ${div()}
-        ${s.nextEventLogo||s.sponsorLogo?`<img src="${s.nextEventLogo||s.sponsorLogo}" alt="" style="display:block;max-width:900px;max-height:auto;object-fit:contain;margin:0 auto 32px;">`:''}        ${s.nextEventName?tag('spec-body-bold',s.nextEventName):''}
+        ${s.nextEventLogo||s.sponsorLogo?`<img src="${s.nextEventLogo||s.sponsorLogo}" alt="" style="display:block;max-width:750px;max-height:auto;object-fit:contain;margin:0 auto 32px;">`:''}        ${s.nextEventName?tag('spec-body-bold',s.nextEventName):''}
         ${s.nextEventLocation?tag('spec-body-sm','<strong>Location:</strong> '+s.nextEventLocation):''}
         ${s.nextEventDates?tag('spec-body-sm','<strong>Dates:</strong> '+s.nextEventDates):''}
         ${s.qrCodeUrl?`<div style="margin-top:28px;"><div class="spec-label">Learn More &amp; Register</div><img src="${s.qrCodeUrl}" alt="QR Code" style="width:180px;height:180px;object-fit:contain;display:block;margin-top:12px;border:3px solid var(--track-color);border-radius:8px;"></div>`:''}
-        <div class="spec-accent" style="margin-top:32px;font-family:'Pacifico',cursive;font-weight:400;">Safe Travels Home!</div>
+        <div class="spec-accent" style="margin-top:32px;font-family:'Pacifico',cursive;font-weight:500;font-size: 2rem;">Safe Travels Home!</div>
         ${clk()}`;
     }
     else if (t==='WelcomeReception') {
