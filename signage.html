@@ -272,19 +272,19 @@
     el('status-text').textContent = isLive?'Now In Session':'Coming Up Next';
 
     el('session-time').textContent=(s.start&&s.end)?fmt12(s.start)+' \u2013 '+fmt12(s.end):'';
-    el('session-title').textContent=s.title||'';
+    el('session-title').innerHTML=s.title||'';
 
     // Description — show for any session type if populated
     const hasDesc=!!(s.description&&s.description.trim());
     show('session-description',hasDesc);
-    if(hasDesc) el('session-description').textContent=s.description;
+    if(hasDesc) el('session-description').innerHTML=s.description;
 
     const hasPres=typeData.showPresenters&&s.presenters&&s.presenters.length>0;
     show('presenters-block',hasPres);
     if(hasPres){
       el('presenters-label').textContent=s.presenters.length>1?'Presenters':'Presenter';
-      el('presenters-list').textContent=s.presenters.join('\n');
-      el('presenters-list').style.whiteSpace='pre-line';
+      el('presenters-list').innerHTML=s.presenters.join('<br>');
+      
     }
 
     const hasSponsor=!!(s.sponsor||s.sponsorLogo);
@@ -363,6 +363,7 @@
       c.innerHTML=`
         <div class="spec-badge"><div class="dot"></div>Social Events</div>
         ${div()}
+        ${s.description?`<div class="spec-desc" style="margin-bottom:24px;">${s.description}</div>`:''}
         ${e1n?`<div class="social-event-card">
           ${tag('social-event-name',e1n)}
           ${e1t?`<div class="social-event-detail"><strong>Meet at:</strong> ${e1t}</div>`:''}
@@ -434,7 +435,7 @@
       if (s.description && s.description.trim() && !c.querySelector('.spec-desc')) {
         const d = document.createElement('div');
         d.className = 'spec-desc';
-        d.textContent = s.description;
+        d.innerHTML = s.description;
         extras.appendChild(d);
       }
       if ((s.sponsor||s.sponsorLogo) && !c.querySelector('.spec-label') && t !== 'AEC27') {
