@@ -311,6 +311,8 @@
     const sponsorBlock=(sp,logo)=>(sp||logo)?`<div style="margin-top:24px;">${lbl('Sponsored by')}${sp?`<div class="spec-body">${sp}</div>`:''}${logoHtml(logo)}</div>`:'';
 
     if (t==='PlenaryRedirect') {
+      c.style.top='363px';
+      c.style.height='1282px';
       c.innerHTML=`
         <div class="spec-badge"><div class="dot"></div>Now In Session</div>
         ${tag('spec-headline','Plenary Session')}
