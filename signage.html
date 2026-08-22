@@ -234,32 +234,38 @@
     const fade=el('fade');
     fade.classList.add('active');
 
-    setTimeout(()=>{
-      document.getElementById('board').style.setProperty('--track-color',typeData.color||'#484848');
-      show('travel-safe-watermark',false);
+    const newSrc = typeData.background||'';
+    const bgEl = el('bg');
 
+    function revealAll() {
+      // Apply everything while still faded out
+      document.getElementById('board').style.setProperty('--track-color', typeData.color||'#484848');
+      bgEl.src = newSrc;
+      show('travel-safe-watermark', false);
       if (SESSION_TYPES.has(displaySession.type)) {
         show('content',true); show('specialty-content',false);
-        applySession(displaySession,isLive,typeData);
+        applySession(displaySession, isLive, typeData);
       } else {
         show('content',false); show('specialty-content',true);
-        applySpecialty(displaySession,typeData);
+        applySpecialty(displaySession, typeData);
       }
-      currentKey=key;
+      currentKey = key;
+      // Give browser one frame to paint everything, then fade back in
+      requestAnimationFrame(()=>requestAnimationFrame(()=>fade.classList.remove('active')));
+    }
 
-      const newSrc=typeData.background||'';
-      const bgEl=el('bg');
+    setTimeout(()=>{
       if (!newSrc || bgEl.src.endsWith(newSrc)) {
-        // Same background or no background — fade back immediately
-        requestAnimationFrame(()=>requestAnimationFrame(()=>fade.classList.remove('active')));
+        // Same background — no preload needed
+        revealAll();
       } else {
-        // New background — wait for it to load before revealing
-        const tmp=new Image();
-        tmp.onload=()=>{ bgEl.src=newSrc; requestAnimationFrame(()=>requestAnimationFrame(()=>fade.classList.remove('active'))); };
-        tmp.onerror=()=>{ bgEl.src=newSrc; fade.classList.remove('active'); };
-        tmp.src=newSrc;
+        // Preload new background before revealing anything
+        const tmp = new Image();
+        tmp.onload  = revealAll;
+        tmp.onerror = revealAll;
+        tmp.src = newSrc;
       }
-    },400);
+    }, 400);
   }
 
   function applySession(s, isLive, typeData) {
