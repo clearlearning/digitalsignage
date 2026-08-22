@@ -231,14 +231,10 @@
     if (key===currentKey) return;
 
     // Transition: fade to dark, swap content and bg together, fade back in only after bg loads
-    const fade=el('fade');
-    fade.classList.add('active');
-
     const newSrc = typeData.background||'';
     const bgEl = el('bg');
 
     function revealAll() {
-      // Apply everything while still faded out
       document.getElementById('board').style.setProperty('--track-color', typeData.color||'#484848');
       bgEl.src = newSrc;
       show('travel-safe-watermark', false);
@@ -250,16 +246,14 @@
         applySpecialty(displaySession, typeData);
       }
       currentKey = key;
-      // Give browser one frame to paint everything, then fade back in
-      requestAnimationFrame(()=>requestAnimationFrame(()=>fade.classList.remove('active')));
+      requestAnimationFrame(()=>requestAnimationFrame(()=>el('fade').classList.remove('active')));
     }
 
+    el('fade').classList.add('active');
     setTimeout(()=>{
       if (!newSrc || bgEl.src.endsWith(newSrc)) {
-        // Same background — no preload needed
         revealAll();
       } else {
-        // Preload new background before revealing anything
         const tmp = new Image();
         tmp.onload  = revealAll;
         tmp.onerror = revealAll;
