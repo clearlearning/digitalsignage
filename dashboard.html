@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>CLEAR Digital Signage Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+  :root{--burgundy:#650b26;--gold:#d4aa3d;--charcoal:#484848;--blue:#032338;--bg:#f4f1ee;--surface:#fff;--border:#ddd;--text:#2a2a2a;--muted:#777;--danger:#c0392b;--green:#2d6a2d;}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:60px;}
+  header{background:var(--burgundy);padding:14px 16px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:space-between;}
+  .wordmark{font-size:16px;font-weight:800;letter-spacing:.2em;color:var(--gold);}
+  .header-sub{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px;}
+  .btn-save{background:var(--gold);color:#1a1a1a;border:none;border-radius:6px;padding:10px 16px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;}
+  .main{padding:14px;max-width:700px;margin:0 auto;}
+  .card{background:var(--surface);border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:14px;overflow:hidden;}
+  .card-hdr{background:var(--charcoal);color:#fff;padding:11px 14px;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;}
+  .card-hdr button{background:var(--gold);color:#1a1a1a;border:none;border-radius:4px;padding:4px 10px;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;}
+  .card-body{padding:14px;}
+  .room-link-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg);border-radius:6px;margin-bottom:6px;}
+  .room-link-name{font-size:12px;font-weight:700;color:var(--blue);min-width:90px;flex-shrink:0;}
+  .room-link-url{font-family:monospace;font-size:10px;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .btn-copy{background:var(--blue);color:#fff;border:none;border-radius:4px;padding:5px 10px;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0;}
+  .btn-copy.copied{background:var(--green);}
+  .filter-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+  .filter-full{grid-column:1/-1;}
+  .filter-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;display:block;}
+  .filter-input{font-family:inherit;font-size:13px;padding:9px 10px;border:1.5px solid var(--border);border-radius:6px;background:#fafafa;color:var(--text);width:100%;-webkit-appearance:none;}
+  .filter-input:focus{outline:none;border-color:var(--burgundy);}
+  .filter-btns{display:flex;gap:8px;margin-top:4px;}
+  .btn-apply{flex:1;background:var(--burgundy);color:#fff;border:none;border-radius:6px;padding:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;}
+  .btn-clear-f{background:#eee;color:var(--charcoal);border:none;border-radius:6px;padding:11px 16px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;}
+  .room-tabs{display:flex;overflow-x:auto;border-bottom:2px solid var(--border);margin-bottom:10px;scrollbar-width:none;}
+  .room-tabs::-webkit-scrollbar{display:none;}
+  .room-tab{padding:9px 14px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;font-family:inherit;white-space:nowrap;flex-shrink:0;}
+  .room-tab.active{color:var(--burgundy);border-bottom-color:var(--burgundy);}
+  .session-count{font-size:11px;color:var(--muted);margin-bottom:8px;}
+  .session-card{border:1px solid var(--border);border-radius:6px;margin-bottom:8px;overflow:hidden;}
+  .session-hdr{display:flex;align-items:center;padding:11px 12px;cursor:pointer;background:#fafafa;gap:8px;}
+  .session-hdr.open{background:#f0ede9;border-bottom:1px solid var(--border);}
+  .session-meta{flex:1;min-width:0;}
+  .session-dt{font-size:10px;font-weight:700;color:var(--muted);margin-bottom:3px;}
+  .session-ttl{font-size:13px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .type-pill{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:10px;white-space:nowrap;flex-shrink:0;}
+  .all-badge{font-size:9px;font-weight:700;background:var(--gold);color:#1a1a1a;padding:2px 6px;border-radius:10px;flex-shrink:0;}
+  .chevron{font-size:13px;color:var(--muted);transition:transform .2s;flex-shrink:0;}
+  .chevron.open{transform:rotate(180deg);}
+  .session-body{padding:12px;display:none;}
+  .session-body.open{display:block;}
+  .btn-edit{background:var(--burgundy);color:#fff;border:none;border-radius:6px;padding:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;width:100%;margin-bottom:8px;}
+  .btn-remove{background:transparent;color:var(--danger);border:1px solid var(--danger);border-radius:6px;padding:9px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;width:100%;}
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:flex-end;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:700px;max-height:92vh;overflow-y:auto;padding:18px 16px 40px;}
+  .modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+  .modal-title{font-size:15px;font-weight:700;color:var(--burgundy);}
+  .modal-close{background:#eee;border:none;border-radius:50%;width:30px;height:30px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .modal-tag{font-size:11px;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .fld{margin-bottom:11px;}
+  .fld label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px;}
+  .fld input,.fld select,.fld textarea{font-family:inherit;font-size:14px;padding:10px 11px;border:1.5px solid var(--border);border-radius:6px;background:#fafafa;color:var(--text);width:100%;-webkit-appearance:none;}
+  .fld input:focus,.fld select:focus,.fld textarea:focus{outline:none;border-color:var(--burgundy);background:#fff;}
+  .fld textarea{resize:vertical;min-height:74px;}
+  .frow2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .btn-ms{background:var(--burgundy);color:#fff;border:none;border-radius:6px;padding:13px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:6px;}
+  .btn-md{background:transparent;color:var(--danger);border:1px solid var(--danger);border-radius:6px;padding:11px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;width:100%;margin-top:8px;}
+  .btn-mc{background:#eee;color:var(--charcoal);border:none;border-radius:6px;padding:11px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:8px;}
+  #toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(10px);background:#1a1a1a;color:#fff;padding:11px 20px;border-radius:8px;font-size:13px;font-weight:600;opacity:0;transition:all .3s;z-index:999;border-left:4px solid var(--gold);white-space:nowrap;pointer-events:none;}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .loading{text-align:center;color:var(--muted);padding:30px;font-size:13px;}
+</style>
+</head>
+<body>
+<header>
+  <div><div class="wordmark">CLEAR</div><div class="header-sub">Digital Signage Dashboard</div></div>
+  <button class="btn-save" onclick="saveToLive()">&#8645; Save to Live</button>
+</header>
+<div class="main">
+
+  <div class="card">
+    <div class="card-hdr">TV Display URLs</div>
+    <div class="card-body" id="room-links"><div class="loading">Loading…</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><span>Sessions</span><button onclick="openAddModal()">+ Add Session</button></div>
+    <div class="card-body">
+      <div class="filter-grid">
+        <div class="filter-full">
+          <label class="filter-label">Title or Presenter</label>
+          <input type="search" class="filter-input" id="f-name" placeholder="Type to filter…">
+        </div>
+        <div><label class="filter-label">Date</label><input type="date" class="filter-input" id="f-date"></div>
+        <div><label class="filter-label">Type</label><select class="filter-input" id="f-type"><option value="">All Types</option></select></div>
+        <div><label class="filter-label">Start Time From</label><input type="time" class="filter-input" id="f-from"></div>
+        <div><label class="filter-label">Start Time To</label><input type="time" class="filter-input" id="f-to"></div>
+      </div>
+      <div class="filter-btns">
+        <button class="btn-apply" onclick="applyFilters()">Apply Filters</button>
+        <button class="btn-clear-f" onclick="clearFilters()">Clear</button>
+      </div>
+      <div class="room-tabs" id="room-tabs" style="margin-top:14px;"></div>
+      <div class="session-count" id="session-count"></div>
+      <div id="session-list"><div class="loading">Loading schedule…</div></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="modal-overlay" id="modal" onclick="backdropClose(event)">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title" id="modal-title">Session</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-tag" id="modal-tag"></div>
+    <div id="modal-body"></div>
+    <button class="btn-ms" onclick="saveModal()">Save Changes</button>
+    <button class="btn-md" id="modal-del" style="display:none">Remove Session</button>
+    <button class="btn-mc" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+const WORKER = 'https://novi-pheedloop-worker.avance.workers.dev/signage-schedule';
+const BASE   = 'https://clearlearning.github.io/digitalsignage';
+
+// Room display names — keyed by room ID from the schedule
+const ROOM_NAMES = {
+  'Session-Room-a':'Salon AB','Session-Room-b':'Salon CD',
+  'Session-Room-c':'Salon EF','Session-Room-d':'Salon GHI',
+};
+
+const TYPES = [
+  {id:'RAG',label:'Regulatory Administration & Governance',color:'#084d78',pres:true},
+  {id:'CDE',label:'Compliance, Discipline & Enforcement',color:'#b1862d',pres:true},
+  {id:'ETP',label:'Entry to Practice & Continuing Competence',color:'#64092c',pres:true},
+  {id:'T+E',label:'Testing and Examinations',color:'#484848',pres:true},
+  {id:'Plenary',label:'Plenary Session',color:'#64092C',pres:true},
+  {id:'General',label:'General Session',color:'#64092C',pres:true},
+  {id:'PlenaryRedirect',label:'Plenary Redirect',color:'#64092C',pres:true},
+  {id:'Break',label:'Break',color:'#484848',pres:false},
+  {id:'Food',label:'Food / Meal Event',color:'#2d6a2d',pres:false},
+  {id:'P+P',label:'Puppies & Posters',color:'#b1862d',pres:false},
+  {id:'WelcomeReception',label:'Welcome Reception',color:'#084d78',pres:false},
+  {id:'CommitteeMeeting',label:'Committee Meeting',color:'#64092C',pres:true},
+  {id:'Social',label:'Social Event (Ticketed)',color:'#64092C',pres:false},
+  {id:'AEC27',label:'Conference Closing',color:'#DDA838',pres:false},
+];
+
+let schedule   = null;
+let activeRoom = 0;
+let expanded   = {};
+let filters    = {name:'',date:'',type:'',from:'',to:''};
+let modalCtx   = null;
+
+function g(id){return document.getElementById(id);}
+function gt(id){return TYPES.find(t=>t.id===id)||TYPES[0];}
+function sv(v){return (v||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
+function toast(m){const t=g('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+function roomName(id){return ROOM_NAMES[id]||id;}
+
+// ── Load ──────────────────────────────────────────────────────────────────
+async function load(){
+  try{
+    const r=await fetch(WORKER+'?_='+Date.now());
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    schedule=await r.json();
+    console.log('Loaded. Rooms:',schedule.rooms.map(r=>r.id+':'+r.sessions.length));
+  }catch(e){
+    console.error('Load failed',e);
+    toast('Could not load schedule: '+e.message);
+    schedule={event:'',rooms:[],types:{}};
+  }
+  render();
+}
+
+// ── Save ──────────────────────────────────────────────────────────────────
+async function saveToLive(){
+  let sec=localStorage.getItem('sig_sec');
+  if(!sec){sec=prompt('Enter admin secret:');if(!sec)return;localStorage.setItem('sig_sec',sec);}
+  try{
+    const r=await fetch(WORKER,{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Secret':sec},body:JSON.stringify(schedule,null,2)});
+    if(r.ok)toast('Saved — TVs update within 60 seconds ✓');
+    else if(r.status===401){localStorage.removeItem('sig_sec');toast('Wrong secret — try again');}
+    else toast('Error '+r.status);
+  }catch(e){toast('Network error');}
+}
+
+// ── Render ────────────────────────────────────────────────────────────────
+function render(){
+  renderLinks();
+  populateTypeFilter();
+  renderTabs();
+  renderList();
+}
+
+function renderLinks(){
+  if(!schedule||!schedule.rooms){g('room-links').innerHTML='';return;}
+  g('room-links').innerHTML=schedule.rooms.map(r=>`
+    <div class="room-link-row">
+      <div class="room-link-name">${roomName(r.id)}</div>
+      <div class="room-link-url">${BASE}/signage.html?room=${r.id}</div>
+      <button class="btn-copy" onclick="copyLink('${r.id}',this)">Copy</button>
+    </div>`).join('');
+}
+
+function copyLink(id,btn){
+  navigator.clipboard.writeText(`${BASE}/signage.html?room=${id}`).then(()=>{
+    btn.textContent='Copied!';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000);
+  });
+}
+
+function populateTypeFilter(){
+  const sel=g('f-type');
+  if(sel.options.length>1)return;
+  TYPES.forEach(t=>{const o=document.createElement('option');o.value=t.id;o.textContent=t.label;sel.appendChild(o);});
+}
+
+function applyFilters(){
+  filters={
+    name:(g('f-name').value||'').toLowerCase().trim(),
+    date:g('f-date').value||'',
+    type:g('f-type').value||'',
+    from:g('f-from').value||'',
+    to:g('f-to').value||'',
+  };
+  renderList();
+}
+
+function clearFilters(){
+  g('f-name').value='';g('f-date').value='';g('f-type').value='';g('f-from').value='';g('f-to').value='';
+  filters={name:'',date:'',type:'',from:'',to:''};
+  renderList();
+}
+
+function matches(s){
+  if(filters.date&&s.date!==filters.date)return false;
+  if(filters.type&&s.type!==filters.type)return false;
+  if(filters.from&&s.start&&s.start<filters.from)return false;
+  if(filters.to&&s.start&&s.start>filters.to)return false;
+  if(filters.name){
+    const hay=[s.title,s.description,(s.presenters||[]).join(' '),s.redirectRoom,s.nextEventName,s.event1Name,s.event2Name,s.location,s.mealType].filter(Boolean).join(' ').toLowerCase();
+    if(!hay.includes(filters.name))return false;
+  }
+  return true;
+}
+
+function renderTabs(){
+  if(!schedule||!schedule.rooms){g('room-tabs').innerHTML='';return;}
+  g('room-tabs').innerHTML=schedule.rooms.map((r,i)=>
+    `<button class="room-tab${i===activeRoom?' active':''}" onclick="switchRoom(${i})">${roomName(r.id)} <span style="opacity:.5;font-size:10px">(${(r.sessions||[]).length})</span></button>`
+  ).join('');
+}
+
+function switchRoom(i){activeRoom=i;expanded={};renderTabs();renderList();}
+
+function renderList(){
+  const listEl=g('session-list');
+  const countEl=g('session-count');
+  if(!schedule||!schedule.rooms||!schedule.rooms.length){
+    listEl.innerHTML='<p style="color:var(--muted);font-size:13px;padding:8px 0;">No schedule loaded.</p>';
+    countEl.textContent='';
+    return;
+  }
+  const room=schedule.rooms[activeRoom];
+  if(!room){listEl.innerHTML='';countEl.textContent='';return;}
+
+  const all=[...(room.sessions||[])]
+    .map((s,idx)=>({...s,_idx:idx}))
+    .sort((a,b)=>(a.date||'')<(b.date||'')?-1:(a.date||'')>(b.date||'')?1:(a.start||'').localeCompare(b.start||''));
+
+  const visible=all.filter(s=>matches(s));
+
+  countEl.textContent=visible.length===all.length
+    ?`${all.length} session${all.length!==1?'s':''}`
+    :`Showing ${visible.length} of ${all.length} sessions`;
+
+  if(!visible.length){
+    listEl.innerHTML=`<p style="color:var(--muted);font-size:13px;padding:8px 0;">${all.length?'No sessions match the filters.':'No sessions yet.'}</p>`;
+    return;
+  }
+
+  const ri=activeRoom;
+  listEl.innerHTML=visible.map(s=>{
+    const t=gt(s.type);
+    const key=`${ri}-${s._idx}`;
+    const open=!!expanded[key];
+    const title=(s.title||s.redirectRoom||s.nextEventName||'Untitled').replace(/</g,'&lt;');
+    return `<div class="session-card">
+      <div class="session-hdr${open?' open':''}" onclick="toggleCard('${key}')">
+        <div class="session-meta">
+          <div class="session-dt">${s.date||'No date'} · ${s.start||'--:--'} – ${s.end||'--:--'}</div>
+          <div class="session-ttl">${title}</div>
+          ${s._grp?'<span class="all-badge" style="margin-top:3px;display:inline-block;">All Rooms</span>':''}
+        </div>
+        <div class="type-pill" style="background:${t.color}22;color:${t.color}">${s.type}</div>
+        <span class="chevron${open?' open':''}">▾</span>
+      </div>
+      <div class="session-body${open?' open':''}">
+        <button class="btn-edit" onclick="openEditModal(${ri},${s._idx})">Edit Session</button>
+        <button class="btn-remove" onclick="removeSession(${ri},${s._idx})">Remove</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleCard(key){expanded[key]=!expanded[key];renderList();}
+
+// ── Remove ────────────────────────────────────────────────────────────────
+function removeSession(ri,si){
+  const s=schedule.rooms[ri].sessions[si];
+  if(s._grp){
+    if(confirm('This session is on all rooms. Remove from all rooms?')){
+      const gid=s._grp;
+      schedule.rooms.forEach(r=>{r.sessions=r.sessions.filter(x=>x._grp!==gid);});
+    }else{schedule.rooms[ri].sessions.splice(si,1);}
+  }else{
+    if(!confirm('Remove this session?'))return;
+    schedule.rooms[ri].sessions.splice(si,1);
+  }
+  expanded={};renderTabs();renderList();
+}
+
+// ── Modal ─────────────────────────────────────────────────────────────────
+function openAddModal(){
+  modalCtx={mode:'add'};
+  g('modal-title').textContent='Add Session';
+  g('modal-tag').innerHTML='';
+  g('modal-del').style.display='none';
+  buildForm(blank(),true);
+  g('modal').classList.add('open');document.body.style.overflow='hidden';
+}
+
+function openEditModal(ri,si){
+  const s=schedule.rooms[ri].sessions[si];
+  const rn=roomName(schedule.rooms[ri].id);
+  modalCtx={mode:'edit',ri,si,grp:s._grp||null};
+  g('modal-title').textContent='Edit Session';
+  g('modal-tag').innerHTML=s._grp?'<span class="all-badge">All Rooms</span> Changes apply to all four displays.':rn;
+  g('modal-del').style.display='block';
+  g('modal-del').onclick=()=>{closeModal();removeSession(ri,si);};
+  buildForm(s,false);
+  g('modal').classList.add('open');document.body.style.overflow='hidden';
+}
+
+function closeModal(){g('modal').classList.remove('open');document.body.style.overflow='';modalCtx=null;}
+function backdropClose(e){if(e.target===g('modal'))closeModal();}
+
+function blank(){
+  return{date:'',type:'RAG',start:'',end:'',title:'',description:'',
+    presenters:[],sponsorLogo:'',location:'',mealType:'',redirectRoom:'',
+    event1Name:'',event1Time:'',event1Location:'',
+    event2Name:'',event2Time:'',event2Location:'',
+    nextEventName:'',nextEventLocation:'',nextEventDates:'',nextEventLogo:'',qrCodeUrl:'',
+    _grp:null};
+}
+
+function buildForm(s,showRoom){
+  const topts=TYPES.map(t=>`<option value="${t.id}"${t.id===s.type?' selected':''}>${t.label}</option>`).join('');
+  const ropts=`<option value="">Select room…</option><option value="all">All Rooms</option>`+
+    (schedule.rooms||[]).map(r=>`<option value="${r.id}">${roomName(r.id)}</option>`).join('');
+
+  let h='';
+  if(showRoom) h+=F('Room','_room','','select','',ropts);
+  h+=`<div class="frow2">${F('Date','date',s.date,'date')}${F('Type','type',s.type,'select','',topts)}</div>`;
+  h+=`<div class="frow2">${F('Start Time','start',s.start,'time')}${F('End Time','end',s.end,'time')}</div>`;
+  h+=F('Title','title',s.title,'text','Session title');
+  h+=specialtyF(s);
+  g('modal-body').innerHTML=h;
+
+  // type change rebuilds form
+  const tsel=g('modal-body').querySelector('[data-k="type"]');
+  if(tsel) tsel.addEventListener('change',function(){
+    const cur=readForm();
+    buildForm(cur,showRoom);
+    if(showRoom){const rd=g('modal-body').querySelector('[data-k="_room"]');if(rd)rd.value=cur._room||'';}
+  });
+}
+
+function F(label,key,val,type='text',ph='',opts=''){
+  if(type==='select') return `<div class="fld"><label>${label}</label><select data-k="${key}">${opts}</select></div>`;
+  if(type==='textarea') return `<div class="fld"><label>${label}</label><textarea data-k="${key}" placeholder="${ph}">${sv(val)}</textarea></div>`;
+  return `<div class="fld"><label>${label}</label><input type="${type}" data-k="${key}" value="${sv(val)}" placeholder="${ph}"></div>`;
+}
+
+function specialtyF(s){
+  const t=s.type;
+  const f=(l,k,v,ph='')=>F(l,k,v,'text',ph);
+  const u=(l,k,v)=>F(l,k,v,'url','https://…');
+  const ta=(l,k,v,ph='')=>F(l,k,v,'textarea',ph);
+  let h='';
+  const to=gt(t);
+  if(to.pres){
+    if(t==='CommitteeMeeting') h+=ta('Chair(s) — one per line','_chairs',(s.presenters||[]).join('\n'));
+    else h+=ta('Presenter(s) — one per line','_pres',(s.presenters||[]).join('\n'));
+  }
+  if(t==='PlenaryRedirect') h+=f('Plenary Room Name','redirectRoom',s.redirectRoom,'e.g. Grand Ballroom');
+  if(t==='Food'){h+=f('Meal Type','mealType',s.mealType,'e.g. Lunch');h+=f('Location','location',s.location,'e.g. Exhibit Hall');}
+  if(['P+P','WelcomeReception','Break'].includes(t)) h+=f('Location','location',s.location,'');
+  if(t==='Social'){
+    h+=ta('Description (shown above events)','description',s.description,'');
+    h+=f('Event 1 — Name','event1Name',s.event1Name,'');
+    h+=f('Event 1 — Meet Time','event1Time',s.event1Time,'e.g. 6:00 PM');
+    h+=f('Event 1 — Starting Location','event1Location',s.event1Location,'');
+    h+=f('Event 2 — Name','event2Name',s.event2Name,'');
+    h+=f('Event 2 — Meet Time','event2Time',s.event2Time,'');
+    h+=f('Event 2 — Starting Location','event2Location',s.event2Location,'');
+  }
+  if(t==='AEC27'){
+    h+=f('Conference Name','nextEventName',s.nextEventName,'');
+    h+=f('Location','nextEventLocation',s.nextEventLocation,'');
+    h+=f('Dates','nextEventDates',s.nextEventDates,'');
+    h+=u('Conference Logo URL','nextEventLogo',s.nextEventLogo);
+    h+=u('QR Code URL (optional)','qrCodeUrl',s.qrCodeUrl);
+  }
+  if(t!=='Social') h+=ta('Description (optional)','description',s.description,'');
+  if(t!=='AEC27') h+=u('Sponsor Logo URL (optional)','sponsorLogo',s.sponsorLogo);
+  return h;
+}
+
+function readForm(){
+  const d=blank();
+  g('modal-body').querySelectorAll('[data-k]').forEach(el=>{d[el.getAttribute('data-k')]=el.value;});
+  d.presenters=(d._pres||d._chairs||'').split('\n').map(p=>p.trim()).filter(Boolean);
+  const room=d._room; delete d._room; delete d._pres; delete d._chairs;
+  d._room=room;
+  return d;
+}
+
+function saveModal(){
+  if(!modalCtx)return;
+  const d=readForm();
+  const roomVal=d._room; delete d._room;
+  if(modalCtx.mode==='add'){
+    if(!roomVal){toast('Please select a room');return;}
+    if(roomVal==='all'){
+      const gid='grp_'+Date.now();
+      schedule.rooms.forEach(r=>{r.sessions.push({...JSON.parse(JSON.stringify(d)),_grp:gid});});
+      toast('Added to all rooms');
+    }else{
+      const idx=schedule.rooms.findIndex(r=>r.id===roomVal);
+      if(idx!==-1){schedule.rooms[idx].sessions.push({...d,_grp:null});activeRoom=idx;}
+      toast('Session added');
+    }
+  }else{
+    const{ri,si,grp}=modalCtx;
+    if(grp){
+      schedule.rooms.forEach(r=>{r.sessions.forEach((s,i)=>{if(s._grp===grp)r.sessions[i]={...d,_grp:grp};});});
+    }else{
+      schedule.rooms[ri].sessions[si]={...d,_grp:null};
+    }
+    toast('Session updated');
+  }
+  closeModal();expanded={};renderTabs();renderList();
+}
+
+load();
+</script>
+</body>
+</html>
