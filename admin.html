@@ -33,6 +33,8 @@
   input[type=text],input[type=date],input[type=time],input[type=url],select,textarea{font-family:inherit;font-size:13px;padding:9px 12px;border:1px solid var(--border);border-radius:4px;background:#fafafa;color:var(--text);transition:border .15s;}
   input:focus,select:focus,textarea:focus{outline:none;border-color:var(--burgundy);background:#fff;}
   textarea{resize:vertical;min-height:56px;}
+  /* Description textarea taller — 3 lines */
+  textarea.desc-field{min-height:80px;}
   .room-tabs{display:flex;border-bottom:2px solid var(--border);margin-bottom:20px;flex-wrap:wrap;}
   .room-tab{padding:10px 20px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:6px;}
   .room-tab:hover{color:var(--charcoal);}
@@ -69,7 +71,6 @@
   .url-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
   .url-room-label{font-size:12px;font-weight:600;color:var(--charcoal);min-width:150px;}
   .url-value{font-family:monospace;font-size:11px;color:var(--blue);background:rgba(8,77,120,.06);padding:3px 8px;border-radius:4px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .field-hint{font-size:10px;color:var(--muted);font-style:italic;margin-top:2px;}
 </style>
 </head>
 <body>
@@ -113,7 +114,7 @@
   <div class="card">
     <div class="card-header">Session Types &amp; Backgrounds</div>
     <div class="card-body">
-      <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">Background filename must match the SVG in your GitHub repo. Generic.svg is used for all specialty slides.</p>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">Background filename must match the SVG in your GitHub repo.</p>
       <div class="types-grid" id="types-grid"></div>
     </div>
   </div>
@@ -141,30 +142,29 @@
 <script>
 // ─── Type definitions ─────────────────────────────────────────────────────
 const DEFAULT_TYPES = [
-  // Session types (session layout)
-  { id:'RAG',             label:'Regulatory Administration & Governance',           background:'RAG.svg',     color:'#084d78', showPresenters:true,  showSponsor:false, specialty:false },
-  { id:'CDE',             label:'Compliance, Discipline, and Enforcement',          background:'CDE.svg',     color:'#b1862d', showPresenters:true,  showSponsor:false, specialty:false },
-  { id:'ETP',             label:'Entry to Practice & Continuing Competence',        background:'ETP.svg',     color:'#64092c', showPresenters:true,  showSponsor:false, specialty:false },
-  { id:'T+E',             label:'Testing and Examinations',                         background:'T_E.svg',     color:'#484848', showPresenters:true,  showSponsor:false, specialty:false },
-  { id:'Plenary',         label:'Plenary Session',                                  background:'Plenary.svg', color:'#64092C', showPresenters:true,  showSponsor:false, specialty:false },
-  // Specialty types (generic layout)
-  { id:'PlenaryRedirect', label:'Plenary Redirect',                                 background:'generic.svg', color:'#64092C', showPresenters:false, showSponsor:false, specialty:true  },
-  { id:'Break',           label:'Break',                                            background:'Break.svg',   color:'#484848', showPresenters:false, showSponsor:false, specialty:true  },
-  { id:'Food',            label:'Food / Meal Event',                                background:'Food.svg',    color:'#2d6a2d', showPresenters:false, showSponsor:true,  specialty:true  },
-  { id:'P+P',             label:'Puppies & Posters',                               background:'P+P.svg',     color:'#b1862d', showPresenters:false, showSponsor:true,  specialty:true  },
-  { id:'WelcomeReception',label:'Welcome Reception',                                background:'generic.svg', color:'#084d78', showPresenters:false, showSponsor:true,  specialty:true  },
-  { id:'CommitteeMeeting',label:'Committee Meeting',                                background:'generic.svg', color:'#64092C', showPresenters:true,  showSponsor:false, specialty:true  },
-  { id:'Social',          label:'Social Event (Ticketed)',                           background:'generic.svg', color:'#64092C', showPresenters:false, showSponsor:false, specialty:true  },
-  { id:'AEC27',           label:'Conference Closing / Travel Safe',                  background:'generic.svg', color:'#DDA838', showPresenters:false, showSponsor:false, specialty:true  },
+  { id:'RAG',             label:'Regulatory Administration & Governance',  background:'RAG.svg',     color:'#084d78', showPresenters:true,  specialty:false },
+  { id:'CDE',             label:'Compliance, Discipline, and Enforcement', background:'CDE.svg',     color:'#b1862d', showPresenters:true,  specialty:false },
+  { id:'ETP',             label:'Entry to Practice & Continuing Competence',background:'ETP.svg',    color:'#64092c', showPresenters:true,  specialty:false },
+  { id:'T+E',             label:'Testing and Examinations',                background:'T_E.svg',     color:'#484848', showPresenters:true,  specialty:false },
+  { id:'Plenary',         label:'Plenary Session',                         background:'Plenary.svg', color:'#64092C', showPresenters:true,  specialty:false },
+  { id:'PlenaryRedirect', label:'Plenary Redirect',                        background:'generic.svg', color:'#64092C', showPresenters:true,  specialty:true  },
+  { id:'General',         label:'General Session',                         background:'Plenary.svg', color:'#64092C', showPresenters:true,  specialty:false },
+  { id:'Break',           label:'Break',                                   background:'Break.svg',   color:'#484848', showPresenters:false, specialty:true  },
+  { id:'Food',            label:'Food / Meal Event',                       background:'Food.svg',    color:'#2d6a2d', showPresenters:false, specialty:true  },
+  { id:'P+P',             label:'Puppies & Posters',                       background:'P+P.svg',     color:'#b1862d', showPresenters:false, specialty:true  },
+  { id:'WelcomeReception',label:'Welcome Reception',                       background:'generic.svg', color:'#084d78', showPresenters:false, specialty:true  },
+  { id:'CommitteeMeeting',label:'Committee Meeting',                       background:'generic.svg', color:'#64092C', showPresenters:true,  specialty:true  },
+  { id:'Social',          label:'Social Event (Ticketed)',                  background:'generic.svg', color:'#64092C', showPresenters:false, specialty:true  },
+  { id:'AEC27',           label:'Conference Closing / Travel Safe',         background:'generic.svg', color:'#DDA838', showPresenters:false, specialty:true  },
 ];
 
 const state = {
   types: DEFAULT_TYPES.map(t=>({...t})),
   rooms: [
-    { id:'Session-Room-a', name:'Session Room A', sessions:[] },
-    { id:'Session-Room-b', name:'Session Room B', sessions:[] },
-    { id:'Session-Room-c', name:'Session Room C', sessions:[] },
-    { id:'Session-Room-d', name:'Session Room D', sessions:[] },
+    { id:'Session-Room-a', name:'Session-Room-a', sessions:[] },
+    { id:'Session-Room-b', name:'Session-Room-b', sessions:[] },
+    { id:'Session-Room-c', name:'Session-Room-c', sessions:[] },
+    { id:'Session-Room-d', name:'Session-Room-d', sessions:[] },
   ],
   activeRoom: 0,
 };
@@ -173,43 +173,124 @@ let sessionExpanded={};
 function el(id){return document.getElementById(id);}
 function getType(id){return state.types.find(t=>t.id===id)||state.types[0];}
 
+// ─── HTML rendering helper ─────────────────────────────────────────────
+// Allows inline HTML in any field value — strips for storage, renders for display
+function safeVal(str){ return (str||'').replace(/"/g,'&quot;'); }
+
+// ─── Field builder helpers ─────────────────────────────────────────────
+function fieldText(label, key, value, ri, si, placeholder=''){
+  return `<div class="field full" tabindex="-1">
+    <label>${label}</label>
+    <input type="text" value="${safeVal(value)}" placeholder="${placeholder}"
+      onblur="state.rooms[${ri}].sessions[${si}].${key}=this.value">
+  </div>`;
+}
+function fieldURL(label, key, value, ri, si, placeholder='https://...'){
+  return `<div class="field full" tabindex="-1">
+    <label>${label}</label>
+    <input type="url" value="${safeVal(value)}" placeholder="${placeholder}"
+      onblur="state.rooms[${ri}].sessions[${si}].${key}=this.value">
+  </div>`;
+}
+function fieldTextarea(label, key, value, ri, si, placeholder='', extraClass=''){
+  return `<div class="field full" tabindex="-1">
+    <label>${label}</label>
+    <textarea class="${extraClass}" placeholder="${placeholder}"
+      onblur="state.rooms[${ri}].sessions[${si}].${key}=this.value">${safeVal(value)}</textarea>
+  </div>`;
+}
+function fieldPresenterTextarea(label, key, value, ri, si){
+  // Presenters stored as array, edited as line-separated text
+  return `<div class="field full" tabindex="-1">
+    <label>${label}</label>
+    <textarea style="min-height:80px;" placeholder="One name per line"
+      onblur="state.rooms[${ri}].sessions[${si}].${key}=this.value.split('\\n').map(p=>p.trim()).filter(Boolean)">${Array.isArray(value)?value.join('\n'):value}</textarea>
+  </div>`;
+}
+
 // ─── Specialty field definitions ──────────────────────────────────────────
-// Returns array of extra field definitions for specialty types
-function specialtyFields(typeId, session, ri, si) {
-  const fields = [];
+// Returns HTML string of type-specific fields (title, presenters, description already handled universally)
+function specialtyFieldsHTML(typeId, s, ri, si) {
+  const parts = [];
 
   if (typeId==='PlenaryRedirect') {
-    fields.push({ label:'Plenary Room Name', key:'redirectRoom', placeholder:'e.g. Grand Ballroom', value: session.redirectRoom||'' });
+    parts.push(fieldText('Plenary Room Name','redirectRoom',s.redirectRoom||'',ri,si,'e.g. Grand Ballroom'));
+    parts.push(fieldText('Session Title (optional)','title',s.title||'',ri,si,'Session name'));
+    parts.push(fieldPresenterTextarea('Presenter(s) — one per line','presenters',s.presenters||[],ri,si));
+    parts.push(fieldTextarea('Description (optional)','description',s.description||'',ri,si,'Session description','desc-field'));
   }
-  if (typeId==='WelcomeReception') {
-    fields.push({ label:'Location', key:'location', placeholder:'e.g. Exhibit Hall A', value: session.location||'' });
+  else if (typeId==='WelcomeReception') {
+    parts.push(fieldText('Event Title','title',s.title||'',ri,si,'Welcome Reception'));
+    parts.push(fieldText('Location','location',s.location||'',ri,si,'e.g. Exhibit Hall A'));
+    parts.push(fieldTextarea('Description (optional)','description',s.description||'',ri,si,'','desc-field'));
+    parts.push(fieldURL('Sponsor Logo URL (optional)','sponsorLogo',s.sponsorLogo||'',ri,si));
   }
-  if (typeId==='CommitteeMeeting') {
-    fields.push({ label:'Chair(s) — one per line', key:'presenters', placeholder:'Chair Name', value: (session.presenters||[]).join('\n'), textarea:true });
+  else if (typeId==='CommitteeMeeting') {
+    parts.push(fieldText('Committee Name','title',s.title||'',ri,si,'e.g. Executive Committee'));
+    parts.push(fieldPresenterTextarea('Chair(s) — one per line','presenters',s.presenters||[],ri,si));
+    parts.push(fieldTextarea('Description (optional)','description',s.description||'',ri,si,'','desc-field'));
   }
-  if (typeId==='Social') {
-    fields.push({ label:'Event 1 — Tour Name', key:'event1Name', placeholder:'e.g. Portland Food Tour', value: session.event1Name||'' });
-    fields.push({ label:'Event 1 — Meet Time', key:'event1Time', placeholder:'e.g. 6:00 PM', value: session.event1Time||'' });
-    fields.push({ label:'Event 1 — Starting Location', key:'event1Location', placeholder:'e.g. Hotel Main Entrance', value: session.event1Location||'' });
-    fields.push({ label:'Event 2 — Tour Name', key:'event2Name', placeholder:'e.g. Portland Brewery Tour', value: session.event2Name||'' });
-    fields.push({ label:'Event 2 — Meet Time', key:'event2Time', placeholder:'e.g. 6:30 PM', value: session.event2Time||'' });
-    fields.push({ label:'Event 2 — Starting Location', key:'event2Location', placeholder:'e.g. Hotel Side Entrance', value: session.event2Location||'' });
+  else if (typeId==='Break') {
+    parts.push(fieldText('Break Name / Title','title',s.title||'',ri,si,'e.g. Morning Break'));
+    parts.push(fieldTextarea('Description (optional)','description',s.description||'',ri,si,'e.g. Coffee and refreshments in the foyer','desc-field'));
   }
-  if (typeId==='AEC27') {
-    fields.push({ label:'Conference Name', key:'nextEventName', placeholder:'e.g. CLEAR 2027 Annual Educational Conference', value: session.nextEventName||'' });
-    fields.push({ label:'Location', key:'nextEventLocation', placeholder:'e.g. Nashville, TN', value: session.nextEventLocation||'' });
-    fields.push({ label:'Dates', key:'nextEventDates', placeholder:'e.g. September 13–16, 2027', value: session.nextEventDates||'' });
-    fields.push({ label:'Conference Logo URL', key:'nextEventLogo', placeholder:'https://...', value: session.nextEventLogo||'', type:'url' });
-    fields.push({ label:'QR Code Image URL (optional)', key:'qrCodeUrl', placeholder:'https://...', value: session.qrCodeUrl||'', type:'url' });
+  else if (typeId==='Food') {
+    parts.push(fieldText('Meal Type','mealType',s.mealType||'',ri,si,'e.g. Lunch, Breakfast, Dinner'));
+    parts.push(fieldText('Meal Name (optional)','title',s.title||'',ri,si,'e.g. Conference Luncheon'));
+    parts.push(fieldText('Location','location',s.location||'',ri,si,'e.g. the Exhibit Hall'));
+    parts.push(fieldTextarea('Description (optional)','description',s.description||'',ri,si,'e.g. Buffet style — vegetarian options available','desc-field'));
+    parts.push(fieldURL('Sponsor Logo URL (optional)','sponsorLogo',s.sponsorLogo||'',ri,si));
   }
-  if (typeId==='Food') {
-    fields.push({ label:'Meal Type', key:'mealType', placeholder:'e.g. Lunch, Breakfast, Dinner', value: session.mealType||'' });
-    fields.push({ label:'Location', key:'location', placeholder:'e.g. the Exhibit Hall', value: session.location||'' });
+  else if (typeId==='P+P') {
+    parts.push(fieldText('Title','title',s.title||'',ri,si,'e.g. Puppies & Posters'));
+    parts.push(fieldText('Location / Directions','location',s.location||'',ri,si,'e.g. Exhibit Hall B'));
+    parts.push(fieldTextarea('Description (optional)','description',s.description||'',ri,si,'e.g. Visit with adoptable puppies and browse poster presentations','desc-field'));
+    parts.push(fieldURL('Sponsor Logo URL (optional)','sponsorLogo',s.sponsorLogo||'',ri,si));
   }
-  if (typeId==='P+P') {
-    fields.push({ label:'Location / Directions', key:'location', placeholder:'e.g. Exhibit Hall B', value: session.location||'' });
+  else if (typeId==='Social') {
+    parts.push(fieldTextarea('Description (shown above event list)','description',s.description||'',ri,si,'e.g. Join us for an evening of Portland culture','desc-field'));
+    parts.push(fieldText('Event 1 — Tour Name','event1Name',s.event1Name||'',ri,si,'e.g. Portland Food Tour'));
+    parts.push(fieldText('Event 1 — Meet Time','event1Time',s.event1Time||'',ri,si,'e.g. 6:00 PM'));
+    parts.push(fieldText('Event 1 — Starting Location','event1Location',s.event1Location||'',ri,si,'e.g. Hotel Main Entrance'));
+    parts.push(fieldText('Event 2 — Tour Name','event2Name',s.event2Name||'',ri,si,'e.g. Portland Brewery Tour'));
+    parts.push(fieldText('Event 2 — Meet Time','event2Time',s.event2Time||'',ri,si,'e.g. 6:30 PM'));
+    parts.push(fieldText('Event 2 — Starting Location','event2Location',s.event2Location||'',ri,si,'e.g. Hotel Side Entrance'));
   }
-  return fields;
+  else if (typeId==='AEC27') {
+    parts.push(fieldText('Conference Name','nextEventName',s.nextEventName||'',ri,si,'e.g. CLEAR 2027 Annual Educational Conference'));
+    parts.push(fieldText('Location','nextEventLocation',s.nextEventLocation||'',ri,si,'e.g. Nashville, TN'));
+    parts.push(fieldText('Dates','nextEventDates',s.nextEventDates||'',ri,si,'e.g. September 13–16, 2027'));
+    parts.push(fieldURL('Conference Logo URL','nextEventLogo',s.nextEventLogo||'',ri,si));
+    parts.push(fieldURL('QR Code Image URL (optional)','qrCodeUrl',s.qrCodeUrl||'',ri,si));
+  }
+
+  return parts.join('');
+}
+
+// ─── Standard session fields (for non-specialty types) ────────────────────
+function standardSessionFieldsHTML(typeObj, s, ri, si) {
+  const parts = [];
+  parts.push(fieldText('Session Title','title',s.title||'',ri,si,'Full session title'));
+  if (typeObj.showPresenters) {
+    parts.push(fieldPresenterTextarea('Presenter(s) — one per line','presenters',s.presenters||[],ri,si));
+  }
+  return parts.join('');
+}
+
+// ─── Universal fields (every type) ────────────────────────────────────────
+function universalFieldsHTML(typeId, s, ri, si) {
+  const parts = [];
+  // Description — only for non-specialty (specialty types handle their own)
+  const hasOwnDesc = ['PlenaryRedirect','WelcomeReception','CommitteeMeeting','Break','Food','P+P','Social'].includes(typeId);
+  if (!hasOwnDesc) {
+    parts.push(fieldTextarea('Description (optional)','description',s.description||'',ri,si,'Optional notes or subtitle','desc-field'));
+  }
+  // Logo — only for types that don't already have it in specialty fields
+  const hasOwnLogo = ['WelcomeReception','Food','P+P','AEC27'].includes(typeId);
+  if (!hasOwnLogo) {
+    parts.push(fieldURL('Sponsor Logo URL (optional)','sponsorLogo',s.sponsorLogo||'',ri,si));
+  }
+  return parts.join('');
 }
 
 // ─── Excel Import ─────────────────────────────────────────────────────────
@@ -228,6 +309,7 @@ function formatTimeValue(val){
   const pl=s.match(/^(\d{1,2}):(\d{2})$/);if(pl)return String(parseInt(pl[1])).padStart(2,'0')+':'+pl[2];
   return s;
 }
+
 function processExcelFile(file){
   const result=el('import-result');result.style.display='none';
   const reader=new FileReader();
@@ -240,59 +322,79 @@ function processExcelFile(file){
       for(let i=2;i<rows.length;i++){
         const row=rows[i];
         if(!row||row.every(c=>c===''))continue;
-        const date        = excelDateToString(row[0]);
-        const roomId      = String(row[1]||'').trim();
-        const start       = formatTimeValue(row[2]);
-        const end         = formatTimeValue(row[3]);
-        const typeId      = String(row[4]||'').trim();
-        const title       = String(row[5]||'').trim();
-        const description = String(row[6]||'').trim();
-        const presenters  = [row[7],row[8],row[9],row[10],row[11]].map(p=>String(p||'').trim()).filter(Boolean);
-        const sponsor     = String(row[12]||'').trim();
-        const sponsorLogo = String(row[13]||'').trim();
-        const location    = String(row[14]||'').trim();
-        const mealType    = String(row[15]||'').trim();
-        const redirectRoom= String(row[16]||'').trim();
-        const event1Name  = String(row[17]||'').trim();
-        const event1Time  = String(row[18]||'').trim();
-        const event1Location = String(row[19]||'').trim();
-        const event2Name  = String(row[20]||'').trim();
-        const event2Time  = String(row[21]||'').trim();
-        const event2Location = String(row[22]||'').trim();
-        const nextEventName     = String(row[23]||'').trim();
-        const nextEventLocation = String(row[24]||'').trim();
-        const nextEventDates    = String(row[25]||'').trim();
-        const nextEventLogo     = String(row[26]||'').trim();
-
+        const date             = excelDateToString(row[0]);
+        const roomId           = String(row[1]||'').trim();
+        const start            = formatTimeValue(row[2]);
+        const end              = formatTimeValue(row[3]);
+        const typeId           = String(row[4]||'').trim();
+        const title            = String(row[5]||'').trim();
+        const description      = String(row[6]||'').trim();
+        const presenter1       = String(row[7]||'').trim();
+        const presenter2       = String(row[8]||'').trim();
+        const presenter3       = String(row[9]||'').trim();
+        const presenter4       = String(row[10]||'').trim();
+        const presenter5       = String(row[11]||'').trim();
+        const presenter6       = String(row[12]||'').trim();
+        const presenters       = [presenter1,presenter2,presenter3,presenter4,presenter5,presenter6].filter(Boolean);
+        const sponsorLogo      = String(row[13]||'').trim();
+        const location         = String(row[14]||'').trim();
+        const mealType         = String(row[15]||'').trim();
+        const redirectRoom     = String(row[16]||'').trim();
+        const event1Name       = String(row[17]||'').trim();
+        const event1Time       = String(row[18]||'').trim();
+        const event1Location   = String(row[19]||'').trim();
+        const event2Name       = String(row[20]||'').trim();
+        const event2Time       = String(row[21]||'').trim();
+        const event2Location   = String(row[22]||'').trim();
+        const nextEventName    = String(row[23]||'').trim();
+        const nextEventLocation= String(row[24]||'').trim();
+        const nextEventDates   = String(row[25]||'').trim();
+        const nextEventLogo    = String(row[26]||'').trim();
+        const qrCodeUrl        = String(row[27]||'').trim();
         if(!date||!roomId||!start||!end||!typeId){errors.push(`Row ${i+1}: missing required field`);skipped++;continue;}
         const roomIdx=state.rooms.findIndex(r=>r.id===roomId);
         if(roomIdx===-1){errors.push(`Row ${i+1}: room "${roomId}" not found`);skipped++;continue;}
         state.rooms[roomIdx].sessions.push({
-          date,start,end,type:typeId,title,description,presenters,
-          sponsor,sponsorLogo:sponsorLogo||nextEventLogo,location,mealType,
-          redirectRoom,event1Name,event1Time,event1Location,
+          date,start,end,type:typeId,title,description,presenters,sponsorLogo,
+          location,mealType,redirectRoom,
+          event1Name,event1Time,event1Location,
           event2Name,event2Time,event2Location,
-          nextEventName,nextEventLocation,nextEventDates,
+          nextEventName,nextEventLocation,nextEventDates,nextEventLogo,qrCodeUrl,
         });
         imported++;
       }
       renderAll();
       result.style.display='block';
-      if(errors.length){result.className='error';result.innerHTML=`<strong>Imported ${imported}, skipped ${skipped}.</strong><br>${errors.slice(0,5).join('<br>')}${errors.length>5?`<br>...and ${errors.length-5} more`:''}` ;}
+      if(errors.length){result.className='error';result.innerHTML=`<strong>Imported ${imported}, skipped ${skipped}.</strong><br>${errors.slice(0,5).join('<br>')}${errors.length>5?`<br>...and ${errors.length-5} more`:''}`;}
       else{result.className='success';result.textContent=`✓ Imported ${imported} sessions across ${state.rooms.filter(r=>r.sessions.length).length} rooms.`;}
     }catch(err){result.style.display='block';result.className='error';result.textContent='Could not read file: '+err.message;}
   };
   reader.readAsArrayBuffer(file);
 }
+
 function downloadTemplate(){
   const wb=XLSX.utils.book_new();
   const typeIds=state.types.map(t=>t.id).join(', ');
   const roomIds=state.rooms.map(r=>r.id).join(', ');
-  const headers=['Date (YYYY-MM-DD)','Room ID','Start (HH:MM)','End (HH:MM)','Type','Session Title','Sponsor (optional)','Presenter 1','Presenter 2','Presenter 3','Presenter 4','Presenter 5'];
-  const note=[`Room IDs: ${roomIds}`,'','','',`Types: ${typeIds}`,'Sponsor for Break/Food/P+P/WelcomeReception','','','','','',''];
-  const sample=['2026-09-14','Session-Room-a','10:30','11:30','CDE','Session Title','','Presenter Name','','','',''];
+  const headers=[
+    'Date (YYYY-MM-DD)','Room ID','Start (HH:MM)','End (HH:MM)','Type','Title','Description',
+    'Presenter 1','Presenter 2','Presenter 3','Presenter 4','Presenter 5','Presenter 6',
+    'Sponsor Logo URL','Location','Meal Type','Redirect Room',
+    'Event 1 Name','Event 1 Time','Event 1 Location',
+    'Event 2 Name','Event 2 Time','Event 2 Location',
+    'Next Event Name','Next Event Location','Next Event Dates','Next Event Logo URL','QR Code URL'
+  ];
+  const note=[
+    `Room IDs: ${roomIds}`,'','','',`Types: ${typeIds}`,'Optional for all types','Optional',
+    'Session/Plenary/Committee/PlenaryRedirect','','','','','',
+    'URL to logo image','Food/P+P/WelcomeReception','Food only','PlenaryRedirect only',
+    'Social only','Social only','Social only',
+    'Social only','Social only','Social only',
+    'AEC27 only','AEC27 only','AEC27 only','AEC27 only','AEC27 only'
+  ];
+  const sample=['2026-09-14','Session-Room-a','10:30','11:30','RAG','Session Title Here','Optional description','Presenter Name','','','','','','','','','','','','','','','','','','','',''];
   const ws=XLSX.utils.aoa_to_sheet([headers,note,sample]);
-  ws['!cols']=[20,22,16,16,18,55,25,22,22,22,22,22].map(w=>({wch:w}));
+  ws['!cols']=headers.map((_,i)=>({wch:[18,20,14,14,18,45,35,22,22,22,22,22,22,35,22,16,20,24,14,24,24,14,24,36,22,24,36,30][i]||20}));
   XLSX.utils.book_append_sheet(wb,ws,'Sessions');
   XLSX.writeFile(wb,'session_import_template.xlsx');
 }
@@ -347,7 +449,8 @@ function renderRoomPanel(){
 
   const sessLabel=document.createElement('div');sessLabel.className='section-label';sessLabel.textContent=`Sessions (${room.sessions.length})`;panels.appendChild(sessLabel);
 
-  const sorted=[...room.sessions].map((s,idx)=>({...s,_idx:idx})).sort((a,b)=>(a.date||'')<(b.date||'')?-1:(a.date||'')>(b.date||'')?1:(a.start||'').localeCompare(b.start||''));
+  const sorted=[...room.sessions].map((s,idx)=>({...s,_idx:idx}))
+    .sort((a,b)=>(a.date||'')<(b.date||'')?-1:(a.date||'')>(b.date||'')?1:(a.start||'').localeCompare(b.start||''));
 
   sorted.forEach(s=>{
     const si=s._idx,key=`${ri}-${si}`,isOpen=sessionExpanded[key];
@@ -359,7 +462,7 @@ function renderRoomPanel(){
       <div class="session-meta">
         <div class="session-date-badge">${s.date||'No date'}</div>
         <div class="session-time-badge">${s.start||'--:--'} – ${s.end||'--:--'}</div>
-        <div class="session-title-preview">${s.title||s.redirectRoom||s.nextEventName||s.socialEvent||'Untitled'}</div>
+        <div class="session-title-preview">${s.title||s.redirectRoom||s.nextEventName||'Untitled'}</div>
         <div class="type-pill" style="background:${typeObj.color}22;color:${typeObj.color}">${typeObj.id}</div>
       </div>
       <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">
@@ -369,56 +472,32 @@ function renderRoomPanel(){
     hdr.onclick=()=>{sessionExpanded[key]=!sessionExpanded[key];renderRoomPanel();};
 
     const typeOptions=state.types.map(t=>`<option value="${t.id}" ${t.id===s.type?'selected':''}>${t.label}</option>`).join('');
-    const extraFields=specialtyFields(s.type,s,ri,si);
 
     const body=document.createElement('div');body.className='session-body'+(isOpen?' open':'');
 
-    // Build extra fields HTML
-    const extraHTML=extraFields.map(f=>{
-      if(f.textarea){
-        return `<div class="field full"><label>${f.label}</label>
-          <textarea onblur="state.rooms[${ri}].sessions[${si}].${f.key}=this.value.split('\\n').map(p=>p.trim()).filter(Boolean)" placeholder="${f.placeholder}">${f.value}</textarea></div>`;
-      }
-      return `<div class="field full"><label>${f.label}</label>
-        <input type="${f.type||'text'}" value="${String(f.value).replace(/"/g,'&quot;')}" placeholder="${f.placeholder}"
-          onblur="state.rooms[${ri}].sessions[${si}].${f.key}=this.value"></div>`;
-    }).join('');
-
-    // Standard fields for session types (title + presenters for non-specialty)
+    // Build form — logical tab order: date, type, start, end, then type-specific fields
     const isSpecialty=typeObj.specialty;
-    const standardSessionFields=!isSpecialty?`
-      <div class="field full"><label>Session Title</label>
-        <input type="text" value="${(s.title||'').replace(/"/g,'&quot;')}" placeholder="Full session title"
-          onblur="state.rooms[${ri}].sessions[${si}].title=this.value;renderRoomPanel()"></div>
-      ${typeObj.showPresenters?`<div class="field full"><label>Presenter(s) — one per line</label>
-        <textarea onblur="state.rooms[${ri}].sessions[${si}].presenters=this.value.split('\\n').map(p=>p.trim()).filter(Boolean)">${(s.presenters||[]).join('\n')}</textarea></div>`:''}
-    `:'';
-
-    // Universal fields — available on every type
-    const universalFields=`
-      <div class="field full"><label>Description (optional)</label>
-        <input type="text" value="${(s.description||'').replace(/"/g,'&quot;')}" placeholder="Optional notes or subtitle"
-          onblur="state.rooms[${ri}].sessions[${si}].description=this.value"></div>
-      <div class="field full"><label>Sponsor Name (optional)</label>
-        <input type="text" value="${(s.sponsor||'').replace(/"/g,'&quot;')}" placeholder="Sponsor name"
-          onblur="state.rooms[${ri}].sessions[${si}].sponsor=this.value"></div>
-      <div class="field full"><label>Sponsor Logo URL (optional)</label>
-        <input type="url" value="${(s.sponsorLogo||'').replace(/"/g,'&quot;')}" placeholder="https://..."
-          onblur="state.rooms[${ri}].sessions[${si}].sponsorLogo=this.value"></div>
-    `;
 
     body.innerHTML=`<div class="field-row">
-      <div class="field"><label>Date</label>
-        <input type="date" value="${s.date||''}" onblur="state.rooms[${ri}].sessions[${si}].date=this.value;renderRoomPanel()"></div>
-      <div class="field"><label>Type</label>
-        <select onchange="state.rooms[${ri}].sessions[${si}].type=this.value;renderRoomPanel()">${typeOptions}</select></div>
-      <div class="field"><label>Start Time</label>
-        <input type="time" value="${s.start||''}" onblur="state.rooms[${ri}].sessions[${si}].start=this.value;renderRoomPanel()"></div>
-      <div class="field"><label>End Time</label>
-        <input type="time" value="${s.end||''}" onblur="state.rooms[${ri}].sessions[${si}].end=this.value;renderRoomPanel()"></div>
-      ${standardSessionFields}
-      ${extraHTML}
-      ${universalFields}
+      <div class="field">
+        <label>Date</label>
+        <input type="date" value="${s.date||''}" onblur="state.rooms[${ri}].sessions[${si}].date=this.value;renderRoomPanel()">
+      </div>
+      <div class="field">
+        <label>Type</label>
+        <select onchange="state.rooms[${ri}].sessions[${si}].type=this.value;renderRoomPanel()">${typeOptions}</select>
+      </div>
+      <div class="field">
+        <label>Start Time</label>
+        <input type="time" value="${s.start||''}" onblur="state.rooms[${ri}].sessions[${si}].start=this.value;renderRoomPanel()">
+      </div>
+      <div class="field">
+        <label>End Time</label>
+        <input type="time" value="${s.end||''}" onblur="state.rooms[${ri}].sessions[${si}].end=this.value;renderRoomPanel()">
+      </div>
+      ${!isSpecialty ? standardSessionFieldsHTML(typeObj,s,ri,si) : ''}
+      ${specialtyFieldsHTML(s.type,s,ri,si)}
+      ${universalFieldsHTML(s.type,s,ri,si)}
     </div>`;
 
     card.appendChild(hdr);card.appendChild(body);panels.appendChild(card);
@@ -428,8 +507,17 @@ function renderRoomPanel(){
 }
 
 function addSession(ri){
-  state.rooms[ri].sessions.push({date:'',title:'',type:state.types[0].id,start:'',end:'',sponsor:'',sponsorLogo:'',presenters:[],location:'',redirectRoom:'',description:'',nextEventName:'',nextEventLocation:'',nextEventDates:'',nextEventLogo:'',qrCodeUrl:'',mealType:'',event1Name:'',event1Time:'',event1Location:'',event2Name:'',event2Time:'',event2Location:''});
-  const si=state.rooms[ri].sessions.length-1;sessionExpanded[`${ri}-${si}`]=true;renderRoomTabs();renderRoomPanel();
+  state.rooms[ri].sessions.push({
+    date:'',title:'',type:state.types[0].id,start:'',end:'',
+    sponsorLogo:'',presenters:[],location:'',redirectRoom:'',
+    description:'',nextEventName:'',nextEventLocation:'',
+    nextEventDates:'',nextEventLogo:'',qrCodeUrl:'',
+    mealType:'',event1Name:'',event1Time:'',event1Location:'',
+    event2Name:'',event2Time:'',event2Location:'',
+  });
+  const si=state.rooms[ri].sessions.length-1;
+  sessionExpanded[`${ri}-${si}`]=true;
+  renderRoomTabs();renderRoomPanel();
 }
 function removeSession(ri,si){if(!confirm('Remove this session?'))return;state.rooms[ri].sessions.splice(si,1);renderRoomTabs();renderRoomPanel();}
 function removeRoom(ri){if(!confirm(`Remove room "${state.rooms[ri].name}"?`))return;state.rooms.splice(ri,1);state.activeRoom=Math.max(0,ri-1);renderAll();}
@@ -445,7 +533,7 @@ function renderURLs(){
 function buildJSON(){
   const typeMap={};
   state.types.forEach(t=>{
-    typeMap[t.id]={label:t.label,background:t.background,color:t.color,showPresenters:t.showPresenters,showSponsor:t.showSponsor,specialty:t.specialty};
+    typeMap[t.id]={label:t.label,background:t.background,color:t.color,showPresenters:t.showPresenters,specialty:t.specialty};
   });
   return{event:el('event-name').value,rooms:state.rooms.map(r=>({id:r.id,name:r.name,sessions:r.sessions})),types:typeMap};
 }
@@ -485,14 +573,14 @@ async function loadScheduleFromWorker(){
       state.rooms=data.rooms.map(r=>({
         id:r.id,name:r.name,
         sessions:(r.sessions||[]).map(s=>({
-          date:s.date||'',title:s.title||'',type:s.type||s.track||state.types[0].id,
-          start:s.start||'',end:s.end||'',sponsor:s.sponsor||'',sponsorLogo:s.sponsorLogo||'',
+          date:s.date||'',title:s.title||'',type:s.type||state.types[0].id,
+          start:s.start||'',end:s.end||'',sponsorLogo:s.sponsorLogo||s.logoUrl||'',
           presenters:s.presenters||[],location:s.location||'',redirectRoom:s.redirectRoom||'',
-          socialEvent:s.socialEvent||'',ticketNote:s.ticketNote||'',seeYouTime:s.seeYouTime||'',
-          nextEventName:s.nextEventName||'',nextEventLocation:s.nextEventLocation||'',
-          description:s.description||'',nextEventDates:s.nextEventDates||'',mealType:s.mealType||'',
+          description:s.description||'',mealType:s.mealType||'',
           event1Name:s.event1Name||'',event1Time:s.event1Time||'',event1Location:s.event1Location||'',
           event2Name:s.event2Name||'',event2Time:s.event2Time||'',event2Location:s.event2Location||'',
+          nextEventName:s.nextEventName||'',nextEventLocation:s.nextEventLocation||'',
+          nextEventDates:s.nextEventDates||'',nextEventLogo:s.nextEventLogo||'',qrCodeUrl:s.qrCodeUrl||'',
         }))
       }));
     }
