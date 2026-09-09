@@ -8,19 +8,10 @@
   @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&family=Pacifico&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  /* Updated accent colors */
-  :root {
-    --track-color: #484848;
-    --blue:      #032338;
-    --burgundy:  #650b26;
-    --gold:      #d4aa3d;
-  }
+  :root { --track-color: #484848; --blue: #032338; --burgundy: #650b26; --gold: #d4aa3d; }
 
   html, body { width: 100vw; height: 100vh; overflow: hidden; background: #000; font-family: 'Montserrat', sans-serif; }
-
   #board { width: 1080px; height: 1920px; position: absolute; top: 0; left: 0; transform-origin: top left; }
-
   #bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
 
   /* ── SESSION CONTENT ── */
@@ -30,43 +21,31 @@
     display: flex; flex-direction: column;
     padding: 60px 60px 48px 60px; overflow: hidden;
   }
-
   #status-badge {
     display: inline-flex; align-items: center; gap: 12px;
     padding: 12px 24px; border-radius: 4px; font-size: 20px;
     font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
-    margin-bottom: 48px; align-self: flex-start;
-    flex-shrink: 0;
+    margin-bottom: 48px; align-self: flex-start; flex-shrink: 0;
   }
   #status-badge.live     { background: var(--track-color); color: #fff; }
   #status-badge.upcoming { background: transparent; color: var(--track-color); border: 2px solid var(--track-color); }
-  #status-badge.social-badge { background: var(--track-color); color: #fff; }
   #status-badge .dot { width: 10px; height: 10px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
   #status-badge.live .dot { animation: pulse 1.6s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.7);} }
-
   #session-block { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; min-height: 0; }
-
   #session-time { font-size: 36px; font-weight: 600; color: #000; letter-spacing: 0.06em; margin-bottom: 24px; flex-shrink: 0; }
-
   .divider-thick { width: 100px; height: 3px; background: var(--track-color); margin-bottom: 36px; flex-shrink: 0; }
-
   #session-title { font-family: 'Montserrat', sans-serif; font-size: 72px; font-weight: 700; color: #000; line-height: 1.1; letter-spacing: -0.01em; margin-bottom: 24px; flex-shrink: 0; }
-
   #session-description { font-size: 28px; font-weight: 400; color: #222; line-height: 1.5; margin-bottom: 40px; flex-shrink: 0; }
-
   #presenters-block { margin-bottom: 40px; flex-shrink: 0; }
   #presenters-label { font-size: 16px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; padding: 2px 7px; color: white; background-color: var(--track-color); border-radius: 4px; margin-bottom: 12px; display: inline-block; }
   #presenters-list { font-size: 32px; font-weight: 400; color: #000; line-height: 1.4; }
-
   #sponsor-block { margin-bottom: 40px; flex-shrink: 0; }
   #sponsor-label { font-size: 16px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; padding: 2px 7px; color: white; background-color: var(--track-color); border-radius: 4px; margin-bottom: 12px; display: inline-block; }
   #sponsor-logo-img { max-height: 140px; max-width: 400px; object-fit: contain; display: block; margin-top: 16px; margin-bottom: 8px; }
   #sponsor-name { font-size: 36px; font-weight: 400; color: #000; line-height: 1.4; }
-
   #bottom-bar { margin-top: auto; padding-top: 32px; display: flex; align-items: center; flex-shrink: 0; }
   #clock { display: none; }
-
 
   /* ── SPECIALTY CONTENT ── */
   #specialty-content {
@@ -75,16 +54,8 @@
     display: flex; flex-direction: column;
     padding: 60px 60px 48px 60px; overflow: hidden;
   }
-
-  .spec-badge {
-    display: inline-flex; align-items: center; gap: 12px;
-    padding: 12px 24px; border-radius: 4px; font-size: 20px;
-    font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
-    margin-bottom: 48px; align-self: flex-start; flex-shrink: 0;
-    background: var(--track-color); color: #fff;
-  }
+  .spec-badge { display: inline-flex; align-items: center; gap: 12px; padding: 12px 24px; border-radius: 4px; font-size: 20px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 48px; align-self: flex-start; flex-shrink: 0; background: var(--track-color); color: #fff; }
   .spec-badge .dot { width: 10px; height: 10px; border-radius: 50%; background: #fff; animation: pulse 1.6s ease-in-out infinite; flex-shrink: 0; }
-
   .spec-eyebrow { font-size: 18px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--track-color); margin-bottom: 28px; flex-shrink: 0; }
   .spec-headline { font-family: 'Montserrat', sans-serif; font-size: 80px; font-weight: 700; color: #000; line-height: 1.05; letter-spacing: -0.01em; margin-bottom: 36px; flex-shrink: 0; }
   .spec-headline.pacifico { font-family: 'Pacifico', cursive; font-size: 90px; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--track-color); }
@@ -101,27 +72,42 @@
   .spec-redirect-room { font-size: 64px; font-weight: 700; color: #000; line-height: 1.1; margin-bottom: 20px; }
   .spec-bottom { display: none; }
   .spec-clock { display: none; }
-
-  /* Social event cards */
   .social-event-card { margin-bottom: 32px; flex-shrink: 0; }
   .social-event-name { font-size: 52px; font-weight: 700; color: #000; line-height: 1.05; margin-bottom: 10px; }
   .social-event-detail { font-size: 30px; font-weight: 400; color: #000; line-height: 1.4; margin-bottom: 4px; }
   .social-event-detail strong { font-weight: 700; color: var(--track-color); }
   .social-tickets { font-size: 22px; font-weight: 600; color: var(--track-color); letter-spacing: 0.05em; margin-top: 16px; flex-shrink: 0; }
 
-  /* Smooth fade — dark overlay so background and content swap together */
-  #fade {
-    position: absolute; inset: 0; z-index: 10;
-    background: rgba(0,0,0,0.6);
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.4s ease;
+  /* ── EXHIBIT HALL SPONSOR CONTENT ── */
+  /* Full-bleed background, logo centered in middle zone, level text below */
+  #exhibit-content {
+    position: absolute; z-index: 2; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    pointer-events: none;
   }
+  #exhibit-logo-wrap {
+    width: 760px; height: 280px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 40px;
+  }
+  #exhibit-logo {
+    max-width: 100%; max-height: 100%;
+    object-fit: contain;
+  }
+  #exhibit-level {
+    font-size: 36px; font-weight: 800; letter-spacing: 0.2em;
+    text-transform: uppercase; color: #fff;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  }
+
+  /* Fade */
+  #fade { position: absolute; inset: 0; z-index: 10; background: rgba(0,0,0,0.6); opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
   #fade.active { opacity: 1; }
   .hidden { display: none !important; }
 </style>
 </head>
 <body>
-
 <div id="board">
   <img id="bg" src="" alt="">
   <div id="travel-safe-watermark" class="hidden">Travel Safe!</div>
@@ -148,14 +134,19 @@
         <img id="sponsor-logo-img" src="" alt="" class="hidden">
       </div>
     </div>
-    <div id="bottom-bar">
-      <div id="clock"></div>
-    </div>
+    <div id="bottom-bar"><div id="clock"></div></div>
   </div>
 
   <!-- SPECIALTY layout -->
   <div id="specialty-content" class="hidden"></div>
 
+  <!-- EXHIBIT HALL layout -->
+  <div id="exhibit-content" class="hidden">
+    <div id="exhibit-logo-wrap">
+      <img id="exhibit-logo" src="" alt="">
+    </div>
+    <div id="exhibit-level"></div>
+  </div>
 </div>
 
 <script>
@@ -170,8 +161,26 @@
   const REFRESH_INTERVAL = 60 * 1000;
   const CLOCK_INTERVAL   = 1000;
 
+  // Exhibit Hall room ID
+  const EXHIBIT_ROOM_ID  = 'Exhibit-Hall';
+
   // Types using the session layout
   const SESSION_TYPES = new Set(['RAG','CDE','ETP','T+E','Plenary','General']);
+
+  // Exhibit sponsor types — use exhibit layout
+  const EXHIBIT_SPONSOR_TYPES = new Set(['Sponsor','SponsorList']);
+
+  // Static exhibit scheduled types (interrupt rotation, show full-bleed bg only)
+  const EXHIBIT_STATIC_TYPES = new Set(['ExhibitWelcomeReception']);
+
+  // SVG backgrounds for sponsor types
+  const SPONSOR_BACKGROUNDS = {
+    'Gold Sponsor':       'GoldSponsor.svg',
+    'Silver Sponsor':     'SilverSponsor.svg',
+    'Presenting Sponsor': 'PresentingSponsor.svg',
+    'Premier Partner':    'PremierPartner.svg',
+    'Exhibitor':          'Exhibitor.svg',
+  };
 
   function getRoomId() { return new URLSearchParams(window.location.search).get('room')||''; }
 
@@ -195,19 +204,33 @@
   function el(id){return document.getElementById(id);}
   function show(id,v){const e=el(id);if(e)e.classList.toggle('hidden',!v);}
 
-  let currentKey=null;
+  let currentKey = null;
 
+  // ── Exhibit Hall playlist state ──────────────────────────────────────────
+  let playlistIndex    = 0;
+  let playlistTimer    = null;
+  let playlistRunning  = false;
+
+  // ── Main render ──────────────────────────────────────────────────────────
   function render(schedule, roomId, now) {
-    const roomData=schedule.rooms.find(r=>r.id===roomId);
+    const roomData = schedule.rooms.find(r=>r.id===roomId);
     if (!roomData) return;
 
-    const today=todayString();
-    const sessions=[...roomData.sessions]
+    if (roomId === EXHIBIT_ROOM_ID) {
+      renderExhibit(schedule, roomData, now);
+    } else {
+      renderSession(schedule, roomData, now);
+    }
+  }
+
+  // ── Standard session room rendering ──────────────────────────────────────
+  function renderSession(schedule, roomData, now) {
+    const today    = todayString();
+    const sessions = [...roomData.sessions]
       .filter(s=>s.date===today)
       .sort((a,b)=>a.start.localeCompare(b.start));
 
     let displaySession=null, isLive=false;
-
     for (const s of sessions) {
       const start=parseTime(s.start,today), end=parseTime(s.end,today);
       if (now>=start&&now<end){displaySession=s;isLive=true;break;}
@@ -217,27 +240,26 @@
         if (parseTime(s.start,today)>now){displaySession=s;break;}
       }
     }
-    // No more sessions — no default, just keep showing last state
     if (!displaySession) return;
 
-    const typeMap=schedule.types||schedule.tracks||{};
-    const typeData=typeMap[displaySession.type]
+    const typeMap  = schedule.types||schedule.tracks||{};
+    const typeData = typeMap[displaySession.type]
       ||typeMap[(displaySession.type||'').toUpperCase()]
       ||typeMap[(displaySession.type||'').toLowerCase()]
       ||Object.values(typeMap)[0]
       ||{color:'#484848',background:'',showPresenters:true,showSponsor:false};
 
-    const key=displaySession.title+'|'+isLive+'|'+(typeData.color||'')+'|'+displaySession.type+'|'+(displaySession.description||'');
+    const key = displaySession.title+'|'+isLive+'|'+(typeData.color||'')+'|'+displaySession.type+'|'+(displaySession.description||'');
     if (key===currentKey) return;
 
-    // Transition: fade to dark, swap content and bg together, fade back in only after bg loads
     const newSrc = typeData.background||'';
-    const bgEl = el('bg');
+    const bgEl   = el('bg');
 
     function revealAll() {
       document.getElementById('board').style.setProperty('--track-color', typeData.color||'#484848');
       bgEl.src = newSrc;
       show('travel-safe-watermark', false);
+      show('exhibit-content', false);
       if (SESSION_TYPES.has(displaySession.type)) {
         show('content',true); show('specialty-content',false);
         applySession(displaySession, isLive, typeData);
@@ -251,42 +273,143 @@
 
     el('fade').classList.add('active');
     setTimeout(()=>{
-      if (!newSrc || bgEl.src.endsWith(newSrc)) {
-        revealAll();
-      } else {
-        const tmp = new Image();
-        tmp.onload  = revealAll;
-        tmp.onerror = revealAll;
-        tmp.src = newSrc;
-      }
+      if (!newSrc) { revealAll(); }
+      else { const tmp=new Image(); tmp.onload=revealAll; tmp.onerror=revealAll; tmp.src=newSrc; }
     }, 400);
   }
 
-  function applySession(s, isLive, typeData) {
-    const t=s.type;
+  // ── Exhibit Hall rendering ────────────────────────────────────────────────
+  function renderExhibit(schedule, roomData, now) {
+    const today    = todayString();
+    const sessions = roomData.sessions||[];
 
-    // Badge — hide for Break (Break uses session layout without badge)
-    // Plenary Redirect handled in specialty; all session types show badge
+    // Check for a scheduled session that should interrupt the playlist
+    const scheduledSession = sessions.find(s=>{
+      if (!s.date||!s.start||!s.end) return false;
+      if (s.date!==today) return false;
+      const start=parseTime(s.start,today), end=parseTime(s.end,today);
+      return now>=start && now<end;
+    });
+
+    if (scheduledSession) {
+      // Stop playlist rotation, show the scheduled slide
+      stopPlaylist();
+      showExhibitStatic(scheduledSession);
+      return;
+    }
+
+    // No scheduled interruption — run the playlist
+    if (!playlistRunning) {
+      // Build playlist from sessions with no date (or date blank)
+      const playlist = sessions
+        .filter(s=>!s.date||s.date==='')
+        .sort((a,b)=>(parseInt(a.playlistOrder)||999)-(parseInt(b.playlistOrder)||999));
+      if (playlist.length) startPlaylist(playlist);
+    }
+  }
+
+  function showExhibitStatic(s) {
+    // Show full-bleed background with no overlay content
+    const bg = s.background || s.sponsorLogo || '';
+    const key = 'exhibit-static|'+s.type+'|'+bg;
+    if (key===currentKey) return;
+
+    el('fade').classList.add('active');
+    setTimeout(()=>{
+      el('bg').src = bg;
+      show('content',false);
+      show('specialty-content',false);
+      show('exhibit-content',false);
+      currentKey = key;
+      requestAnimationFrame(()=>requestAnimationFrame(()=>el('fade').classList.remove('active')));
+    },400);
+  }
+
+  function startPlaylist(playlist) {
+    playlistRunning = true;
+    playlistIndex   = 0;
+    advancePlaylist(playlist);
+  }
+
+  function stopPlaylist() {
+    if (playlistTimer) { clearTimeout(playlistTimer); playlistTimer=null; }
+    playlistRunning = false;
+  }
+
+  function advancePlaylist(playlist) {
+    if (!playlist.length) return;
+    const s = playlist[playlistIndex % playlist.length];
+    showExhibitSlide(s, ()=>{
+      const dur = (parseInt(s.duration)||15) * 1000;
+      playlistTimer = setTimeout(()=>{
+        playlistIndex++;
+        advancePlaylist(playlist);
+      }, dur);
+    });
+  }
+
+  function showExhibitSlide(s, onShown) {
+    const t         = s.sponsorType||'';
+    const level     = s.sponsorLevel||'';
+    const logoUrl   = s.sponsorLogo||'';
+    const isStatic  = s.type==='SponsorList';
+
+    // Pick background
+    let bgSrc = '';
+    if (isStatic) {
+      bgSrc = 'SponsorList.svg';
+    } else {
+      bgSrc = SPONSOR_BACKGROUNDS[t] || 'Exhibitor.svg';
+    }
+
+    const key = 'playlist|'+bgSrc+'|'+logoUrl+'|'+level;
+    if (key===currentKey){ if(onShown) onShown(); return; }
+
+    el('fade').classList.add('active');
+    setTimeout(()=>{
+      el('bg').src = bgSrc;
+      document.getElementById('board').style.setProperty('--track-color','#032338');
+      show('content',false);
+      show('specialty-content',false);
+      show('travel-safe-watermark',false);
+
+      if (isStatic) {
+        // SponsorList — just the background, no overlay
+        show('exhibit-content',false);
+      } else {
+        // Sponsor slide — show logo and level
+        show('exhibit-content',true);
+        const logoEl  = el('exhibit-logo');
+        const levelEl = el('exhibit-level');
+        logoEl.src    = logoUrl;
+        logoEl.style.display = logoUrl ? 'block' : 'none';
+        levelEl.textContent  = level ? level.toUpperCase()+' LEVEL' : '';
+      }
+
+      currentKey = key;
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        el('fade').classList.remove('active');
+        if (onShown) onShown();
+      }));
+    },400);
+  }
+
+  // ── Standard session layout ───────────────────────────────────────────────
+  function applySession(s, isLive, typeData) {
     show('status-badge',true);
     el('status-badge').className = isLive?'live':'upcoming';
     el('status-text').textContent = isLive?'Now In Session':'Coming Up Next';
-
     el('session-time').textContent=(s.start&&s.end)?fmt12(s.start)+' \u2013 '+fmt12(s.end):'';
     el('session-title').innerHTML=s.title||'';
-
-    // Description — show for any session type if populated
     const hasDesc=!!(s.description&&s.description.trim());
     show('session-description',hasDesc);
     if(hasDesc) el('session-description').innerHTML=s.description;
-
     const hasPres=typeData.showPresenters&&s.presenters&&s.presenters.length>0;
     show('presenters-block',hasPres);
     if(hasPres){
       el('presenters-label').textContent=s.presenters.length>1?'Presenters':'Presenter';
       el('presenters-list').innerHTML=s.presenters.join('<br>');
-      
     }
-
     const hasSponsor=!!(s.sponsor||s.sponsorLogo);
     show('sponsor-block',hasSponsor);
     if(hasSponsor){
@@ -297,12 +420,12 @@
     }
   }
 
+  // ── Specialty layout ─────────────────────────────────────────────────────
   function applySpecialty(s, typeData) {
     const c=el('specialty-content');
-    c.innerHTML='';
+    c.innerHTML=''; c.style.top=''; c.style.height='';
     const t=s.type;
     const timeStr=(s.start&&s.end)?fmt12(s.start)+' \u2013 '+fmt12(s.end):(s.start?fmt12(s.start):'');
-
     const tag=(cls,txt)=>(txt!==undefined&&txt!==null&&txt!=='')?`<div class="${cls}">${txt}</div>`:'';
     const lbl=(txt)=>`<div class="spec-label">${txt}</div>`;
     const logoHtml=(src)=>src?`<img class="spec-logo" src="${src}" alt="">`:'';
@@ -311,137 +434,49 @@
     const sponsorBlock=(sp,logo)=>(sp||logo)?`<div style="margin-top:24px;">${lbl('Sponsored by')}${sp?`<div class="spec-body">${sp}</div>`:''}${logoHtml(logo)}</div>`:'';
 
     if (t==='PlenaryRedirect') {
-      c.style.top='363px';
-      c.style.height='1282px';
-      c.innerHTML=`
-        <div class="spec-badge"><div class="dot"></div>Now In Session</div>
-        ${tag('spec-headline','Plenary Session')}
-        ${div()}
-        <div class="spec-redirect-arrow">&#8595;</div>
-        ${lbl('Join us in')}
-        ${tag('spec-redirect-room',s.redirectRoom||'Plenary Room')}
-        ${clk()}`;
+      c.style.top='363px'; c.style.height='1282px';
+      c.innerHTML=`<div class="spec-badge"><div class="dot"></div>Now In Session</div>${tag('spec-headline','Plenary Session')}${div()}<div class="spec-redirect-arrow">&#8595;</div>${lbl('Join us in')}${tag('spec-redirect-room',s.redirectRoom||'Plenary Room')}${clk()}`;
     }
     else if (t==='Break') {
-      c.innerHTML=`
-        ${tag('spec-time',timeStr)}
-        ${div()}
-        ${tag('spec-headline',s.title||'Break')}
-        ${s.description?tag('spec-desc',s.description):''}
-        ${clk()}`;
+      c.innerHTML=`${tag('spec-time',timeStr)}${div()}${tag('spec-headline',s.title||'Break')}${s.description?tag('spec-desc',s.description):''}${clk()}`;
     }
     else if (t==='Food') {
-      const title = s.title || s.mealType || 'Meal Break';
-      const timeStr2 = (s.start&&s.end) ? fmt12(s.start)+' \u2013 '+fmt12(s.end) : '';
-      c.innerHTML=`
-        ${tag('spec-eyebrow', s.mealType||'Meal Break')}
-        <div class="spec-headline">${title}</div>
-        ${div()}
-        ${timeStr2 ? `<div class="spec-time">${timeStr2}</div>` : ''}
-        ${s.description ? tag('spec-desc', s.description) : ''}
-        ${sponsorBlock(s.sponsor,s.sponsorLogo)}
-        ${clk()}`;
+      const title=s.title||s.mealType||'Meal Break';
+      const timeStr2=(s.start&&s.end)?fmt12(s.start)+' \u2013 '+fmt12(s.end):'';
+      c.innerHTML=`${tag('spec-eyebrow',s.mealType||'Meal Break')}<div class="spec-headline">${title}</div>${div()}${timeStr2?`<div class="spec-time">${timeStr2}</div>`:''} ${s.description?tag('spec-desc',s.description):''}${sponsorBlock(s.sponsor,s.sponsorLogo)}${clk()}`;
     }
     else if (t==='P+P') {
-      // No badge. All content must stay within top 60% of board (above 1152px from top).
-      // Content zone top = 362.9px. 60% of 1920 = 1152px. So max content height from zone top = 1152 - 362.9 = 789px.
-      // With 60px top padding, usable = 729px. Sponsor pinned below that.
-      c.innerHTML=`
-        <div style="flex:0 0 auto;">
-          <div style="font-family:'Montserrat',sans-serif;font-size:72px;font-weight:700;color:#000;line-height:1.1;letter-spacing:-0.01em;margin-bottom:24px;">${s.title||'Puppies &amp; Posters'}</div>
-          ${div()}
-          ${tag('spec-time',timeStr)}
-          ${s.location?tag('spec-desc',s.location):''}
-          ${s.description?tag('spec-desc',s.description):''}
-          ${s.sponsor||s.sponsorLogo?sponsorBlock(s.sponsor,s.sponsorLogo):''}
-        </div>
-        ${clk()}`;
+      c.innerHTML=`<div style="flex:0 0 auto;"><div style="font-family:'Montserrat',sans-serif;font-size:72px;font-weight:700;color:#000;line-height:1.1;letter-spacing:-0.01em;margin-bottom:24px;">${s.title||'Puppies &amp; Posters'}</div>${div()}${tag('spec-time',timeStr)}${s.location?tag('spec-desc',s.location):''}${s.description?tag('spec-desc',s.description):''}${s.sponsor||s.sponsorLogo?sponsorBlock(s.sponsor,s.sponsorLogo):''}</div>${clk()}`;
     }
     else if (t==='Social') {
-      const e1n=s.event1Name||'', e1t=s.event1Time||'', e1l=s.event1Location||'';
-      const e2n=s.event2Name||'', e2t=s.event2Time||'', e2l=s.event2Location||'';
-      c.innerHTML=`
-        <div class="spec-badge"><div class="dot"></div>Social Events</div>
-        ${div()}
-        ${s.description?`<div class="spec-desc" style="margin-bottom:24px;">${s.description}</div>`:''}
-        ${e1n?`<div class="social-event-card">
-          ${tag('social-event-name',e1n)}
-          ${e1t?`<div class="social-event-detail"><strong>Meet at:</strong> ${e1t}</div>`:''}
-          ${e1l?`<div class="social-event-detail"><strong>Starting at:</strong> ${e1l}</div>`:''}
-        </div>`:''}
-        ${e2n?`<div class="social-event-card">
-          ${tag('social-event-name',e2n)}
-          ${e2t?`<div class="social-event-detail"><strong>Meet at:</strong> ${e2t}</div>`:''}
-          ${e2l?`<div class="social-event-detail"><strong>Starting at:</strong> ${e2l}</div>`:''}
-        </div>`:''}
-        <div class="social-tickets">&#9679; Ticketed event — see your registration confirmation for details.</div>
-        ${clk()}`;
+      const e1n=s.event1Name||'',e1t=s.event1Time||'',e1l=s.event1Location||'';
+      const e2n=s.event2Name||'',e2t=s.event2Time||'',e2l=s.event2Location||'';
+      c.innerHTML=`<div class="spec-badge"><div class="dot"></div>Social Events</div>${div()}${s.description?`<div class="spec-desc" style="margin-bottom:24px;">${s.description}</div>`:''}${e1n?`<div class="social-event-card">${tag('social-event-name',e1n)}${e1t?`<div class="social-event-detail"><strong>Meet at:</strong> ${e1t}</div>`:''}${e1l?`<div class="social-event-detail"><strong>Starting at:</strong> ${e1l}</div>`:''}</div>`:''}${e2n?`<div class="social-event-card">${tag('social-event-name',e2n)}${e2t?`<div class="social-event-detail"><strong>Meet at:</strong> ${e2t}</div>`:''}${e2l?`<div class="social-event-detail"><strong>Starting at:</strong> ${e2l}</div>`:''}</div>`:''}  <div class="social-tickets">&#9679; Ticketed event — see your registration confirmation for details.</div>${clk()}`;
     }
     else if (t==='AEC27') {
       show('travel-safe-watermark',false);
-      c.style.top='160px';
-      c.style.height='1485px';
-      c.innerHTML=`
-        <div class="spec-eyebrow" style="font-size:22px;margin-bottom:20px;">Thank you for joining us</div>
-        <div class="spec-headline" style="font-size:72px;margin-bottom:36px;">We can't wait to see you next year!</div>
-        ${div()}
-        ${s.nextEventLogo||s.sponsorLogo?`<img src="${s.nextEventLogo||s.sponsorLogo}" alt="" style="display:block;max-width:650px;max-height:auto;object-fit:contain;margin:0 auto 32px;">`:''}        ${s.nextEventName?tag('spec-body-bold',s.nextEventName):''}
-        ${s.nextEventLocation?tag('spec-body-sm','<strong>Location:</strong> '+s.nextEventLocation):''}
-        ${s.nextEventDates?tag('spec-body-sm','<strong>Dates:</strong> '+s.nextEventDates):''}
-        ${s.qrCodeUrl?`<div style="margin-top:28px;"><div class="spec-label">Learn More &amp; Register</div><img src="${s.qrCodeUrl}" alt="QR Code" style="width:180px;height:180px;object-fit:contain;display:block;margin-top:12px;border:3px solid var(--track-color);border-radius:8px;"></div>`:''}
-        <div class="spec-accent" style="margin-top:32px;font-family:'Pacifico',cursive;font-weight:600;font-size:80px;">Safe Travels Home!</div>
-        ${clk()}`;
+      c.style.top='160px'; c.style.height='1485px';
+      c.innerHTML=`<div class="spec-eyebrow" style="font-size:22px;margin-bottom:20px;">Thank you for joining us</div><div class="spec-headline" style="font-size:72px;margin-bottom:36px;">We can't wait to see you next year!</div>${div()}${s.nextEventLogo||s.sponsorLogo?`<img src="${s.nextEventLogo||s.sponsorLogo}" alt="" style="display:block;max-width:650px;max-height:auto;object-fit:contain;margin:0 auto 32px;">`:''}${s.nextEventName?tag('spec-body-bold',s.nextEventName):''}${s.nextEventLocation?tag('spec-body-sm','<strong>Location:</strong> '+s.nextEventLocation):''}${s.nextEventDates?tag('spec-body-sm','<strong>Dates:</strong> '+s.nextEventDates):''}${s.qrCodeUrl?`<div style="margin-top:28px;"><div class="spec-label">Learn More &amp; Register</div><img src="${s.qrCodeUrl}" alt="QR Code" style="width:180px;height:180px;object-fit:contain;display:block;margin-top:12px;border:3px solid var(--track-color);border-radius:8px;"></div>`:''}<div class="spec-accent" style="margin-top:32px;font-family:'Pacifico',cursive;font-weight:600;font-size:80px;">Safe Travels Home!</div>${clk()}`;
     }
     else if (t==='WelcomeReception') {
-      c.innerHTML=`
-        ${tag('spec-eyebrow','Welcome')}
-        ${tag('spec-headline',s.title||'Welcome Reception')}
-        ${div()}
-        ${tag('spec-time',timeStr)}
-        ${s.location?tag('spec-body','<strong>Location:</strong> '+s.location):''}
-        ${s.description?tag('spec-desc',s.description):''}
-        ${sponsorBlock(s.sponsor,s.sponsorLogo)}
-        ${clk()}`;
+      c.innerHTML=`${tag('spec-eyebrow','Welcome')}${tag('spec-headline',s.title||'Welcome Reception')}${div()}${tag('spec-time',timeStr)}${s.location?tag('spec-body','<strong>Location:</strong> '+s.location):''}${s.description?tag('spec-desc',s.description):''}${sponsorBlock(s.sponsor,s.sponsorLogo)}${clk()}`;
     }
     else if (t==='CommitteeMeeting') {
       const chairs=(s.presenters||[]).join('\n');
-      c.innerHTML=`
-        ${tag('spec-eyebrow','Committee Meeting')}
-        ${tag('spec-headline',s.title||'Committee Meeting')}
-        ${div()}
-        ${tag('spec-time',timeStr)}
-        ${s.description?tag('spec-desc',s.description):''}
-        ${chairs?`${lbl((s.presenters||[]).length>1?'Chairs':'Chair')}<div class="spec-body" style="white-space:pre-line;">${chairs}</div>`:''}
-        ${clk()}`;
+      c.innerHTML=`${tag('spec-eyebrow','Committee Meeting')}${tag('spec-headline',s.title||'Committee Meeting')}${div()}${tag('spec-time',timeStr)}${s.description?tag('spec-desc',s.description):''}${chairs?`${lbl((s.presenters||[]).length>1?'Chairs':'Chair')}<div class="spec-body" style="white-space:pre-line;">${chairs}</div>`:''}${clk()}`;
     }
     else {
-      c.innerHTML=`
-        ${tag('spec-eyebrow',t||'')}
-        ${tag('spec-headline',s.title||'')}
-        ${div()}
-        ${tag('spec-time',timeStr)}
-        ${clk()}`;
+      c.innerHTML=`${tag('spec-eyebrow',t||'')}${tag('spec-headline',s.title||'')}${div()}${tag('spec-time',timeStr)}${clk()}`;
     }
 
     const ck=document.getElementById('spec-clock');
     if(ck) ck.textContent=fmtClock(new Date());
 
-    // Universal: append description and sponsor to any specialty type if populated
-    // (individual blocks may already include these — this catches types that don't)
-    // We use a sentinel class to avoid double-rendering
     if (!c.querySelector('.universal-appended')) {
-      const extras = document.createElement('div');
-      extras.className = 'universal-appended';
-      if (s.description && s.description.trim() && !c.querySelector('.spec-desc')) {
-        const d = document.createElement('div');
-        d.className = 'spec-desc';
-        d.innerHTML = s.description;
-        extras.appendChild(d);
-      }
-      if ((s.sponsor||s.sponsorLogo) && !c.querySelector('.spec-label') && t !== 'AEC27') {
-        extras.innerHTML += sponsorBlock(s.sponsor, s.sponsorLogo);
-      }
-      if (extras.innerHTML || extras.children.length) c.appendChild(extras);
+      const extras=document.createElement('div'); extras.className='universal-appended';
+      if (s.description&&s.description.trim()&&!c.querySelector('.spec-desc')) { const d=document.createElement('div'); d.className='spec-desc'; d.innerHTML=s.description; extras.appendChild(d); }
+      if ((s.sponsor||s.sponsorLogo)&&!c.querySelector('.spec-label')&&t!=='AEC27') { extras.innerHTML+=sponsorBlock(s.sponsor,s.sponsorLogo); }
+      if (extras.innerHTML||extras.children.length) c.appendChild(extras);
     }
   }
 
