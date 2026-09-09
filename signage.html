@@ -297,7 +297,7 @@
     if (scheduledSession) {
       // Stop playlist rotation, show the scheduled slide
       stopPlaylist();
-      showExhibitStatic(scheduledSession);
+      showExhibitStatic(scheduledSession, schedule);
       return;
     }
 
@@ -311,20 +311,26 @@
     }
   }
 
-  function showExhibitStatic(s) {
-    // Show full-bleed background with no overlay content
-    const bg = s.background || s.sponsorLogo || '';
+  function showExhibitStatic(s, schedule) {
+    // Get background from the types map, falling back to a hardcoded filename
+    const typeMap  = (schedule&&schedule.types)||{};
+    const typeData = typeMap[s.type]||{};
+    const bg = typeData.background || s.background || s.sponsorLogo || (s.type==='ExhibitWelcomeReception' ? 'ExhibitWelcomeReception.svg' : '');
     const key = 'exhibit-static|'+s.type+'|'+bg;
     if (key===currentKey) return;
 
     el('fade').classList.add('active');
     setTimeout(()=>{
-      el('bg').src = bg;
-      show('content',false);
-      show('specialty-content',false);
-      show('exhibit-content',false);
-      currentKey = key;
-      requestAnimationFrame(()=>requestAnimationFrame(()=>el('fade').classList.remove('active')));
+      const tmp = new Image();
+      tmp.onload = tmp.onerror = ()=>{
+        el('bg').src = bg;
+        show('content',false);
+        show('specialty-content',false);
+        show('exhibit-content',false);
+        currentKey = key;
+        requestAnimationFrame(()=>requestAnimationFrame(()=>el('fade').classList.remove('active')));
+      };
+      tmp.src = bg;
     },400);
   }
 
