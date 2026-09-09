@@ -87,9 +87,10 @@
     position: absolute;
     left: 80px;
     right: 80px;
-    top: 1080px;
+    bottom: 520px;
     height: 370px;
-    display: flex; align-items: center; justify-content: center;
+    top: auto;
+    display: flex; align-items: flex-end; justify-content: center;
   }
   #exhibit-logo {
     max-width: 100%; max-height: 100%;
@@ -98,11 +99,10 @@
   #exhibit-level {
     position: absolute;
     left: 0; right: 0;
-    top: 1470px;
+    top: 1410px;
     text-align: center;
-    font-size: 36px; font-weight: 800; letter-spacing: 0.2em;
-    text-transform: uppercase; color: #fff;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    font-size: 30px; font-weight: 800; letter-spacing: 0.2em;
+    text-transform: uppercase; color: #032338;
   }
 
   /* Fade */
@@ -358,19 +358,14 @@
     const logoUrl   = s.sponsorLogo||'';
     const isStatic  = s.type==='SponsorList';
 
-    // Pick background
-    let bgSrc = '';
-    if (isStatic) {
-      bgSrc = 'SponsorList.svg';
-    } else {
-      bgSrc = SPONSOR_BACKGROUNDS[t] || 'Exhibitor.svg';
-    }
+    let bgSrc = isStatic ? 'SponsorList.svg' : (SPONSOR_BACKGROUNDS[t] || 'Exhibitor.svg');
 
     const key = 'playlist|'+bgSrc+'|'+logoUrl+'|'+level;
     if (key===currentKey){ if(onShown) onShown(); return; }
 
     el('fade').classList.add('active');
-    setTimeout(()=>{
+
+    function revealExhibit() {
       el('bg').src = bgSrc;
       document.getElementById('board').style.setProperty('--track-color','#032338');
       show('content',false);
@@ -378,10 +373,8 @@
       show('travel-safe-watermark',false);
 
       if (isStatic) {
-        // SponsorList — just the background, no overlay
         show('exhibit-content',false);
       } else {
-        // Sponsor slide — show logo and level
         show('exhibit-content',true);
         const logoEl  = el('exhibit-logo');
         const levelEl = el('exhibit-level');
@@ -395,7 +388,19 @@
         el('fade').classList.remove('active');
         if (onShown) onShown();
       }));
-    },400);
+    }
+
+    setTimeout(()=>{
+      // Preload background and logo together before revealing
+      let loaded = 0;
+      const toLoad = [bgSrc, logoUrl].filter(Boolean);
+      if (!toLoad.length) { revealExhibit(); return; }
+      toLoad.forEach(src=>{
+        const tmp = new Image();
+        tmp.onload = tmp.onerror = ()=>{ loaded++; if(loaded>=toLoad.length) revealExhibit(); };
+        tmp.src = src;
+      });
+    }, 400);
   }
 
   // ── Standard session layout ───────────────────────────────────────────────
