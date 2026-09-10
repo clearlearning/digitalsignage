@@ -13,7 +13,7 @@
   html, body { width: 100vw; height: 100vh; overflow: hidden; background: #000; font-family: 'Montserrat', sans-serif; }
   #board { width: 1080px; height: 1920px; position: absolute; top: 0; left: 0; transform-origin: top left; }
   #bg  { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
-  #bg2 { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; opacity: 0; transition: opacity 0.8s ease; pointer-events: none; }
+  #bg2 { display: none; }
 
   /* ── SESSION CONTENT ── */
   #content {
@@ -105,9 +105,9 @@
     text-transform: uppercase; color: #032338;
   }
 
-  /* Content fades independently from background */
-  #content, #specialty-content, #exhibit-content { transition: opacity 0.4s ease; }
-  .content-hidden { opacity: 0 !important; pointer-events: none; }
+  /* Subtle fade — just enough to mask the swap, not a blackout */
+  #fade { position: absolute; inset: 0; z-index: 10; background: rgba(0,0,0,0.25); opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+  #fade.active { opacity: 1; }
   .hidden { display: none !important; }
 </style>
 </head>
@@ -116,6 +116,7 @@
   <img id="bg"  src="" alt="">
   <img id="bg2" src="" alt="">
   <div id="travel-safe-watermark" class="hidden">Travel Safe!</div>
+  <div id="fade"></div>
 
   <!-- SESSION layout -->
   <div id="content" class="hidden">
@@ -208,38 +209,6 @@
   function el(id){return document.getElementById(id);}
   function show(id,v){const e=el(id);if(e)e.classList.toggle('hidden',!v);}
 
-  // Simple crossfade: preload new bg, swap instantly under a quick opacity dip on bg layer
-  function crossfade(newSrc, applyContent, done) {
-    const bg1 = el('bg'), bg2 = el('bg2');
-
-    function swap() {
-      applyContent();
-      if (!newSrc) { if(done) done(); return; }
-      // Load new image into bg2, fade it in, then promote to bg1
-      bg2.onload = ()=>{
-        bg2.style.opacity = '1';
-        // After fade completes swap and reset
-        setTimeout(()=>{
-          bg1.src = bg2.src;
-          bg2.style.transition = 'none';
-          bg2.style.opacity = '0';
-          requestAnimationFrame(()=>{ bg2.style.transition = 'opacity 0.8s ease'; });
-          bg2.src = '';
-          if(done) done();
-        }, 900);
-      };
-      bg2.onerror = ()=>{ bg1.src = newSrc; if(done) done(); };
-      // Only load if actually different
-      if (!bg1.src.endsWith(newSrc)) {
-        bg2.src = newSrc;
-      } else {
-        if(done) done();
-      }
-    }
-
-    swap();
-  }
-
   let currentKey = null;
 
   // ── Exhibit Hall playlist state ──────────────────────────────────────────
@@ -289,9 +258,12 @@
     if (key===currentKey) return;
 
     const newSrc = typeData.background||'';
+    const fade   = el('fade');
+    fade.classList.add('active');
 
-    crossfade(newSrc, ()=>{
+    function revealAll() {
       document.getElementById('board').style.setProperty('--track-color', typeData.color||'#484848');
+      if (newSrc) el('bg').src = newSrc;
       show('travel-safe-watermark', false);
       show('exhibit-content', false);
       if (SESSION_TYPES.has(displaySession.type)) {
@@ -302,7 +274,16 @@
         applySpecialty(displaySession, typeData);
       }
       currentKey = key;
-    });
+      requestAnimationFrame(()=>requestAnimationFrame(()=>fade.classList.remove('active')));
+    }
+
+    if (!newSrc || el('bg').src.endsWith(newSrc)) {
+      revealAll();
+    } else {
+      const tmp = new Image();
+      tmp.onload = tmp.onerror = revealAll;
+      tmp.src = newSrc;
+    }
   }
 
   // ── Exhibit Hall rendering ────────────────────────────────────────────────
@@ -342,12 +323,18 @@
     const key = 'exhibit-static|'+s.type+'|'+bg;
     if (key===currentKey) return;
 
-    crossfade(bg, ()=>{
-      show('content',false);
-      show('specialty-content',false);
-      show('exhibit-content',false);
+    const fade = el('fade');
+    fade.classList.add('active');
+
+    function reveal() {
+      if (bg) el('bg').src = bg;
+      show('content',false); show('specialty-content',false); show('exhibit-content',false);
       currentKey = key;
-    });
+      requestAnimationFrame(()=>requestAnimationFrame(()=>fade.classList.remove('active')));
+    }
+
+    if (!bg || el('bg').src.endsWith(bg)) { reveal(); }
+    else { const tmp=new Image(); tmp.onload=tmp.onerror=reveal; tmp.src=bg; }
   }
 
   function startPlaylist(playlist) {
@@ -374,34 +361,46 @@
   }
 
   function showExhibitSlide(s, onShown) {
-    const t       = s.sponsorType||'';
-    const level   = s.sponsorLevel||'';
-    const logoUrl = s.sponsorLogo||'';
+    const t        = s.sponsorType||'';
+    const level    = s.sponsorLevel||'';
+    const logoUrl  = s.sponsorLogo||'';
     const isStatic = s.type==='SponsorList';
-    const bgSrc   = isStatic ? 'SponsorList.svg' : (SPONSOR_BACKGROUNDS[t] || 'Exhibitor.svg');
-    const key     = 'playlist|'+bgSrc+'|'+logoUrl+'|'+level;
+    const bgSrc    = isStatic ? 'SponsorList.svg' : (SPONSOR_BACKGROUNDS[t]||'Exhibitor.svg');
+    const key      = 'playlist|'+bgSrc+'|'+logoUrl+'|'+level;
     if (key===currentKey){ if(onShown) onShown(); return; }
 
-    // Pre-fetch logo so it's in cache before crossfade fires
-    const preloadLogo = ()=> new Promise(res=>{ if(!logoUrl){res();return;} const i=new Image(); i.onload=i.onerror=res; i.src=logoUrl; });
+    const fade = el('fade');
+    fade.classList.add('active');
 
-    preloadLogo().then(()=>{
-      crossfade(bgSrc, ()=>{
-        document.getElementById('board').style.setProperty('--track-color','#032338');
-        show('content',false); show('specialty-content',false); show('travel-safe-watermark',false);
-        if (isStatic) {
-          show('exhibit-content',false);
-        } else {
-          show('exhibit-content',true);
-          const logoEl  = el('exhibit-logo');
-          const levelEl = el('exhibit-level');
-          logoEl.src    = logoUrl;
-          logoEl.style.display = logoUrl ? 'block' : 'none';
-          levelEl.textContent  = level ? level.toUpperCase()+' LEVEL' : '';
-        }
-        currentKey = key;
-      }, onShown);
-    });
+    // Preload everything before revealing anything
+    const toLoad = [bgSrc, logoUrl].filter(Boolean);
+    let loaded = 0;
+    function onLoaded() {
+      loaded++;
+      if (loaded < toLoad.length) return;
+      // Everything ready — apply all at once
+      el('bg').src = bgSrc;
+      document.getElementById('board').style.setProperty('--track-color','#032338');
+      show('content',false); show('specialty-content',false); show('travel-safe-watermark',false);
+      if (isStatic) {
+        show('exhibit-content',false);
+      } else {
+        show('exhibit-content',true);
+        const logoEl  = el('exhibit-logo');
+        const levelEl = el('exhibit-level');
+        logoEl.src    = logoUrl;
+        logoEl.style.display = logoUrl ? 'block' : 'none';
+        levelEl.textContent  = level ? level.toUpperCase()+' LEVEL' : '';
+      }
+      currentKey = key;
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        fade.classList.remove('active');
+        if (onShown) onShown();
+      }));
+    }
+
+    if (!toLoad.length) { onLoaded(); return; }
+    toLoad.forEach(src=>{ const i=new Image(); i.onload=i.onerror=onLoaded; i.src=src; });
   }
 
   // ── Standard session layout ───────────────────────────────────────────────
