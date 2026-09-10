@@ -148,6 +148,9 @@ const TYPES = [
   {id:'CommitteeMeeting',label:'Committee Meeting',color:'#64092C',pres:true},
   {id:'Social',label:'Social Event (Ticketed)',color:'#64092C',pres:false},
   {id:'AEC27',label:'Conference Closing',color:'#DDA838',pres:false},
+  {id:'Sponsor',label:'Exhibit Hall — Sponsor Slide',color:'#032338',pres:false},
+  {id:'SponsorList',label:'Exhibit Hall — Sponsor List',color:'#032338',pres:false},
+  {id:'ExhibitWelcomeReception',label:'Exhibit Hall — Welcome Reception',color:'#032338',pres:false},
 ];
 
 let schedule   = null;
@@ -356,7 +359,7 @@ function blank(){
     event1Name:'',event1Time:'',event1Location:'',
     event2Name:'',event2Time:'',event2Location:'',
     nextEventName:'',nextEventLocation:'',nextEventDates:'',nextEventLogo:'',qrCodeUrl:'',
-    _grp:null};
+    _grp:null,sponsorType:'',sponsorLevel:'',playlistOrder:'',duration:''};
 }
 
 function buildForm(s,showRoom){
@@ -401,6 +404,25 @@ function specialtyF(s){
   if(t==='PlenaryRedirect') h+=f('Plenary Room Name','redirectRoom',s.redirectRoom,'e.g. Grand Ballroom');
   if(t==='Food'){h+=f('Meal Type','mealType',s.mealType,'e.g. Lunch');h+=f('Location','location',s.location,'e.g. Exhibit Hall');}
   if(['P+P','WelcomeReception','Break'].includes(t)) h+=f('Location','location',s.location,'');
+  if(t==='Sponsor'){
+    const stypes=['Gold Sponsor','Silver Sponsor','Presenting Sponsor','Premier Partner','Exhibitor'];
+    const slevels=['','Friend','Supporter'];
+    h+=`<div class="fld"><label>Sponsor Type</label><select data-k="sponsorType">${stypes.map(o=>`<option value="${o}"${o===s.sponsorType?' selected':''}>${o}</option>`).join('')}</select></div>`;
+    h+=`<div class="fld"><label>Level (Premier Partner only)</label><select data-k="sponsorLevel">${slevels.map(o=>`<option value="${o}"${o===s.sponsorLevel?' selected':''}>${o||'— none —'}</option>`).join('')}</select></div>`;
+    h+=F('Logo URL','sponsorLogo',s.sponsorLogo,'url');
+    h+=F('Playlist Order','playlistOrder',s.playlistOrder,'text','e.g. 1');
+    h+=F('Duration (seconds)','duration',s.duration,'text','e.g. 15');
+    return h;
+  }
+  if(t==='SponsorList'){
+    h+=F('Playlist Order','playlistOrder',s.playlistOrder,'text','e.g. 22');
+    h+=F('Duration (seconds)','duration',s.duration,'text','e.g. 15');
+    return h;
+  }
+  if(t==='ExhibitWelcomeReception'){
+    // Fully static — date/start/end only, no extra fields
+    return h;
+  }
   if(t==='Social'){
     h+=ta('Description (shown above events)','description',s.description,'');
     h+=f('Event 1 — Name','event1Name',s.event1Name,'');
