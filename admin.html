@@ -148,7 +148,6 @@ const DEFAULT_TYPES = [
   { id:'T+E',             label:'Testing and Examinations',                background:'T_E.svg',     color:'#484848', showPresenters:true,  specialty:false },
   { id:'Plenary',         label:'Plenary Session',                         background:'Plenary.svg', color:'#64092C', showPresenters:true,  specialty:false },
   { id:'PlenaryRedirect', label:'Plenary Redirect',                        background:'generic.svg', color:'#64092C', showPresenters:true,  specialty:true  },
-  { id:'General',         label:'General Session',                         background:'Plenary.svg', color:'#64092C', showPresenters:true,  specialty:false },
   { id:'Break',           label:'Break',                                   background:'Break.svg',   color:'#484848', showPresenters:false, specialty:true  },
   { id:'Food',            label:'Food / Meal Event',                       background:'Food.svg',    color:'#2d6a2d', showPresenters:false, specialty:true  },
   { id:'P+P',             label:'Puppies & Posters',                       background:'P+P.svg',     color:'#b1862d', showPresenters:false, specialty:true  },
@@ -156,15 +155,19 @@ const DEFAULT_TYPES = [
   { id:'CommitteeMeeting',label:'Committee Meeting',                       background:'generic.svg', color:'#64092C', showPresenters:true,  specialty:true  },
   { id:'Social',          label:'Social Event (Ticketed)',                  background:'generic.svg', color:'#64092C', showPresenters:false, specialty:true  },
   { id:'AEC27',           label:'Conference Closing / Travel Safe',         background:'generic.svg', color:'#DDA838', showPresenters:false, specialty:true  },
+  { id:'Sponsor',              label:'Exhibit Hall — Sponsor Slide',            background:'',            color:'#032338', showPresenters:false, specialty:true  },
+  { id:'SponsorList',          label:'Exhibit Hall — Sponsor List (static)',    background:'SponsorList.svg',color:'#032338',showPresenters:false, specialty:true  },
+  { id:'ExhibitWelcomeReception',label:'Exhibit Hall — Welcome Reception (scheduled)',background:'ExhibitWelcomeReception.svg',color:'#032338',showPresenters:false,specialty:true},
 ];
 
 const state = {
   types: DEFAULT_TYPES.map(t=>({...t})),
   rooms: [
-    { id:'Session-Room-a', name:'Session-Room-a', sessions:[] },
-    { id:'Session-Room-b', name:'Session-Room-b', sessions:[] },
-    { id:'Session-Room-c', name:'Session-Room-c', sessions:[] },
-    { id:'Session-Room-d', name:'Session-Room-d', sessions:[] },
+    { id:'Session-Room-a', name:'Session Room A', sessions:[] },
+    { id:'Session-Room-b', name:'Session Room B', sessions:[] },
+    { id:'Session-Room-c', name:'Session Room C', sessions:[] },
+    { id:'Session-Room-d', name:'Session Room D', sessions:[] },
+    { id:'Exhibit-Hall',   name:'Exhibit Hall',   sessions:[] },
   ],
   activeRoom: 0,
 };
@@ -263,8 +266,41 @@ function specialtyFieldsHTML(typeId, s, ri, si) {
     parts.push(fieldURL('Conference Logo URL','nextEventLogo',s.nextEventLogo||'',ri,si));
     parts.push(fieldURL('QR Code Image URL (optional)','qrCodeUrl',s.qrCodeUrl||'',ri,si));
   }
+  else if (typeId==='Sponsor') {
+    // Sponsor Type dropdown
+    const sponsorTypes=['Gold Sponsor','Silver Sponsor','Presenting Sponsor','Premier Partner','Exhibitor'];
+    const stOpts=sponsorTypes.map(o=>`<option value="${o}"${o===(s.sponsorType||'')?'selected':''}>${o}</option>`).join('');
+    parts.push(`<div class="field full" tabindex="-1"><label>Sponsor Type</label>
+      <select onchange="state.rooms[${ri}].sessions[${si}].sponsorType=this.value;renderRoomPanel()">
+        <option value="">Select type…</option>${stOpts}
+      </select></div>`);
+    // Level dropdown — only meaningful for Premier Partner but always show it
+    const levels=['','Friend','Supporter'];
+    const lvOpts=levels.map(o=>`<option value="${o}"${o===(s.sponsorLevel||'')?'selected':''}>${o||'— none —'}</option>`).join('');
+    parts.push(`<div class="field full" tabindex="-1"><label>Level (Premier Partner only)</label>
+      <select onchange="state.rooms[${ri}].sessions[${si}].sponsorLevel=this.value">
+        ${lvOpts}
+      </select></div>`);
+    parts.push(fieldURL('Logo URL','sponsorLogo',s.sponsorLogo||'',ri,si,'https://…'));
+    parts.push(fieldText('Playlist Order (1, 2, 3…)','playlistOrder',s.playlistOrder||'',ri,si,'e.g. 1'));
+    parts.push(fieldText('Duration (seconds)','duration',s.duration||'',ri,si,'e.g. 15'));
+  }
+  else if (typeId==='SponsorList') {
+    parts.push(fieldText('Playlist Order','playlistOrder',s.playlistOrder||'',ri,si,'e.g. 22'));
+    parts.push(fieldText('Duration (seconds)','duration',s.duration||'',ri,si,'e.g. 15'));
+  }
+  // ExhibitWelcomeReception — no extra fields, date/start/end is all that's needed
 
   return parts.join('');
+}
+
+// ─── Field select helper ──────────────────────────────────────────────────
+function fieldSelectHTML(f, ri, si) {
+  const opts = f.select.map(o=>`<option value="${o}"${o===f.value?' selected':''}>${o||'— none —'}</option>`).join('');
+  return `<div class="field full" tabindex="-1"><label>${f.label}</label>
+    <select onchange="state.rooms[${ri}].sessions[${si}].${f.key}=this.value;renderRoomPanel()">
+      ${opts}
+    </select></div>`;
 }
 
 // ─── Standard session fields (for non-specialty types) ────────────────────
@@ -281,12 +317,12 @@ function standardSessionFieldsHTML(typeObj, s, ri, si) {
 function universalFieldsHTML(typeId, s, ri, si) {
   const parts = [];
   // Description — only for non-specialty (specialty types handle their own)
-  const hasOwnDesc = ['PlenaryRedirect','WelcomeReception','CommitteeMeeting','Break','Food','P+P','Social'].includes(typeId);
+  const hasOwnDesc = ['PlenaryRedirect','WelcomeReception','CommitteeMeeting','Break','Food','P+P','Social','Sponsor','SponsorList','ExhibitWelcomeReception'].includes(typeId);
   if (!hasOwnDesc) {
     parts.push(fieldTextarea('Description (optional)','description',s.description||'',ri,si,'Optional notes or subtitle','desc-field'));
   }
   // Logo — only for types that don't already have it in specialty fields
-  const hasOwnLogo = ['WelcomeReception','Food','P+P','AEC27'].includes(typeId);
+  const hasOwnLogo = ['WelcomeReception','Food','P+P','AEC27','Sponsor','SponsorList'].includes(typeId);
   if (!hasOwnLogo) {
     parts.push(fieldURL('Sponsor Logo URL (optional)','sponsorLogo',s.sponsorLogo||'',ri,si));
   }
@@ -351,6 +387,7 @@ function processExcelFile(file){
         const nextEventDates   = String(row[25]||'').trim();
         const nextEventLogo    = String(row[26]||'').trim();
         const qrCodeUrl        = String(row[27]||'').trim();
+
         if(!date||!roomId||!start||!end||!typeId){errors.push(`Row ${i+1}: missing required field`);skipped++;continue;}
         const roomIdx=state.rooms.findIndex(r=>r.id===roomId);
         if(roomIdx===-1){errors.push(`Row ${i+1}: room "${roomId}" not found`);skipped++;continue;}
@@ -479,8 +516,8 @@ function renderRoomPanel(){
     const isSpecialty=typeObj.specialty;
 
     body.innerHTML=`<div class="field-row">
-      <div class="field">
-        <label>Date</label>
+      <div class="field" ${['Sponsor','SponsorList'].includes(s.type)?'style="opacity:0.4;pointer-events:none;" title="Playlist slides — leave date blank"':''}>
+        <label>Date ${['Sponsor','SponsorList'].includes(s.type)?'(leave blank for playlist)':''}</label>
         <input type="date" value="${s.date||''}" onblur="state.rooms[${ri}].sessions[${si}].date=this.value;renderRoomPanel()">
       </div>
       <div class="field">
@@ -525,6 +562,7 @@ function removeRoom(ri){if(!confirm(`Remove room "${state.rooms[ri].name}"?`))re
 // ─── URL Helper ───────────────────────────────────────────────────────────
 function renderURLs(){
   const base='https://clearlearning.github.io/digitalsignage';
+  const EXHIBIT_URL=`${base}/signage.html?room=Exhibit-Hall`;
   el('url-list').innerHTML=`<div style="background:rgba(8,77,120,.04);border:1px solid rgba(8,77,120,.15);border-radius:6px;padding:14px;">
     ${state.rooms.map(r=>`<div class="url-row"><div class="url-room-label">${r.name}</div><div class="url-value">${base}/signage.html?room=${r.id}</div></div>`).join('')}</div>`;
 }
@@ -580,7 +618,7 @@ async function loadScheduleFromWorker(){
           event1Name:s.event1Name||'',event1Time:s.event1Time||'',event1Location:s.event1Location||'',
           event2Name:s.event2Name||'',event2Time:s.event2Time||'',event2Location:s.event2Location||'',
           nextEventName:s.nextEventName||'',nextEventLocation:s.nextEventLocation||'',
-          nextEventDates:s.nextEventDates||'',nextEventLogo:s.nextEventLogo||'',qrCodeUrl:s.qrCodeUrl||'',
+          nextEventDates:s.nextEventDates||'',nextEventLogo:s.nextEventLogo||'',qrCodeUrl:s.qrCodeUrl||'',sponsorType:s.sponsorType||'',sponsorLevel:s.sponsorLevel||'',playlistOrder:s.playlistOrder||'',duration:s.duration||'',
         }))
       }));
     }
