@@ -378,10 +378,10 @@ function processExcelFile(file){
         const mealType         = String(row[15]||'').trim();
         const redirectRoom     = String(row[16]||'').trim();
         const event1Name       = String(row[17]||'').trim();
-        const event1Time       = String(row[18]||'').trim();
+        const event1Time       = formatTimeValue(row[18]);
         const event1Location   = String(row[19]||'').trim();
         const event2Name       = String(row[20]||'').trim();
-        const event2Time       = String(row[21]||'').trim();
+        const event2Time       = formatTimeValue(row[21]);
         const event2Location   = String(row[22]||'').trim();
         const nextEventName    = String(row[23]||'').trim();
         const nextEventLocation= String(row[24]||'').trim();
