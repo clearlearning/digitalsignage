@@ -300,15 +300,59 @@
     });
 
     if (scheduledSession) {
-      // Stop playlist rotation, show the scheduled slide
       stopPlaylist();
-      showExhibitStatic(scheduledSession, schedule);
+      // If it's a full-bleed static type, show background only
+      // If it's a specialty type with fields (Food, Social, WelcomeReception etc), render normally
+      if (scheduledSession.type === 'ExhibitWelcomeReception' || scheduledSession.type === 'SponsorList') {
+        showExhibitStatic(scheduledSession, schedule);
+      } else if (SESSION_TYPES.has(scheduledSession.type)) {
+        // Standard session layout
+        const typeMap = schedule.types||schedule.tracks||{};
+        const typeData = typeMap[scheduledSession.type]||{color:'#484848',background:''};
+        const key = scheduledSession.title+'|true|'+typeData.color+'|'+scheduledSession.type;
+        if (key !== currentKey) {
+          const fade = el('fade');
+          fade.classList.add('active');
+          const newSrc = typeData.background||'';
+          function revealSched() {
+            document.getElementById('board').style.setProperty('--track-color', typeData.color||'#484848');
+            if (newSrc) el('bg').src = newSrc;
+            show('exhibit-content', false);
+            show('content', true); show('specialty-content', false);
+            applySession(scheduledSession, true, typeData);
+            currentKey = key;
+            requestAnimationFrame(()=>requestAnimationFrame(()=>fade.classList.remove('active')));
+          }
+          if (!newSrc || el('bg').src.endsWith(newSrc)) revealSched();
+          else { const tmp=new Image(); tmp.onload=tmp.onerror=revealSched; tmp.src=newSrc; }
+        }
+      } else {
+        // Specialty type — use full specialty layout with fields
+        const typeMap = schedule.types||schedule.tracks||{};
+        const typeData = typeMap[scheduledSession.type]||{color:'#484848',background:''};
+        const key = scheduledSession.title+'|sched|'+scheduledSession.type+'|'+scheduledSession.start;
+        if (key !== currentKey) {
+          const fade = el('fade');
+          fade.classList.add('active');
+          const newSrc = typeData.background||'';
+          function revealSpecialty() {
+            document.getElementById('board').style.setProperty('--track-color', typeData.color||'#484848');
+            if (newSrc) el('bg').src = newSrc;
+            show('exhibit-content', false);
+            show('content', false); show('specialty-content', true);
+            applySpecialty(scheduledSession, typeData);
+            currentKey = key;
+            requestAnimationFrame(()=>requestAnimationFrame(()=>fade.classList.remove('active')));
+          }
+          if (!newSrc || el('bg').src.endsWith(newSrc)) revealSpecialty();
+          else { const tmp=new Image(); tmp.onload=tmp.onerror=revealSpecialty; tmp.src=newSrc; }
+        }
+      }
       return;
     }
 
-    // No scheduled interruption — run the playlist
+    // No scheduled interruption — restart playlist if it was stopped
     if (!playlistRunning) {
-      // Build playlist from sessions with no date (or date blank)
       const playlist = sessions
         .filter(s=>!s.date||s.date==='')
         .sort((a,b)=>(parseInt(a.playlistOrder)||999)-(parseInt(b.playlistOrder)||999));
@@ -346,6 +390,7 @@
   function stopPlaylist() {
     if (playlistTimer) { clearTimeout(playlistTimer); playlistTimer=null; }
     playlistRunning = false;
+    currentKey = null; // force re-render when playlist resumes
   }
 
   function advancePlaylist(playlist) {
@@ -367,7 +412,12 @@
     const isStatic = s.type==='SponsorList';
     const bgSrc    = isStatic ? 'SponsorList.svg' : (SPONSOR_BACKGROUNDS[t]||'Exhibitor.svg');
     const key      = 'playlist|'+bgSrc+'|'+logoUrl+'|'+level;
-    if (key===currentKey){ if(onShown) onShown(); return; }
+    if (key===currentKey){
+      // Even if key matches, ensure exhibit-content visibility is correct
+      if (!isStatic) show('exhibit-content', true);
+      if(onShown) onShown();
+      return;
+    }
 
     const fade = el('fade');
     fade.classList.add('active');
